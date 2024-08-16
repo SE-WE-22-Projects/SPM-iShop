@@ -51,9 +51,9 @@ class MainActivity : AppCompatActivity() {
 
         // load openCV library
         if (!OpenCVLoader.initLocal()) {
-            Log.e(TAG, "OpenCV initialization failed");
-            (Toast.makeText(this, "OpenCV initialization failed", Toast.LENGTH_LONG)).show();
-            return;
+            Log.e(TAG, "OpenCV initialization failed")
+            (Toast.makeText(this, "OpenCV initialization failed", Toast.LENGTH_LONG)).show()
+            return
         }
 
         detector = ArucoDetector(
@@ -73,15 +73,15 @@ class MainActivity : AppCompatActivity() {
 
         cameraController.isPinchToZoomEnabled = false
         cameraController.imageCaptureMode = ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY
-        cameraController.setEnabledUseCases(CameraController.IMAGE_ANALYSIS);
+        cameraController.setEnabledUseCases(CameraController.IMAGE_ANALYSIS)
 
-        var lastCameraId = "UNSET";
+        var lastCameraId = "UNSET"
 
         cameraController.setImageAnalysisAnalyzer(
             ContextCompat.getMainExecutor(this)
         ) { proxy ->
 
-            val cameraInfo = cameraController.cameraInfo;
+            val cameraInfo = cameraController.cameraInfo
             if (cameraInfo != null) {
                 val cameraId = Camera2CameraInfo.from(cameraInfo).cameraId
                 if (cameraId != lastCameraId) {
@@ -212,7 +212,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val TAG = "IShop_Log";
+        const val TAG = "IShop_Log"
         private const val REQUEST_CODE_PERMISSIONS = 10
         private val REQUIRED_PERMISSIONS =
             mutableListOf(

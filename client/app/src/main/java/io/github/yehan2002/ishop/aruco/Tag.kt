@@ -14,18 +14,17 @@ class Tag(
     var corners: Array<PointF>
 
     init {
-        val pointList = mutableListOf<PointF>();
-
+        val pointList = mutableListOf<PointF>()
         for (i in 0..3) {
-            val pointData = tagCorners.get(0, i);
+            val pointData = tagCorners.get(0, i)
             pointList.add(PointF(pointData[0].toFloat(), pointData[1].toFloat()))
         }
 
-
-        corners = pointList.toTypedArray();
+        corners = pointList.toTypedArray()
     }
 
     class Rotation(val roll: Double, val pitch: Double, val yaw: Double) {
+        val facingYaw = (yaw + 90) % 360
 
     }
 
