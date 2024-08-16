@@ -52,7 +52,7 @@ class ArucoDetector(
      * Distances and angles of the tags will be unavailable until this method is called.
      */
     fun setCalibration(calibration: CameraCalibration) {
-        this.calibration = calibration;
+        this.calibration = calibration
     }
 
 

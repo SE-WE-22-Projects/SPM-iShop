@@ -10,7 +10,7 @@ import android.graphics.PixelFormat
 import android.graphics.drawable.Drawable
 
 class TagDrawable(
-    private val pos: Tag,
+    private val tag: Tag,
     private val correction: Matrix,
 ) : Drawable() {
 
@@ -47,33 +47,22 @@ class TagDrawable(
         textSize = 32F
     }
 
-    private val contentTextExtraPaint = Paint().apply {
+    private val topDotPaint = Paint().apply {
+        style = Paint.Style.STROKE
         color = Color.RED
-        alpha = 255
-        textSize = 20F
+        strokeWidth = 26F
+        alpha = 200
     }
 
-    private val contentPadding = 25
 
     override fun draw(canvas: Canvas) {
-//        canvas.drawRect(pos, boundingRectPaint)
-//        canvas.drawRect(
-//            Rect(
-//                pos.left,
-//                pos.bottom + contentPadding / 2,
-//                pos.left + 12 + contentPadding * 2,
-//                pos.bottom + contentTextPaint.textSize.toInt() + contentPadding
-//            ),
-//            contentRectPaint
-//        )
-
 
         // convert the image points into point on the screen
         val pts = floatArrayOf(
-            pos.corners[0].x, pos.corners[0].y,
-            pos.corners[1].x, pos.corners[1].y,
-            pos.corners[2].x, pos.corners[2].y,
-            pos.corners[3].x, pos.corners[3].y,
+            tag.corners[0].x, tag.corners[0].y,
+            tag.corners[1].x, tag.corners[1].y,
+            tag.corners[2].x, tag.corners[2].y,
+            tag.corners[3].x, tag.corners[3].y,
         )
         correction.mapPoints(pts)
 
@@ -92,51 +81,42 @@ class TagDrawable(
         canvas.drawLine(pts[4], pts[5], pts[6], pts[7], boundingRectPaint)
         canvas.drawLine(pts[6], pts[7], pts[0], pts[1], boundingRectPaint)
 
+        // draw an orange point at the top corner of the tag.
+        canvas.drawPoint(pts[0], pts[1], topDotPaint)
 
 
+        // display tag ID
         canvas.drawText(
-            pos.id.toString(),
-            (pts[0] + 40),
-            (pts[1] + 40),
+            tag.id.toString(),
+            (pts[0] + pts[4]) / 2,
+            (pts[1] + pts[5]) / 2,
             contentIDPaint
         )
+
+        // display distance to tag
         canvas.drawText(
-            pos.distance.toString(),
+            "${tag.distance}m",
             (pts[0] + pts[4]) / 2,
             (pts[1] + pts[5]) / 2 + 32,
             contentTextPaint
         )
 
-        if (pos.extra != null)
-            pos.extra.forEachIndexed { index, s ->
-                canvas.drawText(
-                    s,
-                    (pts[0] + pts[4]) / 2,
-                    (pts[1] + pts[5]) / 2 + 64 + 30 * index,
-                    contentTextExtraPaint
-                )
-            }
+        // display rotation information
+        if (tag.rotation != null) {
+            canvas.drawText(
+                String.format("%.2f°", tag.rotation.facingYaw),
+                (pts[0] + pts[4]) / 2,
+                (pts[1] + pts[5]) / 2 + 64,
+                contentTextPaint
+            )
+        }
 
 
-//        canvas.drawText(
-//            qrCodeViewModel.qrContent,
-//            (pos.left + contentPadding).toFloat(),
-//            (pos.bottom + contentPadding * 2).toFloat(),
-//            contentTextPaint
-//        )
     }
 
-    override fun setAlpha(alpha: Int) {
-        boundingRectPaint.alpha = alpha
-        boundingRectTopPaint.alpha = alpha
-        contentTextPaint.alpha = alpha
-    }
+    override fun setAlpha(alpha: Int) {}
 
-    override fun setColorFilter(colorFiter: ColorFilter?) {
-        boundingRectPaint.colorFilter = colorFilter
-        boundingRectTopPaint.colorFilter = colorFilter
-        contentTextPaint.colorFilter = colorFilter
-    }
+    override fun setColorFilter(colorFiter: ColorFilter?) {}
 
     @Deprecated(
         "Deprecated in Java",
