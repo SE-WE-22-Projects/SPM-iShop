@@ -1,10 +1,7 @@
 package io.github.yehan2002.ishop
 
-import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Matrix
-import android.hardware.camera2.CameraCharacteristics
-import android.hardware.camera2.CameraManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -22,6 +19,7 @@ import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import io.github.yehan2002.ishop.aruco.ArucoDetector
+import io.github.yehan2002.ishop.aruco.CameraCalibration
 import io.github.yehan2002.ishop.aruco.DebugInfoDrawable
 import io.github.yehan2002.ishop.aruco.TagDrawable
 import io.github.yehan2002.ishop.databinding.ActivityMainBinding
@@ -51,10 +49,8 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        if (OpenCVLoader.initLocal()) {
-            Log.i(TAG, "OpenCV loaded successfully");
-            (Toast.makeText(this, "OpenCV initialized", Toast.LENGTH_SHORT)).show();
-        } else {
+        // load openCV library
+        if (!OpenCVLoader.initLocal()) {
             Log.e(TAG, "OpenCV initialization failed");
             (Toast.makeText(this, "OpenCV initialization failed", Toast.LENGTH_LONG)).show();
             return;
@@ -64,6 +60,7 @@ class MainActivity : AppCompatActivity() {
             0.06,
             Objdetect.getPredefinedDictionary(Objdetect.DICT_4X4_50),
         )
+
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
@@ -88,14 +85,13 @@ class MainActivity : AppCompatActivity() {
             if (cameraInfo != null) {
                 val cameraId = Camera2CameraInfo.from(cameraInfo).cameraId
                 if (cameraId != lastCameraId) {
-                    val calibration = getCameraCalibration(cameraId, proxy)
+                    val calibration = CameraCalibration.loadCalibrations(this, cameraId, proxy)
                     if (calibration != null) {
                         detector.setCalibration(calibration)
                         lastCameraId = cameraId
                     }
 
                 }
-//            Log.i(TAG, intrinsics.contentToString())
             }
 
             val tags = detector.detectMarkers(proxy.toBitmap())
@@ -126,40 +122,6 @@ class MainActivity : AppCompatActivity() {
         previewView.controller = cameraController
     }
 
-    @RequiresApi(Build.VERSION_CODES.P)
-    @OptIn(ExperimentalCamera2Interop::class)
-    private fun getCameraCalibration(
-        cameraId: String,
-        imageProxy: ImageProxy
-    ): ArucoDetector.Calibration? {
-        val cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
-        val characteristics = cameraManager.getCameraCharacteristics(cameraId)
-
-        val intrinsics =
-            characteristics.get(CameraCharacteristics.LENS_INTRINSIC_CALIBRATION)
-
-        val focalLength =
-            characteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS)
-
-        val distortion = characteristics.get(CameraCharacteristics.LENS_DISTORTION)
-
-        if (intrinsics == null || focalLength == null) {
-            Log.i(TAG, "Calibrate: intrinsics is null")
-            return null;
-        }
-
-        Log.i(TAG, "Calibrate: intrinsics is ${intrinsics.contentToString()}")
-
-//        intrinsics[0] = focalLength[0]
-//        intrinsics[1] = focalLength[0]
-//        intrinsics[2] = (imageProxy.width / 2).toFloat()
-//        intrinsics[3] = (imageProxy.height / 2).toFloat()
-
-        Log.i(TAG, "Calibrate: intrinsics is ${intrinsics.contentToString()}")
-
-        return ArucoDetector.Calibration(intrinsics, distortion)
-
-    }
 
     /**
      * Creates a matrix used to transform the coordinates detected using opencv to PreviewView
