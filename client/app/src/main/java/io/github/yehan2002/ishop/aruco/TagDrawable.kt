@@ -35,13 +35,26 @@ class TagDrawable(
         style = Paint.Style.FILL
     }
 
+    private val contentIDPaint = Paint().apply {
+        color = Color.BLUE
+        alpha = 255
+        textSize = 40F
+    }
+
     private val contentTextPaint = Paint().apply {
         color = Color.RED
         alpha = 255
-        textSize = 36F
+        textSize = 32F
+    }
+
+    private val contentTextExtraPaint = Paint().apply {
+        color = Color.RED
+        alpha = 255
+        textSize = 20F
     }
 
     private val contentPadding = 25
+
     override fun draw(canvas: Canvas) {
 //        canvas.drawRect(pos, boundingRectPaint)
 //        canvas.drawRect(
@@ -57,10 +70,10 @@ class TagDrawable(
 
         // convert the image points into point on the screen
         val pts = floatArrayOf(
-            pos.points[0].x, pos.points[0].y,
-            pos.points[1].x, pos.points[1].y,
-            pos.points[2].x, pos.points[2].y,
-            pos.points[3].x, pos.points[3].y,
+            pos.corners[0].x, pos.corners[0].y,
+            pos.corners[1].x, pos.corners[1].y,
+            pos.corners[2].x, pos.corners[2].y,
+            pos.corners[3].x, pos.corners[3].y,
         )
         correction.mapPoints(pts)
 
@@ -79,12 +92,31 @@ class TagDrawable(
         canvas.drawLine(pts[4], pts[5], pts[6], pts[7], boundingRectPaint)
         canvas.drawLine(pts[6], pts[7], pts[0], pts[1], boundingRectPaint)
 
+
+
         canvas.drawText(
             pos.id.toString(),
+            (pts[0] + 40),
+            (pts[1] + 40),
+            contentIDPaint
+        )
+        canvas.drawText(
+            pos.distance.toString(),
             (pts[0] + pts[4]) / 2,
-            (pts[1] + pts[5]) / 2,
+            (pts[1] + pts[5]) / 2 + 32,
             contentTextPaint
         )
+
+        if (pos.extra != null)
+            pos.extra.forEachIndexed { index, s ->
+                canvas.drawText(
+                    s,
+                    (pts[0] + pts[4]) / 2,
+                    (pts[1] + pts[5]) / 2 + 64 + 30 * index,
+                    contentTextExtraPaint
+                )
+            }
+
 
 //        canvas.drawText(
 //            qrCodeViewModel.qrContent,
