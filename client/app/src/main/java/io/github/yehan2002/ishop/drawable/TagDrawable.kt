@@ -1,4 +1,4 @@
-package io.github.yehan2002.ishop.aruco
+package io.github.yehan2002.ishop.drawable
 
 import android.graphics.Canvas
 import android.graphics.Color
@@ -8,6 +8,7 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.PixelFormat
 import android.graphics.drawable.Drawable
+import io.github.yehan2002.ishop.aruco.Tag
 
 class TagDrawable(
     private val tag: Tag,

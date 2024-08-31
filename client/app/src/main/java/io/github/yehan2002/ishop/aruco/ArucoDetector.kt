@@ -28,8 +28,6 @@ class ArucoDetector(
     private val detector: ArucoDetector
     private val objPointsMat: MatOfPoint3f
 
-
-    var lastProcessTime = 0
     private var calibration = CameraCalibration()
 
     init {
@@ -64,7 +62,6 @@ class ArucoDetector(
     fun detectMarkers(bitmap: Bitmap): Array<Tag> {
         val detectedTags = mutableListOf<Tag>()
 
-        val start = System.nanoTime()
 
         // convert the bitmap to a opencv Mat
         val img = bitmap.copy(Bitmap.Config.ARGB_8888, true)
@@ -148,8 +145,6 @@ class ArucoDetector(
         }
 
         image.release()
-        lastProcessTime = ((System.nanoTime() - start) / 1e6).roundToInt()
-
 
         return detectedTags.toTypedArray()
     }
