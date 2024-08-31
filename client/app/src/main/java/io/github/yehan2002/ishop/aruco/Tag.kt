@@ -24,8 +24,7 @@ class Tag(
     }
 
     class Rotation(val roll: Double, val pitch: Double, val yaw: Double) {
-        val facingYaw = (yaw + 90) % 360
-
+        val facingYaw: Double = ((if (yaw < 0) 360 + yaw else yaw) + 90) % 360
     }
 
 }

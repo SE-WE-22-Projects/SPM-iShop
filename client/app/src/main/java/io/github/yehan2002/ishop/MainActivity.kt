@@ -20,13 +20,14 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import io.github.yehan2002.ishop.aruco.ArucoDetector
 import io.github.yehan2002.ishop.aruco.CameraCalibration
-import io.github.yehan2002.ishop.aruco.DebugInfoDrawable
-import io.github.yehan2002.ishop.aruco.TagDrawable
+import io.github.yehan2002.ishop.drawable.DebugInfoDrawable
+import io.github.yehan2002.ishop.drawable.TagDrawable
 import io.github.yehan2002.ishop.databinding.ActivityMainBinding
 import org.opencv.android.OpenCVLoader
 import org.opencv.objdetect.Objdetect
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import kotlin.math.roundToInt
 
 
 class MainActivity : AppCompatActivity() {
@@ -81,6 +82,8 @@ class MainActivity : AppCompatActivity() {
             ContextCompat.getMainExecutor(this)
         ) { proxy ->
 
+            val startTime = System.nanoTime()
+
             val cameraInfo = cameraController.cameraInfo
             if (cameraInfo != null) {
                 val cameraId = Camera2CameraInfo.from(cameraInfo).cameraId
@@ -108,9 +111,12 @@ class MainActivity : AppCompatActivity() {
                     )
                 )
             }
+
+            val processingTime = ((System.nanoTime() - startTime) / 1e6).roundToInt()
+
             previewView.overlay.add(
                 DebugInfoDrawable(
-                    detector.lastProcessTime,
+                    processingTime,
                     tags.size,
                 )
             )
@@ -132,6 +138,7 @@ class MainActivity : AppCompatActivity() {
     private fun getCorrectionMatrix(imageProxy: ImageProxy, previewView: PreviewView): Matrix {
         val cropRect = imageProxy.cropRect
         val matrix = Matrix()
+
 
         // A float array of the source vertices (crop rect) in clockwise order.
         val source = floatArrayOf(

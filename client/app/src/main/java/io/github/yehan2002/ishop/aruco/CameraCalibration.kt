@@ -80,10 +80,10 @@ class CameraCalibration() {
         }
 
         // set the distance scale
-        distanceScale = scale;
+        distanceScale = scale
         Log.i(MainActivity.TAG, "Distance scaling is $distanceScale")
 
-        isValid = true;
+        isValid = true
     }
 
     companion object {
