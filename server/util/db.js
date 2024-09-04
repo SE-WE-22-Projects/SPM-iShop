@@ -1,6 +1,6 @@
-const {Sequelize} = require('sequelize');
+const { Sequelize } = require('sequelize');
 
-const connect = ()=>{
+const connect = () => {
     let config;
     if (Number.parseInt(process.env.USE_SQLITE)) {
         // config for a local sqlite db
@@ -52,7 +52,7 @@ async function createAll() {
     let glob = require('glob')
     let path = require('path');
 
-    glob.sync('./model/*.js').forEach(function (file) {
+    glob.sync('../model/*.js').forEach(function (file) {
         require(path.resolve(file));
     });
 
