@@ -5,6 +5,7 @@ import inventory from "./systems/inventory";
 import mapping from "./systems/mapping";
 import employee from "./systems/employee";
 import promotions from "./systems/promotion";
+import { DashboardPage } from "./components/DashboardLayout";
 
 let routes: Map<String, RouteObject> = new Map();
 
@@ -28,15 +29,20 @@ function TempMain() {
 
 
 // load all routes from the systems into the routes map
-const importedRoutes = [promotions, inventory, mapping, employee];
+const importedRoutes = [promotions, inventory, employee, mapping];
 importedRoutes.forEach((route) => {
   routes.set(route.basePath, {
     path: "/" + route.basePath.toLowerCase(),
-    element: route.layout,
-    children: route.routes,
+    element: <DashboardPage routes={route} />,
+    children: route.routes.map(r => {
+      return {
+        path: r.path,
+        element: r.element,
+        children: r.children
+      } as RouteObject;
+    }),
   });
-});
-
+})
 
 // create router with all loaded routes
 const domRouter = createBrowserRouter([{

@@ -1,30 +1,22 @@
-import { RouteObject } from "react-router-dom";
+import { People } from "@mui/icons-material";
+import { SystemRoutes } from "../../components/DashboardLayout";
 import Dashboard from "./Dashboard";
 import Page1 from "./Page1";
-import DashboardLayout, { SideBarLink } from "../../components/DashboardLayout";
-import { People } from "@mui/icons-material";
 
 
-
-const Layout = () => {
-    return <DashboardLayout >
-        <SideBarLink title="Dashboard" url="/mapping/" icon={<Dashboard />} />
-        <SideBarLink title="Mapping page 1" url="/mapping/page1" icon={<People />} />
-    </DashboardLayout>
-};
-
-
-const routes: { basePath: String; layout: React.ReactNode; routes: RouteObject[] } = {
+export const routes: SystemRoutes = {
+    title: "Mapping Manager",
     basePath: "mapping",
-    layout: <Layout />,
+
+    dashboard: <Dashboard />,
     routes: [
         {
-            index: true,
-            element: <Dashboard />
-        },
-        {
             element: <Page1 />,
-            path: "page1"
+            path: "page1",
+            display: {
+                title: "Mapping Page 1",
+                icon: <People />
+            }
         }
     ]
 };
