@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom"
-import DashboardPage from "../../components/DashboardPage"
+import DashboardLayout from "../../components/DashboardLayout"
 import { Dashboard, People } from "@mui/icons-material"
 import { ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material"
 
 
-const MappingPage = () => {
-    return <DashboardPage >
-        <Link to="/icms/">
+const PageLayout = () => {
+    return <DashboardLayout >
+        <Link to="/mapping/">
             <ListItem disablePadding>
                 <ListItemButton>
                     <ListItemIcon>
@@ -17,18 +17,17 @@ const MappingPage = () => {
             </ListItem>
         </Link>
 
-        <Link to="/icms/patient">
+        <Link to="/mapping/page1">
             <ListItem disablePadding>
                 <ListItemButton>
                     <ListItemIcon>
                         <People />
                     </ListItemIcon>
-                    <ListItemText primary="Patient Management" />
+                    <ListItemText primary="Mapping page 1" />
                 </ListItemButton>
             </ListItem>
         </Link>
-
-    </DashboardPage>
+    </DashboardLayout>
 };
 
-export default MappingPage;
+export default PageLayout;

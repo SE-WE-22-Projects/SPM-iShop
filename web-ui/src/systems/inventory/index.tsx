@@ -1,8 +1,9 @@
 import { RouteObject } from "react-router-dom";
+import PageLayout from "./PageLayout";
 
-const routes: { name: String; root: React.ReactNode; routes: RouteObject[] } = {
-    name: "inventory",
-    root: <>Main Element</>, // replace with main element
+const routes: { basePath: String; layout: React.ReactNode; routes: RouteObject[] } = {
+    basePath: "inventory",
+    layout: <PageLayout />,
     routes: []
 };
 

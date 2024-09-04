@@ -6,7 +6,7 @@ import Nav from './Nav';
 
 const drawerWidth = 275;
 
-const DashboardPage = (props: { children: ReactElement[], title?: string }) => {
+const DashboardLayout = (props: { children?: ReactElement[], title?: string }) => {
     return (
         <>
             <Nav title={props.title} />
@@ -44,4 +44,4 @@ const DashboardPage = (props: { children: ReactElement[], title?: string }) => {
     )
 };
 
-export default DashboardPage;
+export default DashboardLayout;

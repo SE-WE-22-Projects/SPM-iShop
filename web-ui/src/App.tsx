@@ -13,9 +13,9 @@ let routes: Map<String, RouteObject> = new Map();
 const importedRoutes = [promotions, inventory, mapping, employee];
 
 importedRoutes.forEach((route) => {
-  routes.set(route.name, {
-    path: "/" + route.name.toLowerCase(),
-    element: route.root,
+  routes.set(route.basePath, {
+    path: "/" + route.basePath.toLowerCase(),
+    element: route.layout,
     children: route.routes,
   });
 });
