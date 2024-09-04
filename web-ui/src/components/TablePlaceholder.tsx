@@ -16,10 +16,10 @@ interface TablePlaceholderProps {
  * Generates placeholder data for a table
  */
 const TablePlaceholder = ({ columns, rows }: TablePlaceholderProps) => {
-    if (!rows) rows = 10;
+    let rowNum = rows ? rows : 10;
 
     let data = [];
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < rowNum; i++) {
         let rows = [];
         for (let c = 0; c < columns; c++) {
             rows.push(
