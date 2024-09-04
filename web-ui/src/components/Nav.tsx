@@ -42,7 +42,8 @@ function TopNavBar(props: { title?: string }) {
         <AppBar position="fixed">
             <Toolbar disableGutters={true} sx={{ px: "8px" }}>
                 <Box sx={{ flexGrow: 0 }} onClick={() => { window.location.href = "/" }}>
-                    <img src="/assets/logo.png" alt="AyurCare Logo" style={{ height: "50px" }} />
+                    {/* TODO: add logo */}
+                    <img src="/assets/logo.png" alt="Logo Image" style={{ height: "50px" }} />
                 </Box>
                 <Box sx={{ mx: 1 }}>
                     <Typography>{props.title}</Typography>

@@ -1,8 +1,10 @@
 import { RouteObject } from "react-router-dom";
 
+import MappingPage from "./mapping";
+
 const routes: { name: String; root: React.ReactNode; routes: RouteObject[] } = {
     name: "mapping",
-    root: <>Main Element</>, // replace with main element
+    root: <MappingPage />, // replace with main element
     routes: []
 };
 
