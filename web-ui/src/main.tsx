@@ -9,11 +9,12 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import axios from 'axios'
 import { baseURL, siteTheme } from './config.ts'
 
-export const theme = siteTheme;
-
+// set the base url used for all axios requests.
 axios.defaults.baseURL = baseURL;
+
+// setup axios interceptor to handle injecting the auth token into requests.
 axios.interceptors.request.use(async (cfg) => {
-  const jwt = localStorage.getItem("jwt");
+  const jwt = localStorage.getItem("auth");
   if (jwt) {
     cfg.headers.Authorization = `Bearer: ${jwt}`;
   }
@@ -23,7 +24,7 @@ axios.interceptors.request.use(async (cfg) => {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={siteTheme}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <SnackbarProvider autoHideDuration={3000} >
           <ConfirmProvider>

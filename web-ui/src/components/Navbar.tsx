@@ -14,26 +14,35 @@ import { useEffect } from 'react';
 // TODO: handle user sessions
 const getUser = () => { return { name: "Test User" } };
 
+interface NavBarProps {
+    /**
+     * Optional title for the navbar. 
+     * This will be displayed next to the site logo.
+     */
+    title?: string
+}
 
-function TopNavBar(props: { title?: string }) {
+
+/**
+ * The navigation bar at the top of the page
+ * @param props properties for the element
+ * @returns A new navbar element
+ */
+const TopNavBar = (props: NavBarProps) => {
+    // user menu state
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+    const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => setAnchorElUser(event.currentTarget);
+    const handleCloseUserMenu = () => setAnchorElUser(null);
+
     const navigate = useNavigate();
 
-    const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorElUser(event.currentTarget);
-    };
-
-
-
-    const handleCloseUserMenu = () => {
-        setAnchorElUser(null);
-    };
-
+    // handle logging out.
     const logoutClick = () => {
         localStorage.clear();
         navigate("/");
     }
 
+    // redirect the user to the login page if the user is not logged in.
     useEffect(() => {
         if (getUser() === null) navigate("/");
     })
@@ -41,10 +50,12 @@ function TopNavBar(props: { title?: string }) {
     return <>
         <AppBar position="fixed">
             <Toolbar disableGutters={true} sx={{ px: "8px" }}>
-                <Box sx={{ flexGrow: 0 }} onClick={() => { window.location.href = "/" }}>
+
+                <Box sx={{ flexGrow: 0 }} onClick={() => navigate("/")}>
                     {/* TODO: add logo */}
                     <img src="/assets/logo.png" alt="Logo Image" style={{ height: "50px" }} />
                 </Box>
+
                 <Box sx={{ mx: 1 }}>
                     <Typography>{props.title}</Typography>
                 </Box>

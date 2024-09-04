@@ -1,32 +1,11 @@
-import { Link } from "react-router-dom"
-import DashboardLayout from "../../components/DashboardLayout"
+import DashboardLayout, { SideBarLink } from "../../components/DashboardLayout"
 import { Dashboard, People } from "@mui/icons-material"
-import { ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material"
 
 
 const PageLayout = () => {
     return <DashboardLayout >
-        <Link to="/mapping/">
-            <ListItem disablePadding>
-                <ListItemButton>
-                    <ListItemIcon>
-                        <Dashboard />
-                    </ListItemIcon>
-                    <ListItemText primary="Dashboard" />
-                </ListItemButton>
-            </ListItem>
-        </Link>
-
-        <Link to="/mapping/page1">
-            <ListItem disablePadding>
-                <ListItemButton>
-                    <ListItemIcon>
-                        <People />
-                    </ListItemIcon>
-                    <ListItemText primary="Mapping page 1" />
-                </ListItemButton>
-            </ListItem>
-        </Link>
+        <SideBarLink title="Dashboard" url="/mapping/" icon={<Dashboard />} />
+        <SideBarLink title="Mapping page 1" url="/mapping/page1" icon={<People />} />
     </DashboardLayout>
 };
 

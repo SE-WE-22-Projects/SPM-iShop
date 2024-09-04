@@ -10,15 +10,20 @@ dayjs.extend(AdvancedFormat);
 const cardStyle = { display: "flex", px: "16px", py: "12px" };
 const imgStyle = { alignSelf: "end", height: "394px" };
 
+interface LinkCardProps {
+  name: string;
+  desc: string;
+  link: string;
+}
+
+/**
+ * A card that links to a page.
+ */
 export const LinkCard = ({
   name,
   desc,
   link,
-}: {
-  name: string;
-  desc: string;
-  link: string;
-}) => {
+}: LinkCardProps) => {
   return (
     <Link to={link} style={{ textDecoration: "none" }}>
       <Paper
@@ -39,6 +44,9 @@ export const LinkCard = ({
   );
 };
 
+/**
+ * A card that displays the current time and date
+ */
 export const DateCard = () => {
   const [time, setTime] = useState(new Date());
 
@@ -65,6 +73,9 @@ export const DateCard = () => {
   );
 };
 
+/**
+ * A card that displays a welcome message, the current date and time, and a welcome image.
+ */
 export const WelcomeCard = ({ img }: { img: string }) => {
   const [time, setTime] = useState(new Date());
 
