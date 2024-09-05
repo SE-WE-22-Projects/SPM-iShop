@@ -1,8 +1,52 @@
 import { Box, Card, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
-import { ReactElement, ReactNode } from 'react';
-import { Link, Outlet } from 'react-router-dom'
+import { ReactNode } from 'react';
+import { Link, NonIndexRouteObject, Outlet } from 'react-router-dom'
 import Nav from './Navbar';
-import { drawerWidth } from '../config';
+import { drawerWidth, siteTheme } from '../config';
+import { Dashboard } from '@mui/icons-material';
+
+/**
+ * A object that contains all routes in a specific system.
+ */
+export interface SystemRoutes {
+    /**
+     * The title of the page. This will be displayed next to the logo image
+     */
+    title: string;
+    /**
+     * Base path for all routes. All routes registered in this system will have this path prefixed.
+     */
+    basePath: string;
+
+    /**
+     * The main dashboard page element. This will be displayed when the user first visits the system.
+     */
+    dashboard: ReactNode
+
+    /**
+     * A list of all pages in the system
+     */
+    routes: Route[];
+}
+
+interface Display {
+    /**
+     * Title to display in the sidebar
+     */
+    title: string;
+    /**
+     * An optional icon to display in the sidebar.
+     */
+    icon?: ReactNode;
+}
+
+interface Route extends NonIndexRouteObject {
+    /**
+     * Display details for the sidebar. If this is null, this will not be displayed in the sidebar.
+     */
+    display?: Display;
+}
+
 
 
 export interface SidebarLinkProps {
@@ -28,7 +72,7 @@ export interface SidebarLinkProps {
  * @returns a new link that can be used in the sidebar
  */
 export const SideBarLink = ({ title, url, icon }: SidebarLinkProps) => {
-    return <Link to={url}>
+    return <Link to={url} style={{ color: siteTheme.palette.text.primary, textDecoration: 'none' }}>
         <ListItem disablePadding>
             <ListItemButton>
                 {icon ? <ListItemIcon>
@@ -41,18 +85,13 @@ export const SideBarLink = ({ title, url, icon }: SidebarLinkProps) => {
 };
 
 /**
- * Dashboard layout. This is the main page layout that will be used for dashboard pages.
- * Each system must create a component that contains this component and export it in the layout section of the system index.
- * 
- * All child elements inside this tag will be added to the sidebar.
- * @param props 
- * @returns 
+ * Dashboard page component. This is the main layout used for all dashboard pages.
  */
-const DashboardLayout = (props: { children?: ReactElement[], title?: string }) => {
+export const DashboardPage = ({ routes }: { routes: SystemRoutes }) => {
     return (
         <>
             {/* Nav bar */}
-            <Nav title={props.title} />
+            <Nav title={routes.title} />
 
             {/* Sidebar */}
             <Box sx={{ display: 'flex', flexDirection: 'row', flexGrow: 1 }} >
@@ -68,7 +107,12 @@ const DashboardLayout = (props: { children?: ReactElement[], title?: string }) =
                         mb: 'auto'
                     }}>
                     <List className='sidebar'>
-                        {props.children}
+                        <SideBarLink title="Dashboard" url={`/${routes.basePath}/`} icon={<Dashboard />} />
+                        {routes.routes.map((e) => {
+                            if (!e.display) return null;
+                            return <SideBarLink title={e.display.title} url={`/${routes.basePath}/${e.path}`} icon={e.display.icon} />;
+                        }
+                        )}
                     </List>
                 </Drawer>
 
@@ -89,6 +133,4 @@ const DashboardLayout = (props: { children?: ReactElement[], title?: string }) =
             </Box >
         </>
     )
-};
-
-export default DashboardLayout;
+}; 
