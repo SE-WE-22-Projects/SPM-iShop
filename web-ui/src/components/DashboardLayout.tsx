@@ -1,6 +1,6 @@
 import { Box, Card, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import { ReactNode } from 'react';
-import { Link, Outlet, RouteObject } from 'react-router-dom'
+import { Link, NonIndexRouteObject, Outlet } from 'react-router-dom'
 import Nav from './Navbar';
 import { drawerWidth, siteTheme } from '../config';
 import { Dashboard } from '@mui/icons-material';
@@ -40,25 +40,11 @@ interface Display {
     icon?: ReactNode;
 }
 
-interface Route {
-    /**
-     * The element that should be displayed on this path
-     */
-    element: ReactNode;
-    /**
-     * The path for this page,
-     * This will be relative to the parent route.
-     */
-    path: string;
+interface Route extends NonIndexRouteObject {
     /**
      * Display details for the sidebar. If this is null, this will not be displayed in the sidebar.
      */
     display?: Display;
-    /**
-     * Child routes. These will not be displayed in the sidebar.
-     * All paths will be prefixed with this route's path and the parents path.
-     */
-    children?: RouteObject[]
 }
 
 

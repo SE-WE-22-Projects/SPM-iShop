@@ -32,14 +32,13 @@ function TempMain() {
 const importedRoutes = [promotions, inventory, employee, mapping];
 importedRoutes.forEach((route) => {
   let childRoutes = route.routes.map(r => {
-    return {
-      path: r.path,
-      element: r.element,
-      children: r.children
-    } as RouteObject;
+    // return copy of route without the display prop.
+    r = { ...r };
+    delete r['display'];
+    return r as RouteObject;
   });
 
-  childRoutes.push({index: true, element:route.dashboard})
+  childRoutes.push({ index: true, element: route.dashboard })
 
   routes.set(route.basePath, {
     path: "/" + route.basePath.toLowerCase(),
