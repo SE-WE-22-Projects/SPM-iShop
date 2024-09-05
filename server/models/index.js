@@ -47,12 +47,15 @@ const connect = () => {
 
 const sequelize = connect();
 
-async function createAll() {
+async function initDB() {
     console.log("Loading all defined models...")
     let glob = require('glob')
     let path = require('path');
 
-    glob.sync('../model/*.js').forEach(function (file) {
+    let debugSync = Number.parseInt(process.env.SQL_SYNC_DEBUG) == 1;
+
+    glob.sync('./models/*.js').forEach(function (file) {
+        if (debugSync) console.log(file);
         require(path.resolve(file));
     });
 
@@ -79,7 +82,7 @@ async function createAll() {
         syncConfig.alter = true;
     }
 
-    if (!Number.parseInt(process.env.SQL_SYNC_DEBUG)) {
+    if (!debugSync) {
         syncConfig.logging = () => { }
     }
 
@@ -90,4 +93,4 @@ async function createAll() {
 }
 
 
-module.exports = { sequelize, createAll };
+module.exports = { sequelize, initDB };
