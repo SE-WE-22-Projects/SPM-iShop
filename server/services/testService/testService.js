@@ -8,7 +8,8 @@ const express = require("express");
  * @param {express.Response} res  
  */
 const testService = async (req, res) => {
-
+    console.log("test service working");
+    res.sendStatus(200);
 }
 
 module.exports = {
