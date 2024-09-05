@@ -1,7 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
-dotenv.config();
+dotenv.config({ path: ['.env.local', '.env'] });
 const app = express();
 
 const { initDB } = require('./models');
