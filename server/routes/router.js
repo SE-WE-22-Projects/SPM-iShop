@@ -23,6 +23,10 @@ const register = (systemName, path) => {
   }
 };
 
-register("testService", "./testServiceRoute");
+register('testService', './testServiceRoute');
+register('inventory', './inventory');
+register('mapping', './mapping');
+register('promotions', './promotions');
+register('users', './users');
 
 module.exports = router;
