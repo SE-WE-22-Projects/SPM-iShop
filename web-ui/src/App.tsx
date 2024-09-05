@@ -31,16 +31,20 @@ function TempMain() {
 // load all routes from the systems into the routes map
 const importedRoutes = [promotions, inventory, employee, mapping];
 importedRoutes.forEach((route) => {
+  let childRoutes = route.routes.map(r => {
+    return {
+      path: r.path,
+      element: r.element,
+      children: r.children
+    } as RouteObject;
+  });
+
+  childRoutes.push({index: true, element:route.dashboard})
+
   routes.set(route.basePath, {
     path: "/" + route.basePath.toLowerCase(),
     element: <DashboardPage routes={route} />,
-    children: route.routes.map(r => {
-      return {
-        path: r.path,
-        element: r.element,
-        children: r.children
-      } as RouteObject;
-    }),
+    children: childRoutes,
   });
 })
 
