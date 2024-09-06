@@ -13,14 +13,26 @@ const Promo = sequelize.define("promo", {
         type:DataTypes.BOOLEAN,
         defaultValue : 1
     },
-    dis_percentage : DataTypes.FLOAT,
-    dis_amount : DataTypes.FLOAT,
+    dis_percentage : {
+        type: DataTypes.FLOAT,
+         validate:{
+            min : 0,
+            max : 0
+         }
+    },
+    dis_amount : {
+        type: DataTypes.FLOAT,
+         validate:{
+            min : 0,
+            //max : Get Price from Item and set to to max
+         }
+    },
     start_date: {
         type: DataTypes.DATE,
         allowNull: false,
         validate: {
             isAfter: function(value) {
-                return value >= Sequelize.fn('NOW');
+                return value >= sequelize.fn('NOW');
             }
         }
     },
@@ -29,7 +41,7 @@ const Promo = sequelize.define("promo", {
         allowNull: false,
         validate: {
             isAfter: function(value) {
-                return value >= Sequelize.fn('NOW');
+                return value >= sequelize.fn('NOW');
             }
         }
     }
