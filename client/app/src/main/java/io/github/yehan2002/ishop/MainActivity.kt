@@ -20,9 +20,10 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import io.github.yehan2002.ishop.aruco.ArucoDetector
 import io.github.yehan2002.ishop.aruco.CameraCalibration
+import io.github.yehan2002.ishop.databinding.ActivityMainBinding
 import io.github.yehan2002.ishop.drawable.DebugInfoDrawable
 import io.github.yehan2002.ishop.drawable.TagDrawable
-import io.github.yehan2002.ishop.databinding.ActivityMainBinding
+import io.github.yehan2002.ishop.map.StoreMap
 import org.opencv.android.OpenCVLoader
 import org.opencv.objdetect.Objdetect
 import java.util.concurrent.ExecutorService
@@ -34,6 +35,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityMainBinding
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var detector: ArucoDetector
+    private lateinit var storeMap: StoreMap
 
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,6 +65,9 @@ class MainActivity : AppCompatActivity() {
         )
 
         cameraExecutor = Executors.newSingleThreadExecutor()
+
+        storeMap = StoreMap(100.0, 100.0)
+        storeMap.markers[4] = StoreMap.Point2D(50.0, 50.0)
     }
 
     @RequiresApi(Build.VERSION_CODES.P)
@@ -114,10 +119,20 @@ class MainActivity : AppCompatActivity() {
 
             val processingTime = ((System.nanoTime() - startTime) / 1e6).roundToInt()
 
+            var estPos: StoreMap.Point2D? = null
+            if (tags.isNotEmpty()) {
+                estPos =
+                    storeMap.estimatePos(
+                        tags[0].id, tags[0].distance,
+                        tags[0].rotation?.facingYaw ?: 0.0
+                    )
+            }
+
             previewView.overlay.add(
                 DebugInfoDrawable(
                     processingTime,
                     tags.size,
+                    estPos,
                 )
             )
 
