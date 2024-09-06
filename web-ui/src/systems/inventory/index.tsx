@@ -1,7 +1,7 @@
 import Dashboard from "./Dashboard";
 import { SystemRoutes } from "../../components/DashboardLayout";
-import { People } from "@mui/icons-material";
-import Page1 from "./Page1";
+import { Inventory } from "@mui/icons-material";
+import Item from "./Item";
 
 export const routes: SystemRoutes = {
     title: "Inventory Manager",
@@ -10,11 +10,11 @@ export const routes: SystemRoutes = {
     dashboard: <Dashboard />,
     routes: [
         {
-            element: <Page1 />,
-            path: "page1",
+            element: <Item />,
+            path: "items",
             display: {
-                title: "Inventory Page 1",
-                icon: <People />
+                title: "Items",
+                icon: <Inventory />
             }
         }
     ]
