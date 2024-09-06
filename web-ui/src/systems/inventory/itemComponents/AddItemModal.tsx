@@ -10,6 +10,7 @@ const style = {
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: 400,
+  borderRadius: 4,
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
@@ -67,7 +68,61 @@ const AddItemModal=({ itemAddModalClose, open, addItem}:{ itemAddModalClose: ()=
                                     <TextField id="outlined-basic1" label="Item Description" variant="outlined" name="desc" onChange={handleChange} />
                                 </Box>
                                 <Box>
+                                    <TextField
+                                        id="outlined-select3"
+                                        name="category"
+                                        select
+                                        label="Category"
+                                        defaultValue={"Grocery"}
+                                        helperText="Please select rack ID"
+                                        onChange={handleChange}
+                                    >
+                                        <MenuItem value={"Grocery"}>
+                                            Grocery
+                                        </MenuItem>
+                                        <MenuItem value={"Fruits"}>
+                                            Fruits
+                                        </MenuItem>
+                                        <MenuItem value={"Vegetables"}>
+                                            Vegetables
+                                        </MenuItem>
+                                        <MenuItem value={"Meat and Seafood"}>
+                                            Meat and Seafood
+                                        </MenuItem>
+                                        <MenuItem value={"Cleaning Supplies"}>
+                                            Cleaning Supplies
+                                        </MenuItem>
+                                        <MenuItem value={"Electronics"}>
+                                            Electronics
+                                        </MenuItem>
+                                        <MenuItem value={"Cosmatic"}>
+                                            Cosmatic
+                                        </MenuItem>
+                                    </TextField>
+                                </Box>
+                                <Box>
                                     <TextField type="number" id="outlined-basic2" label="Unit Price" variant="outlined" name="price" onChange={handleChange} />
+                                </Box>
+                                <Box>
+                                    <TextField
+                                        id="outlined-select3"
+                                        name="unit"
+                                        select
+                                        label="Measurement Unit"
+                                        defaultValue={"pieces"}
+                                        helperText="Please select rack ID"
+                                        onChange={handleChange}
+                                    >
+                                        <MenuItem value={"pieces"}>
+                                            Pieces
+                                        </MenuItem>
+                                        <MenuItem value={"grams"}>
+                                            Grams
+                                        </MenuItem>
+                                        <MenuItem value={"liters"}>
+                                            Liters
+                                        </MenuItem>
+                                    </TextField>
                                 </Box>
                                 <Box>
                                     <TextField type="number" id="outlined-basic2" label="Quantity" variant="outlined" name="qty" onChange={handleChange} />
