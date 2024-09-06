@@ -70,6 +70,7 @@ const getItemById = async (req,res) => {
  */
 const updateItemById = async (req,res) => {
     const itemId = Number.parseInt(req.params.itemId);
+    const {name, desc, price, qty} = req.body;
     // check if Item id is valid
     if (!Number.isInteger(itemId)) {
         res.status(400).json({ msg: "Invalid Item ID (format error)" });
@@ -86,10 +87,10 @@ const updateItemById = async (req,res) => {
         // update item
         item = await item.update(
             {   
-                name: req.body.name,
-                desc: req.body.desc,
-                price: req.body.price,
-                qty: req.body.qty
+                name,
+                desc,
+                price,
+                qty
             }
         );
     }
@@ -129,7 +130,7 @@ const deleteItemById = async (req,res)=> {
         res.status(500).send("Error in database operation");
         return;
     }
-    
+
     res.sendStatus(204);
 }
 
