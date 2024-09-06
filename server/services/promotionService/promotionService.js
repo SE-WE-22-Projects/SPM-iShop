@@ -19,22 +19,18 @@ const testPromotion = async (req, res)=>{
  * @param {express.Response} res  
  */
 const createPromotion = async (req, res)=>{
-
    try{
-    const {name, desc, status, dis_percentage, dis_amount, start_date, end_date} = req.body;
+        const {name, desc, status, dis_percentage, dis_amount, start_date, end_date} = req.body;
+        const newPromo = await Promo.create({
+            name, desc, status, dis_percentage, dis_amount, start_date, end_date
+        })
 
-    const newPromo = await Promo.create({
-        name, desc, status, dis_percentage, dis_amount, start_date, end_date
-    })
-
-
-    res.status(201).json({
-        message : "New Promotion Created Successfully",
-        Promo : newPromo
-    })
-
+        res.status(201).json({
+            message : "New Promotion Created Successfully",
+            Promo : newPromo
+        })
    } catch(error){
-    res.status(500).json({
+        res.status(500).json({
         error:'Failed to create promotions'
     });
    }   
@@ -47,9 +43,8 @@ const createPromotion = async (req, res)=>{
  */
 const getPromotions = async (req, res)=>{
     try{
-
         const promos = await Promo.findAll();
-        res.json(promos);
+        res.status(200).json(promos);
     }catch(error){
         res.status(500).json({
             error: "Failed to fetch promotions"
@@ -63,25 +58,20 @@ const getPromotions = async (req, res)=>{
  * @param {express.Response} res  
  */
 const getPromotionByID = async (req, res)=>{
-
     try{
-
         const promoID = req.params.id;
-
-        const promoByID = await Promo.findByPk(promoID)
-
+        // check existance of promotion
+        const promoByID = await Promo.findByPk(promoID);
         if(promoByID){
-             res.json(promoByID);
+             res.status(200).json(promoByID);
         }else{
-            res.json("Promotion doesn't exist");
-        }
-         
-    }catch(error){
-
+            res.status(404).json("Promotion doesn't exist");
+        }   
+    }
+    catch(error){
         res.status(500).json({
             error: "Failed to fetch promotion"
         });
-
     } 
 }
 
@@ -91,32 +81,25 @@ const getPromotionByID = async (req, res)=>{
  * @param {express.Response} res  
  */
 const updatePromotion = async (req, res)=>{
-
     try{
-        const promoID = req.params.id;
+        const promoID = Number.parseInt(req.params.id);
         const updates = req.body;
-
+        // check existance of promotion
         const promotion = await Promo.findByPk(promoID);
-        
         if(!promotion){
            return  res.status(404).json({
                 message : "Promotion not found"
             });
         }
-
-        await promotion.update(updates);
-
-        const updatedPromo = await promotion.reload();
-
+        // update
+        promotion = await promotion.update(updates);
         res.status(200).json({
-
                 message: "Promotion updated",
-                updatedPromo
-        })
-    }catch(error){
-        res.status(400).json({
-            message : error.message
+                promotion
         });
+    }
+    catch(error){
+        res.status(500).send( error , "Could not update, error occured");
     }
     
 }
@@ -127,25 +110,22 @@ const updatePromotion = async (req, res)=>{
  * @param {express.Response} res  
  */
 const deletePromotion = async (req, res)=>{
-
-    const promoID = req.params.id;
+    const promoID = Number.parseInt(req.params.id);
     try{
-        Promo.destroy({
-            where:{
-                id:`${promoID}`
-            }
-        }).then(
-            res.status(200).send("Record deleted successfully")
-        ).catch(error =>{
-            res.status(500).send( error , "Could not delete, error occured");
-        })
-    }catch(error){
-
-        res.status(500).json({
-            error: "Failed to fetch promotion"
-        });
-
-    }   
+        let promo = await Promo.findByPk(promoID);
+        // check existance of promotion
+        if(!promo){
+            res.status(404).json({ msg: "The Promotion does not exist" });
+            return;
+        }
+        // delete promotion
+        await promo.destroy();
+        res.sendStatus(204);
+    }
+    catch(e){
+        console.error(e);
+        res.status(500).send( error , "Could not delete, error occured");
+    }
 }
 
 
