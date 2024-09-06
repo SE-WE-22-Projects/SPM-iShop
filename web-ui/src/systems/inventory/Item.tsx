@@ -66,21 +66,18 @@ const Item = () => {
     }
 
     return (
-        <>
-            <div>
-                <Typography variant="h3" align="center"> Item Management</Typography>
-                <Box sx={{ display: "flex" }} my={2} mx={15} >
-                    <SearchBar onSearch={search} />
-                    <Box flexGrow={1}></Box> 
-                    <Button variant="outlined" startIcon={<Add />} onClick={itemAddModalOpen} >
-                        Add Item
-                    </Button>
-                </Box>
-                <ItemTable data={itemList} query={searchQuery}/>
-                <AddItemModal itemAddModalClose={itemAddModalClose} open={addOpen} addItem={addItem} />
-            </div>
-            
-        </>
+        <div>
+            <Typography variant="h3" align="center"> Item Management</Typography>
+            <Box sx={{ display: "flex" }} my={2} mx={15} >
+                <SearchBar onSearch={search} />
+                <Box flexGrow={1}></Box> 
+                <Button variant="outlined" startIcon={<Add />} onClick={itemAddModalOpen} >
+                    Add Item
+                </Button>
+            </Box>
+            <ItemTable data={itemList} query={searchQuery}/>
+            <AddItemModal itemAddModalClose={itemAddModalClose} open={addOpen} addItem={addItem} />
+        </div>     
     );
 }
 
