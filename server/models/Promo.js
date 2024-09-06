@@ -17,7 +17,7 @@ const Promo = sequelize.define("promo", {
         type: DataTypes.FLOAT,
          validate:{
             min : 0,
-            max : 0
+            max : 100
          }
     },
     dis_amount : {

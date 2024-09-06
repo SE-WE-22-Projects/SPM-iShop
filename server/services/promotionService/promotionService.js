@@ -21,13 +21,12 @@ const testPromotion = async (req, res)=>{
 const createPromotion = async (req, res)=>{
 
    try{
-    const {name , desc, start_date, end_date} = req.body;
+    const {name, desc, status, dis_percentage, dis_amount, start_date, end_date} = req.body;
 
     const newPromo = await Promo.create({
-        name, desc, start_date, end_date
+        name, desc, status, dis_percentage, dis_amount, start_date, end_date
     })
 
-    console.log(`${name} , ${desc}`);
 
     res.status(201).json({
         message : "New Promotion Created Successfully",
