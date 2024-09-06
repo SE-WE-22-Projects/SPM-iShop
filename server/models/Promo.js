@@ -11,7 +11,7 @@ const Promo = sequelize.define("promo", {
         allowNull: false},
     status: {
         type:DataTypes.BOOLEAN,
-        defaultValue : 1
+        defaultValue : true
     },
     dis_percentage : {
         type: DataTypes.FLOAT,
