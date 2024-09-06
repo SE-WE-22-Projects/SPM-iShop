@@ -28,6 +28,6 @@ register('inventory', './inventory');
 register('mapping', './mapping');
 register('promotions', './promotions');
 register('users', './users');
-register('employee','./employee');
+register('employee', './employee');
 
 module.exports = router;

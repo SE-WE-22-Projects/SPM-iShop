@@ -9,7 +9,7 @@ router.post("/employee", employee.createEmployee);
 //get all employees
 router.get("/employee", employee.getEmployees);
 //get an employee by ID
-router.get("/employee/:id", employee.getEmployeeByID);
+router.get("/employee/:id", employee.getEmployeeById);
 //update an employee by ID
 router.put("/employee/:id", employee.updateEmployee);
 //delete an employee by ID

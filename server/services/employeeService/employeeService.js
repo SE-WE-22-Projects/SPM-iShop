@@ -1,3 +1,4 @@
+const Employee = require('../../models/Employee'); // Import the Employee model
 const express = require("express");
 
 /**
@@ -12,77 +13,76 @@ const testEmployee = async (req, res)=>{
  
 }
 
-/**
- * 
- * @param {express.Request} req 
- * @param {express.Response} res  
- */
-const createEmployee = async (req, res)=>{
+// Create an employee
+const createEmployee = async (req, res) => {
+  try {
+    const { name, role } = req.body;
+    const newEmployee = await Employee.create({ name, role });
+    res.status(201).json(newEmployee);
+  } catch (error) {
+    res.status(400).send("Bad request");
+  }
+};
 
-    res.status(200).send("Testing route for employees");
+// Get all employees
+const getEmployees = async (req, res) => {
+  try {
+    const employees = await Employee.findAll();
+    res.status(200).json(employees);
+  } catch (error) {
+    res.status(500).send("Internal server error");
+  }
+};
 
-    
-}
+// Get an employee by ID
+const getEmployeeById = async (req, res) => {
+  try {
+    const employee = await Employee.findByPk(req.params.id);
+    if (!employee) {
+      res.status(404).send("Employee not found");
+    } else {
+      res.status(200).json(employee);
+    }
+  } catch (error) {
+    res.status(500).send("Internal server error");
+  }
+};
 
-/**
- * 
- * @param {express.Request} req 
- * @param {express.Response} res  
- */
-const getEmployees = async (req, res)=>{
+// Update an employee by ID
+const updateEmployee = async (req, res) => {
+  try {
+    const employee = await Employee.findByPk(req.params.id);
+    if (!employee) {
+      res.status(404).send("Employee not found");
+    } else {
+      await employee.update(req.body);
+      res.status(200).send("Employee updated successfully");
+    }
+  } catch (error) {
+    res.status(400).send("Bad request");
+  }
+};
 
-    res.status(200).send("Testing route for employees");
-
- 
-}
-
-/**
- * 
- * @param {express.Request} req 
- * @param {express.Response} res  
- */
-const getEmployeeByID = async (req, res)=>{
-
-    res.status(200).send("Testing route for employees");
-
- 
-}
-
-
-
-/**
- * 
- * @param {express.Request} req 
- * @param {express.Response} res  
- */
-const updateEmployee = async (req, res)=>{
-
-    res.status(200).send("Testing route for employees");
-
- 
-}
-
-/**
- * 
- * @param {express.Request} req 
- * @param {express.Response} res  
- */
-const deleteEmployee = async (req, res)=>{
-
-    res.status(200).send("Testing route for employees");
-
- 
-}
-
-
-
-
+// Delete an employee by ID
+const deleteEmployee = async (req, res) => {
+  try {
+    const employee = await Employee.findByPk(req.params.id);
+    if (!employee) {
+      res.status(404).send("Employee not found");
+    } else {
+      await employee.destroy();
+      res.status(200).send("Employee deleted successfully");
+    }
+  } catch (error) {
+    res.status(500).send("Internal server error");
+  }
+};
 
 module.exports = {
-    testEmployee, 
-    createEmployee,
-    getEmployees,
-    getEmployeeByID,
-    updateEmployee,
-    deleteEmployee
+  testEmployee,
+  createEmployee,
+  getEmployees,
+  getEmployeeById,
+  updateEmployee,
+  deleteEmployee,
 };
