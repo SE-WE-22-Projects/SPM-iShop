@@ -5,6 +5,10 @@ const Rack = require("./Rack");
 const Item = sequelize.define("item", {
     name: DataTypes.STRING,
     desc: DataTypes.STRING,
+    category: DataTypes.STRING,
+    unit:{
+        type: DataTypes.ENUM("grams","liters","pieces")
+    },
     price: {
         type: DataTypes.REAL,
         validate: {
