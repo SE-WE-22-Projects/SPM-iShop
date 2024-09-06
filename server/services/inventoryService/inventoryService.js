@@ -28,14 +28,13 @@ const createItem = async (req, res) => {
 const getAllItems = async (req,res) => {
     try{
         var itemList = await Item.findAll();
+        res.status(200).json(itemList);
     }
     catch(e){
         console.error("Error in database operation",e);
         res.status(500).send("Error in database operation");
         return;
     }
-
-    res.status(200).json(itemList);
 }
 
 /**
@@ -53,14 +52,13 @@ const getItemById = async (req,res) => {
 
     try{
         var item = await Item.findOne({where: { id: itemId }});
+        res.status(200).json({data: item});
     }
     catch(e){
         console.error("Error in database operation",e);
         res.status(500).send("Error in database operation");
         return;
     }
-
-    res.status(200).json({data: item});
 }
 
 /**
@@ -93,14 +91,13 @@ const updateItemById = async (req,res) => {
                 qty
             }
         );
+        res.status(200).json(item);
     }
     catch(e){
         console.error("Error in database operation",e);
         res.status(500).send("Error in database operation");
         return;
     }
-
-    res.status(200).json(item);
 }
 
 /**
@@ -124,14 +121,13 @@ const deleteItemById = async (req,res)=> {
         }
         // delete item
         await item.destroy();
+        res.sendStatus(204);
     }
     catch(e){
         console.error("Error in database operation",e);
         res.status(500).send("Error in database operation");
         return;
     }
-
-    res.sendStatus(204);
 }
 
 module.exports = {
