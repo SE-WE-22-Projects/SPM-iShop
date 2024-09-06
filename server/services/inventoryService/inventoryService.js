@@ -10,14 +10,13 @@ const createItem = async (req, res) => {
     const reqData = req.body;
     try{
         var item = await Item.create(reqData);
+        res.status(200).json({data: item});
     }
     catch(e){
         console.error("Error in database operation",e);
         res.status(500).send("Error in database operation");
         return;
-    }
-
-    res.status(200).json({data: item});
+    }    
 }
 
 /**
@@ -52,7 +51,12 @@ const getItemById = async (req,res) => {
 
     try{
         var item = await Item.findOne({where: { id: itemId }});
-        res.status(200).json({data: item});
+        if(!item){
+            res.status(404).send("Item not found");
+        }
+        else{
+            res.status(200).json({data: item});
+        }  
     }
     catch(e){
         console.error("Error in database operation",e);
