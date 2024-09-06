@@ -3,10 +3,36 @@ const { sequelize } = require(".");
 const Item = require("./Item");
 
 const Promo = sequelize.define("promo", {
-    name: DataTypes.STRING,
-    desc: DataTypes.STRING,
-    start_date: DataTypes.DATEONLY,
-    end_date: DataTypes.DATEONLY,
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false},
+    desc: {
+        type: DataTypes.STRING,
+        allowNull: false},
+    status: {
+        type:DataTypes.BOOLEAN,
+        defaultValue : 1
+    },
+    dis_percentage : DataTypes.FLOAT,
+    dis_amount : DataTypes.FLOAT,
+    start_date: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        validate: {
+            isAfter: function(value) {
+                return value >= Sequelize.fn('NOW');
+            }
+        }
+    },
+    end_date: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        validate: {
+            isAfter: function(value) {
+                return value >= Sequelize.fn('NOW');
+            }
+        }
+    }
 });
 
 Promo.belongsTo(Item, { onDelete: "CASCADE", onUpdate: "CASCADE" })
