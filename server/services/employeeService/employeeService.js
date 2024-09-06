@@ -2,24 +2,24 @@ const Employee = require('../../models/Employee'); // Import the Employee model
 const express = require("express");
 
 /**
- * 
- * @param {express.Request} req 
- * @param {express.Response} res  
- */
+ * 
+ * @param {express.Request} req 
+ * @param {express.Response} res  
+ */
 const testEmployee = async (req, res)=>{
 
-    res.status(200).send("Testing route for employees");
+  res.status(200).send("Testing route for employees");
 
- 
 }
 
 // Create an employee
 const createEmployee = async (req, res) => {
   try {
-    const { name, role } = req.body;
-    const newEmployee = await Employee.create({ name, role });
+    const { name, role, dateOfBirth, gender, contactNumber, email, address, hireDate, basicSalary, employmentStatus } = req.body;
+    const newEmployee = await Employee.create({ name, role, dateOfBirth, gender, contactNumber, email, address, hireDate, basicSalary, employmentStatus });
     res.status(201).json(newEmployee);
   } catch (error) {
+    console.error(error); // Log the error for debugging
     res.status(400).send("Bad request");
   }
 };
@@ -27,9 +27,14 @@ const createEmployee = async (req, res) => {
 // Get all employees
 const getEmployees = async (req, res) => {
   try {
-    const employees = await Employee.findAll();
+    const employees = await Employee.findAll({
+      // You can add options here to filter or sort the results
+      // For example:
+      // order: [['name', 'ASC']]  // Order by name in ascending order
+    });
     res.status(200).json(employees);
   } catch (error) {
+    console.error(error); // Log the error for debugging
     res.status(500).send("Internal server error");
   }
 };
@@ -44,6 +49,7 @@ const getEmployeeById = async (req, res) => {
       res.status(200).json(employee);
     }
   } catch (error) {
+    console.error(error); // Log the error for debugging
     res.status(500).send("Internal server error");
   }
 };
@@ -59,6 +65,7 @@ const updateEmployee = async (req, res) => {
       res.status(200).send("Employee updated successfully");
     }
   } catch (error) {
+    console.error(error); // Log the error for debugging
     res.status(400).send("Bad request");
   }
 };
@@ -74,6 +81,7 @@ const deleteEmployee = async (req, res) => {
       res.status(200).send("Employee deleted successfully");
     }
   } catch (error) {
+    console.error(error); // Log the error for debugging
     res.status(500).send("Internal server error");
   }
 };
