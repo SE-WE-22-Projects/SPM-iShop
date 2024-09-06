@@ -25,13 +25,12 @@ class ArucoDetector(
     dictionary: Dictionary,
 
     ) {
-    private val detector: ArucoDetector
+    private val detector: ArucoDetector = ArucoDetector(dictionary)
     private val objPointsMat: MatOfPoint3f
 
     private var calibration = CameraCalibration()
 
     init {
-        this.detector = ArucoDetector(dictionary)
 
         // create the object point matrix
         val halfSize = this.markerLength / 2
@@ -82,6 +81,7 @@ class ArucoDetector(
                 val tagId = ids[i, 0][0].toInt()
                 var distance = Double.NaN
                 var rotation: Tag.Rotation? = null
+                var postion: Tag.Position? = null
 
                 if (calibration.isValid) {
                     val rvec = Mat(3, 1, CvType.CV_64F)
@@ -136,10 +136,24 @@ class ArucoDetector(
 
                         // calculate the distance
                         distance = round2(tvec.get(2, 0)[0] * calibration.distanceScale)
+
+                        postion = Tag.Position(
+                            tvec.get(0, 0)[0] * calibration.distanceScale,
+                            tvec.get(1, 0)[0] * calibration.distanceScale,
+                            tvec.get(2, 0)[0] * calibration.distanceScale
+                        )
                     }
                 }
 
-                detectedTags.add(Tag(tagId, distance, corners[i], rotation))
+                detectedTags.add(
+                    Tag(
+                        tagId,
+                        distance,
+                        corners[i],
+                        rotation = rotation,
+                        position = postion
+                    )
+                )
             }
 
         }

@@ -29,7 +29,8 @@ class StoreMap(val width: Double, val height: Double) {
             pos.y + distance * sin(angleRad)
         )
 
-        // check if the position is within the map
+        // check if the position is within the map.
+        // a buffer of 10 meters is added around the map.
         if (pos.x < -10 || pos.y < -10 || pos.x > height + 10 || pos.y > width + 10) {
             Log.d(TAG, "Position outsize map");
             return null;
@@ -53,5 +54,9 @@ class StoreMap(val width: Double, val height: Double) {
         fun add(dx: Double, dy: Double): Point2D {
             return Point2D(dx + x, dy + y)
         }
+    }
+
+    companion object {
+
     }
 }

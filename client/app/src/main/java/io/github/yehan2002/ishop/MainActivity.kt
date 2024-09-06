@@ -1,7 +1,9 @@
 package io.github.yehan2002.ishop
 
+import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Matrix
+import android.hardware.SensorManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -20,6 +22,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import io.github.yehan2002.ishop.aruco.ArucoDetector
 import io.github.yehan2002.ishop.aruco.CameraCalibration
+import io.github.yehan2002.ishop.aruco.RotationSensor
 import io.github.yehan2002.ishop.databinding.ActivityMainBinding
 import io.github.yehan2002.ishop.drawable.DebugInfoDrawable
 import io.github.yehan2002.ishop.drawable.TagDrawable
@@ -28,6 +31,7 @@ import org.opencv.android.OpenCVLoader
 import org.opencv.objdetect.Objdetect
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import kotlin.math.PI
 import kotlin.math.roundToInt
 
 
@@ -35,6 +39,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityMainBinding
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var detector: ArucoDetector
+    private lateinit var rotation: RotationSensor
     private lateinit var storeMap: StoreMap
 
     @RequiresApi(Build.VERSION_CODES.P)
@@ -64,10 +69,16 @@ class MainActivity : AppCompatActivity() {
             Objdetect.getPredefinedDictionary(Objdetect.DICT_4X4_50),
         )
 
+        rotation = RotationSensor(
+            getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        )
+
         cameraExecutor = Executors.newSingleThreadExecutor()
 
         storeMap = StoreMap(100.0, 100.0)
         storeMap.markers[4] = StoreMap.Point2D(50.0, 50.0)
+
+        rotation.startTracking()
     }
 
     @RequiresApi(Build.VERSION_CODES.P)
@@ -104,6 +115,7 @@ class MainActivity : AppCompatActivity() {
 
             val tags = detector.detectMarkers(proxy.toBitmap())
 
+            rotation.updateOrientationAngles()
 
             previewView.overlay.clear()
             tags.forEach {
@@ -133,6 +145,9 @@ class MainActivity : AppCompatActivity() {
                     processingTime,
                     tags.size,
                     estPos,
+                    "Rot 1" + (180 * rotation.orientationAngles[0] / PI).roundToInt(),
+                    "Rot 2" + (180 * 2 * rotation.orientationAngles[1] / PI).roundToInt(),
+                    "Rot 3" + (180 * rotation.orientationAngles[2] / PI).roundToInt(),
                 )
             )
 
@@ -209,6 +224,7 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         cameraExecutor.shutdown()
+        rotation.stopTracking()
     }
 
 
@@ -238,9 +254,7 @@ class MainActivity : AppCompatActivity() {
         private const val REQUEST_CODE_PERMISSIONS = 10
         private val REQUIRED_PERMISSIONS =
             mutableListOf(
-                android.Manifest.permission.CAMERA
+                android.Manifest.permission.CAMERA,
             ).toTypedArray()
     }
-
-
 }

@@ -9,7 +9,7 @@ class Tag(
     val distance: Double,
     tagCorners: Mat,
     val rotation: Rotation? = null,
-    val extra: Array<String>? = null
+    val position: Position? = null,
 ) {
     var corners: Array<PointF>
 
@@ -26,6 +26,8 @@ class Tag(
     class Rotation(val roll: Double, val pitch: Double, val yaw: Double) {
         val facingYaw: Double = ((if (yaw < 0) 360 + yaw else yaw) + 90) % 360
     }
+
+    class Position(val x: Double, val y: Double, val z: Double)
 
 }
 

@@ -1,5 +1,6 @@
 package io.github.yehan2002.ishop.drawable
 
+import android.annotation.SuppressLint
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.ColorFilter
@@ -56,6 +57,7 @@ class TagDrawable(
     }
 
 
+    @SuppressLint("DefaultLocale")
     override fun draw(canvas: Canvas) {
 
         // convert the image points into point on the screen
@@ -110,6 +112,27 @@ class TagDrawable(
                 (pts[1] + pts[5]) / 2 + 64,
                 contentTextPaint
             )
+
+            if (DEBUG_TAGS) {
+                canvas.drawText(
+                    String.format("%.2f %.2f", tag.rotation.roll, tag.rotation.pitch),
+                    (pts[0] + pts[4]) / 2,
+                    (pts[1] + pts[5]) / 2 + 96,
+                    contentTextPaint
+                )
+
+                canvas.drawText(
+                    String.format(
+                        "%.2f %.2f %.2f",
+                        tag.position!!.x,
+                        tag.position.y,
+                        tag.position.z
+                    ),
+                    (pts[0] + pts[4]) / 2,
+                    (pts[1] + pts[5]) / 2 + 128,
+                    contentTextPaint
+                )
+            }
         }
 
 
@@ -124,4 +147,8 @@ class TagDrawable(
         ReplaceWith("PixelFormat.TRANSLUCENT", "android.graphics.PixelFormat")
     )
     override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
+
+    companion object {
+        const val DEBUG_TAGS = false
+    }
 }
