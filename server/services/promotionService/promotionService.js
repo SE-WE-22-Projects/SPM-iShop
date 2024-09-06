@@ -93,7 +93,32 @@ const getPromotionByID = async (req, res)=>{
  */
 const updatePromotion = async (req, res)=>{
 
-    res.status(200).send("Testing route for promotions");
+    try{
+        const promoID = req.params.id;
+        const updates = req.body;
+
+        const promotion = await Promo.findByPk(promoID);
+        
+        if(!promotion){
+           return  res.status(404).json({
+                message : "Promotion not found"
+            });
+        }
+
+        await promotion.update(updates);
+
+        const updatedPromo = await promotion.reload();
+
+        res.status(200).json({
+
+                message: "Promotion updated",
+                updatedPromo
+        })
+    }catch(error){
+        res.status(400).json({
+            message : error.message
+        });
+    }
     
 }
 
