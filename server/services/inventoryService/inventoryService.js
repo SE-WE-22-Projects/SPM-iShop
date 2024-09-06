@@ -78,7 +78,7 @@ const updateItemById = async (req,res) => {
     try{
         // check existance of item
         var item = await Item.findByPk(itemId);
-        if (item === null) {
+        if (!item) {
             res.status(404).json({ msg: "The Item does not exist" });
             return;
         }
@@ -96,7 +96,6 @@ const updateItemById = async (req,res) => {
     catch(e){
         console.error("Error in database operation",e);
         res.status(500).send("Error in database operation");
-        return;
     }
 }
 
@@ -115,7 +114,7 @@ const deleteItemById = async (req,res)=> {
     try {
         // check existance of item
         let item = await Item.findByPk(itemId);
-        if (item === null) {
+        if (!item) {
             res.status(404).json({ msg: "The Item does not exist" });
             return;
         }
@@ -126,7 +125,6 @@ const deleteItemById = async (req,res)=> {
     catch(e){
         console.error("Error in database operation",e);
         res.status(500).send("Error in database operation");
-        return;
     }
 }
 
