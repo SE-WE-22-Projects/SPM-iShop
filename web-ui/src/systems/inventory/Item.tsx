@@ -1,5 +1,5 @@
 import { Box, Button, Typography } from "@mui/material";
-import SearchBar from "./common/SearchBar";
+import SearchBar from "../../common/SearchBar";
 import { useEffect, useState } from "react";
 import { Add } from "@mui/icons-material";
 import ItemTable from "./itemComponents/ItemTable";
