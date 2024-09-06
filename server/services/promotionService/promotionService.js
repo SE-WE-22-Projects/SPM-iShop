@@ -1,5 +1,4 @@
 const express = require("express");
-
 const Promo = require('../../models/Promo');
 
 /**
@@ -8,9 +7,7 @@ const Promo = require('../../models/Promo');
  * @param {express.Response} res  
  */
 const testPromotion = async (req, res)=>{
-
-    res.status(200).send("Testing route for promotions");
-    
+    res.status(200).send("Testing route for promotions");   
 }
 
 /**
@@ -20,19 +17,13 @@ const testPromotion = async (req, res)=>{
  */
 const createPromotion = async (req, res)=>{
    try{
-        const {name, desc, status, dis_percentage, dis_amount, start_date, end_date} = req.body;
-        const newPromo = await Promo.create({
-            name, desc, status, dis_percentage, dis_amount, start_date, end_date
-        })
-
-        res.status(201).json({
-            message : "New Promotion Created Successfully",
-            Promo : newPromo
-        })
-   } catch(error){
-        res.status(500).json({
-        error:'Failed to create promotions'
-    });
+        const reqData = req.body;
+        const newPromo = await Promo.create(reqData);
+        res.status(201).json({data : newPromo});
+   } 
+   catch(error){
+        console.error(error);
+        res.status(500).json({error:'Failed to create promotions'});
    }   
 }
 
@@ -45,10 +36,9 @@ const getPromotions = async (req, res)=>{
     try{
         const promos = await Promo.findAll();
         res.status(200).json(promos);
-    }catch(error){
-        res.status(500).json({
-            error: "Failed to fetch promotions"
-        });
+    }
+    catch(error){
+        res.status(500).send("Failed to fetch promotions");
     }   
 }
 
@@ -60,17 +50,17 @@ const getPromotions = async (req, res)=>{
 const getPromotionByID = async (req, res)=>{
     try{
         const promoID = req.params.id;
-        // check existance of promotion
         const promoByID = await Promo.findByPk(promoID);
         if(promoByID){
-             res.status(200).json(promoByID);
+             res.status(200).json({data: promoByID});
         }else{
             res.status(404).json("Promotion doesn't exist");
         }   
     }
     catch(error){
+        console.error(error);
         res.status(500).json({
-            error: "Failed to fetch promotion"
+            error: "Failed to fetch promotion" 
         });
     } 
 }
