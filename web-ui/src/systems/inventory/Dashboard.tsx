@@ -1,6 +1,11 @@
+import { Typography } from "@mui/material";
 
 const Dashboard = () => {
-    return <>Dashboard page</>
+    return (
+        <>
+            <Typography variant="h3" align="center">Inventory Dashboard</Typography>
+        </>
+    )
 }
 
 export default Dashboard;
