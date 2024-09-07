@@ -1,6 +1,7 @@
 import { Paper, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TablePagination, IconButton } from "@mui/material";
 import {MoreVert} from '@mui/icons-material';
 import { useState } from "react";
+import dayjs from "dayjs";
 
 export interface EmployeeData{
     id?: number;
@@ -63,12 +64,12 @@ const EmployeeTabel  = ({data, query}:{data: EmployeeData[], query: string})=>{
                         <TableCell key={row.id}>{row.id}</TableCell>
                         <TableCell key={row.name}>{row.name}</TableCell>
                         <TableCell key={row.role}>{row.role}</TableCell>
-                        <TableCell key={row.dateOfBirth}>{row.dateOfBirth}</TableCell>
+                        <TableCell key={row.dateOfBirth}>{dayjs(row.dateOfBirth).format('YYYY-MM-DD')}</TableCell>
                         <TableCell key={row.gender}>{row.gender}</TableCell>
                         <TableCell key={row.contactNumber}>{row.contactNumber}</TableCell>
                         <TableCell key={row.email}>{row.email}</TableCell>
                         <TableCell key={row.address}>{row.address}</TableCell>
-                        <TableCell key={row.hireDate}>{row.hireDate}</TableCell>
+                        <TableCell key={row.hireDate}>{dayjs(row.hireDate).format('YYYY-MM-DD')}</TableCell>
                         <TableCell key={row.basicSalary}>{row.basicSalary}</TableCell>
                         <TableCell key={row.employmentStatus}>{row.employmentStatus}</TableCell>
                         <TableCell size="medium">

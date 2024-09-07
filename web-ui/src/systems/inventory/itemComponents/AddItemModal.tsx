@@ -20,13 +20,19 @@ const style = {
 export interface itemData{
     name?: string;
     desc?: string;
+    category?: string;
     price?: number;
+    unit?: string;
     qty?: number;
     rackId?: number;
 }
 
 const AddItemModal=({ itemAddModalClose, open, addItem}:{ itemAddModalClose: ()=>void, open: boolean, addItem: (itemData: itemData)=> void}) => {
-    const [itemData,setItemData] = useState<itemData>({});
+    const [itemData,setItemData] = useState<itemData>({
+        category: "Grocery",
+        unit: "pieces",
+        rackId: 1
+    });
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
