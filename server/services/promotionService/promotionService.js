@@ -1,5 +1,7 @@
 const express = require("express");
 const Promo = require('../../models/Promo');
+// import { object, string, number, date } from 'yup';
+
 
 /**
  * 
@@ -19,6 +21,7 @@ const createPromotion = async (req, res)=>{
    try{
         const reqData = req.body;
         
+
         const newPromo = await Promo.create(reqData);
         res.status(201).json({data : newPromo});
    } 

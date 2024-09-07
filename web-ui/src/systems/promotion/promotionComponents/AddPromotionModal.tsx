@@ -51,7 +51,7 @@ const AddPromotionModal = ({promoAddModalClose, open, addPromotion}:{promoAddMod
             >
                 <Box sx={style}>
                 <Typography id="modal-modal-title" variant="h5" component="h2">
-                    Add new Item
+                    Add new Promotion
                 </Typography>
                 <Box id="modal-modal-description" sx={{ mt: 2 }}>
                 <Box
