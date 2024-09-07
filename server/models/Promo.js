@@ -32,6 +32,7 @@ const Promo = sequelize.define("promo", {
         allowNull: false,
         validate: {
             isAfter: function(value) {
+                console.log(typeof value)
                 return value >= sequelize.fn('NOW');
             }
         }
