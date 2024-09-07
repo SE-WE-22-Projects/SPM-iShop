@@ -79,7 +79,6 @@ class ArucoDetector(
             for (i in 0 until corners.size) {
 
                 val tagId = ids[i, 0][0].toInt()
-                var distance = Double.NaN
                 var rotation: Tag.Rotation? = null
                 var postion: Tag.Position? = null
 
@@ -135,8 +134,6 @@ class ArucoDetector(
                         )
 
                         // calculate the distance
-                        distance = round2(tvec.get(2, 0)[0] * calibration.distanceScale)
-
                         postion = Tag.Position(
                             tvec.get(0, 0)[0] * calibration.distanceScale,
                             tvec.get(1, 0)[0] * calibration.distanceScale,
@@ -148,7 +145,6 @@ class ArucoDetector(
                 detectedTags.add(
                     Tag(
                         tagId,
-                        distance,
                         corners[i],
                         rotation = rotation,
                         position = postion
@@ -167,6 +163,8 @@ class ArucoDetector(
      * Rounds the given double to 2 decimal points.
      */
     private fun round2(value: Double): Double {
+        if (value.isNaN()) return Double.NaN
+
         return (value * 100.0).roundToInt() / 100.0
     }
 

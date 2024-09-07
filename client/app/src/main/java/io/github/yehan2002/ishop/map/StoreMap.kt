@@ -41,7 +41,8 @@ class StoreMap(val width: Double, val height: Double) {
 
     enum class TileState {
         EMPTY,
-        SHELF
+        SHELF,
+        TAG
     }
 
     /**

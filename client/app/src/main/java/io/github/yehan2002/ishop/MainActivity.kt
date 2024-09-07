@@ -105,11 +105,11 @@ class MainActivity : AppCompatActivity() {
                 val cameraId = Camera2CameraInfo.from(cameraInfo).cameraId
                 if (cameraId != lastCameraId) {
                     val calibration = CameraCalibration.loadCalibrations(this, cameraId, proxy)
+
                     if (calibration != null) {
                         detector.setCalibration(calibration)
                         lastCameraId = cameraId
                     }
-
                 }
             }
 
@@ -145,9 +145,9 @@ class MainActivity : AppCompatActivity() {
                     processingTime,
                     tags.size,
                     estPos,
-                    "Rot 1" + (180 * rotation.orientationAngles[0] / PI).roundToInt(),
-                    "Rot 2" + (180 * 2 * rotation.orientationAngles[1] / PI).roundToInt(),
-                    "Rot 3" + (180 * rotation.orientationAngles[2] / PI).roundToInt(),
+                    "Rot 1: " + (180 * rotation.orientationAngles[0] / PI).roundToInt(),
+                    "Rot 2: " + (180 * 2 * rotation.orientationAngles[1] / PI).roundToInt(),
+                    "Rot 3: " + (180 * rotation.orientationAngles[2] / PI).roundToInt(),
                 )
             )
 

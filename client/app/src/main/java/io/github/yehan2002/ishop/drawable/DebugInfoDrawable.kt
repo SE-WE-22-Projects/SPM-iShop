@@ -1,5 +1,6 @@
 package io.github.yehan2002.ishop.drawable
 
+import android.annotation.SuppressLint
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.ColorFilter
@@ -21,12 +22,13 @@ class DebugInfoDrawable(
         textSize = 36F
     }
 
+    @SuppressLint("DefaultLocale")
     override fun draw(canvas: Canvas) {
         canvas.drawText("Tags: $tags", 32F, 32F, contentTextPaint)
         canvas.drawText("Time: ${processTime}ms", 32F, 64F, contentTextPaint)
         if (estPos != null) {
             canvas.drawText(
-                "Pos: x: ${round2(estPos.x)} y: ${round2(estPos.y)}",
+                String.format("Pos: x: %.2f y: %.2f", estPos.x, estPos.y),
                 32F,
                 96F,
                 contentTextPaint
@@ -50,13 +52,6 @@ class DebugInfoDrawable(
 
     override fun setColorFilter(colorFilter: ColorFilter?) {
         contentTextPaint.colorFilter = colorFilter
-    }
-
-    /**
-     * Rounds the given double to 2 decimal points.
-     */
-    private fun round2(value: Double): Double {
-        return (value * 100.0).roundToInt() / 100.0
     }
 
     @Deprecated(

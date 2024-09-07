@@ -5,11 +5,13 @@ import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.annotation.RequiresApi
 import androidx.camera.camera2.interop.ExperimentalCamera2Interop
 import androidx.camera.core.ImageProxy
 import io.github.yehan2002.ishop.MainActivity
+import io.github.yehan2002.ishop.R
 import org.opencv.core.CvType
 import org.opencv.core.Mat
 import org.opencv.core.MatOfDouble
@@ -114,6 +116,13 @@ class CameraCalibration() {
 
             if (intrinsics == null) {
                 Log.i(MainActivity.TAG, "loadCalibration: intrinsics is null")
+
+                Toast.makeText(
+                    context,
+                    context.getText(R.string.error_camera_support),
+                    Toast.LENGTH_LONG
+                ).show()
+
                 return null
             }
 

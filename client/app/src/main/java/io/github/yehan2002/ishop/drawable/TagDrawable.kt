@@ -98,7 +98,7 @@ class TagDrawable(
 
         // display distance to tag
         canvas.drawText(
-            "${tag.distance}m",
+            String.format("%.2fm", tag.distance),
             (pts[0] + pts[4]) / 2,
             (pts[1] + pts[5]) / 2 + 32,
             contentTextPaint
@@ -149,6 +149,6 @@ class TagDrawable(
     override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 
     companion object {
-        const val DEBUG_TAGS = false
+        const val DEBUG_TAGS = true
     }
 }

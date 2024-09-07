@@ -6,12 +6,17 @@ import org.opencv.core.Mat
 
 class Tag(
     val id: Int,
-    val distance: Double,
     tagCorners: Mat,
     val rotation: Rotation? = null,
     val position: Position? = null,
 ) {
     var corners: Array<PointF>
+
+    val distance: Double
+        get() {
+            if (position != null) return position.z
+            return Double.NaN
+        }
 
     init {
         val pointList = mutableListOf<PointF>()
