@@ -18,6 +18,7 @@ const testPromotion = async (req, res)=>{
 const createPromotion = async (req, res)=>{
    try{
         const reqData = req.body;
+        
         const newPromo = await Promo.create(reqData);
         res.status(201).json({data : newPromo});
    } 
