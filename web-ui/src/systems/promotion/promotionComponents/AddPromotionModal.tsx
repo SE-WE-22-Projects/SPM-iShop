@@ -29,7 +29,10 @@ export interface PromoData{
 }
 
 const AddPromotionModal = ({promoAddModalClose, open, addPromotion}:{promoAddModalClose: ()=>void, open: boolean, addPromotion: (promoData: PromoData)=>void}) => {
-    const [promoData,setPromoData] = useState<PromoData>({});
+    const [promoData,setPromoData] = useState<PromoData>({
+        status: true,
+        itemId: 1
+    });
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
