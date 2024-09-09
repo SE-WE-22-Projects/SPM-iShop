@@ -101,5 +101,3 @@ const ItemTable = ({data, query, updateItem, deleteItem, updateOpen, itemUpdateM
 }
 
 export default  ItemTable;
-
-
