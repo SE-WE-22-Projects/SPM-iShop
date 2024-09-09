@@ -4,6 +4,8 @@ import { Link, NonIndexRouteObject, Outlet } from 'react-router-dom'
 import Nav from './Navbar';
 import { drawerWidth, siteTheme } from '../config';
 import { Dashboard } from '@mui/icons-material';
+import Footer from './Footer';
+import bgImg from './componentAssets/blindWalkBg.png';
 
 /**
  * A object that contains all routes in a specific system.
@@ -123,11 +125,30 @@ export const DashboardPage = ({ routes }: { routes: SystemRoutes }) => {
                     px: "20px",
                     py: "40px",
                     width: "100%",
-                    minHeight: "100%"
+                    minHeight: "100%",
+                    backgroundColor: "rgba(255, 255, 255, 0.5)"
                 }}>
 
-                    <Box sx={{}}>
+                    <Box >
                         <Outlet />
+                        <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', zIndex: -2 }}>
+                            <div
+                                style={{
+                                    backgroundImage: `url(${bgImg})`,
+                                    backgroundSize: 'cover',
+                                    backgroundPosition: 'left',
+                                    opacity: 0.3,
+                                    position: 'absolute',
+                                    bottom: 10,
+                                    left: 135,
+                                    width: '50%',
+                                    height: '100%',
+                                    zIndex: -1,
+                                }}
+                            />
+                            <Footer />
+                        </div>
+                        
                     </Box>
                 </Card>
             </Box >
