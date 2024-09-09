@@ -120,15 +120,19 @@ const AddEmployeeeModel = ({employeeAddModalClose,open,addEmployee}:{employeeAdd
                     </DemoContainer>
                   </LocalizationProvider>
                 </Box>
-                <RadioGroup
+                <Box>
+                 <FormLabel id="demo-radio-buttons-group-label">Gender</FormLabel>
+                  <RadioGroup
                   aria-labelledby="demo-radio-buttons-group-label"
                   defaultValue={"male"}
                   name="gender"
                   onChange={(e) => setGender(e.target.value)}
-                >
-                  <FormControlLabel value={"male"} control={<Radio />} label="Male" />
-                  <FormControlLabel value={"female"} control={<Radio />} label="Female" />
-                </RadioGroup>
+                  >
+                    <FormControlLabel value={"male"} control={<Radio />} label="Male" />
+                    <FormControlLabel value={"female"} control={<Radio />} label="Female" />
+                  </RadioGroup>
+                </Box>
+                
               </Stack>
               <Stack direction="row" spacing={10}>
                 <Box>
