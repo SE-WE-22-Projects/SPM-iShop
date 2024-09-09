@@ -32,34 +32,32 @@ const Promotion = () => {
 
     // add promotion
     const addPromotion = async (promoData: PromoData) =>{
+        console.log(promoData);
+        
         // data validation
         if(!promoData.name){
             enqueueSnackbar("Promotion name is required...", {variant:  "error"});
-            return;
+            return false;
         }
         else if(!promoData.desc){
             enqueueSnackbar("Promotion description is required...", {variant: "error"});
-            return;
+            return false;
         }
-        else if(!promoData.dis_percentage){
-            enqueueSnackbar("Promotion percentage required...", {variant: "error"});
-            return;
-        }
-        else if(!promoData.dis_amount){
-            enqueueSnackbar("Promotion amount required...", {variant: "error"});
-            return;
+        else if(!promoData.dis_percentage && !promoData.dis_amount){
+            enqueueSnackbar("Promotion percentage or amount required...", {variant: "error"});
+            return false;
         }
         else if(!promoData.start_date){
             enqueueSnackbar("Please  select start date", {variant: "error"});
-            return;
+            return false;
         }
         else if(!promoData.end_date){
             enqueueSnackbar("Please select end date", {variant: "error"});
-            return;
+            return false;
         }
         else if(!promoData.itemId){
             enqueueSnackbar("Please select item id...", {variant: "error"});
-            return;
+            return false;
         }
         // api call
         try{
@@ -67,10 +65,13 @@ const Promotion = () => {
             enqueueSnackbar("Promotion added successfuly...", {variant:  "success"});
             promoAddModalClose();
             getPromotions();
+            return true;
         }
         catch(e){
             enqueueSnackbar("failed to add item...", {variant: "error"});
             console.error(e);
+            promoAddModalClose();
+            return false;
         }
     }
 
