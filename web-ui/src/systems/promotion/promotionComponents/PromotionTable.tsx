@@ -63,8 +63,8 @@ const PromotionTable = ({data, query}:{data: PromotionType[], query: string})=>{
                             <TableCell key={row.name}>{row.name}</TableCell>
                             <TableCell key={row.desc}>{row.desc}</TableCell>
                             <TableCell key={row.id}>{(row.status)?"Active":"Inactive"}</TableCell>
-                            <TableCell key={row.dis_percentage}>{row.dis_percentage}</TableCell>
-                            <TableCell key={row.dis_amount}>{row.dis_amount}</TableCell>
+                            <TableCell key={row.dis_percentage}>{row.dis_percentage ?? "N/A"}</TableCell>
+                            <TableCell key={row.dis_amount}>{row.dis_amount ?? "N/A"}</TableCell>
                             <TableCell key={ row.start_date}>{dayjs(row.start_date).format('YYYY-MM-DD')}</TableCell>
                             <TableCell key={row.end_date}>{dayjs(row.end_date).format('YYYY-MM-DD')}</TableCell>
                             <TableCell key={row.itemId}>{row.itemId}</TableCell>
