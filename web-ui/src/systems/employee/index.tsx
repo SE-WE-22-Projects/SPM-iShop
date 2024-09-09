@@ -11,9 +11,9 @@ export const routes: SystemRoutes = {
     routes: [
         {
             element: <Page1 />,
-            path: "page1",
+            path: "manageemployee",
             display: {
-                title: "Employee Page 1",
+                title: "Employee Management",
                 icon: <People />
             }
         }
