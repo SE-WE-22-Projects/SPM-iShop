@@ -1,6 +1,5 @@
 import { createBrowserRouter, Link, RouteObject, RouterProvider } from "react-router-dom";
 import { ReactElement } from "react";
-
 import inventory from "./systems/inventory";
 import mapping from "./systems/mapping";
 import employee from "./systems/employee";
