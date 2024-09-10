@@ -103,8 +103,8 @@ const AddEmployeeeModel = ({employeeAddModalClose,open,addEmployee}:{employeeAdd
                     <MenuItem value={"Assistance"}>
                       Assistance
                     </MenuItem>
-                    <MenuItem value={"Chashier"}>
-                      Chashier
+                    <MenuItem value={"Cashier"}>
+                      Cashier
                     </MenuItem>
                     <MenuItem value={"Other"}>
                       Other
@@ -149,7 +149,7 @@ const AddEmployeeeModel = ({employeeAddModalClose,open,addEmployee}:{employeeAdd
               <Box>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DemoContainer components={['DatePicker']}>
-                    <DatePicker label="Hier Date" onChange={(val) => setHireDate(val)} maxDate={dayjs()} />
+                    <DatePicker label="Hire Date" onChange={(val) => setHireDate(val)} maxDate={dayjs()} />
                   </DemoContainer>
                 </LocalizationProvider>
               </Box>

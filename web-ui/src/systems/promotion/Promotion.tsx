@@ -62,7 +62,7 @@ const Promotion = () => {
             return false;
         }
         else if(!promoData.itemId){
-            enqueueSnackbar("Please select item id...", {variant: "error"});
+            enqueueSnackbar("Please select item ...", {variant: "error"});
             return false;
         }
         // api call

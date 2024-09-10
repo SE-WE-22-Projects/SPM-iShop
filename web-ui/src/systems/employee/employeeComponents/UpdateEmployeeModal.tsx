@@ -40,7 +40,7 @@ const setEmpRoleImg = (role: string)=>{
             <img src={assistanceImg} width={240} />
         )
     }
-    else if(role === "Chashier"){
+    else if(role === "Cashier"){
         return (
             <img src={cashierImg} width={240} />
         )
@@ -150,8 +150,8 @@ const UpdateEmployeeModal = ({open, handleClose, data, updateEmployee, deleteEmp
                                         <MenuItem value={"Assistance"}>
                                             Assistance
                                         </MenuItem>
-                                        <MenuItem value={"Chashier"}>
-                                            Chashier
+                                        <MenuItem value={"Cashier"}>
+                                            Cashier
                                         </MenuItem>
                                         <MenuItem value={"Other"}>
                                             Other
@@ -196,7 +196,7 @@ const UpdateEmployeeModal = ({open, handleClose, data, updateEmployee, deleteEmp
                             <Box>
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <DemoContainer components={['DatePicker']}>
-                                        <DatePicker label="Hier Date" value={dayjs(hireDate)} onChange={(val) => setHireDate(val)} maxDate={dayjs()} />
+                                        <DatePicker label="Hire Date" value={dayjs(hireDate)} onChange={(val) => setHireDate(val)} maxDate={dayjs()} />
                                     </DemoContainer>
                                 </LocalizationProvider>
                             </Box>
