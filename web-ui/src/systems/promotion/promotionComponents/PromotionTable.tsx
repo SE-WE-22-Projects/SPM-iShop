@@ -1,21 +1,22 @@
 import { MoreVert } from '@mui/icons-material';
 import { IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@mui/material';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { useState } from 'react';
+import UpdatePromotionModal from './UpdatePromotionMaodal';
 
 export interface PromotionType{
-    id?: number;
-    name?: string;
-    desc?: string;
+    id?: number|null;
+    name?: string|null;
+    desc?: string|null;
     status?: boolean;
-    dis_percentage?: number;
-    dis_amount?: number;
-    start_date?: any;
-    end_date?: any;
-    itemId?: number;
+    dis_percentage?: number|null;
+    dis_amount?: number|null;
+    start_date?: Dayjs|null;
+    end_date?: Dayjs|null;
+    itemId?: number|null;
 }
 
-const PromotionTable = ({data, query}:{data: PromotionType[], query: string})=>{
+const PromotionTable = ({data, query, updatePromotion, deletePromotion, updateOpen, promoUpdateModalOpen, promoUpdateModalClose}:{data: PromotionType[], query: string, updatePromotion: (data: PromotionType)=>Promise<boolean>, deletePromotion :(id:number|null)=>void, updateOpen: boolean, promoUpdateModalOpen: ()=>void, promoUpdateModalClose: ()=>void})=>{
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] =useState(10);
   
@@ -27,6 +28,10 @@ const PromotionTable = ({data, query}:{data: PromotionType[], query: string})=>{
       setRowsPerPage(+event.target.value);
       setPage(0);
     };
+
+    // promotion update modal data
+    const [updateModalData,setUpdateModalData] = useState<PromotionType>({});
+
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
             <TableContainer sx={{ maxHeight: 440 }}>
@@ -65,16 +70,16 @@ const PromotionTable = ({data, query}:{data: PromotionType[], query: string})=>{
                             <TableCell key={row.id}>{(row.status)?"Active":"Inactive"}</TableCell>
                             <TableCell key={row.dis_percentage}>{row.dis_percentage ?? "N/A"}</TableCell>
                             <TableCell key={row.dis_amount}>{row.dis_amount ?? "N/A"}</TableCell>
-                            <TableCell key={ row.start_date}>{dayjs(row.start_date).format('YYYY-MM-DD')}</TableCell>
-                            <TableCell key={row.end_date}>{dayjs(row.end_date).format('YYYY-MM-DD')}</TableCell>
+                            <TableCell >{dayjs(row.start_date).format('YYYY-MM-DD')}</TableCell>
+                            <TableCell >{dayjs(row.end_date).format('YYYY-MM-DD')}</TableCell>
                             <TableCell key={row.itemId}>{row.itemId}</TableCell>
                             <TableCell size="medium">
                                 <IconButton
                                     color='success'
                                     size='small'
                                     onClick={() => {
-                                        // props.setLotModalData(row);
-                                        // props.handleLotModalOpen();
+                                        setUpdateModalData(row);
+                                        promoUpdateModalOpen();
                                     }}
                                 >
                                     <MoreVert />
@@ -95,8 +100,9 @@ const PromotionTable = ({data, query}:{data: PromotionType[], query: string})=>{
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
             />
+            <UpdatePromotionModal open={updateOpen} handleClose={promoUpdateModalClose} data={updateModalData} updatePromotion={updatePromotion} deletePromotion={deletePromotion} />
         </Paper>
-  )
+    )
 }
 
 export default PromotionTable
