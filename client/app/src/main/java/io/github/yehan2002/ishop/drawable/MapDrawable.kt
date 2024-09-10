@@ -8,8 +8,8 @@ import android.graphics.Paint
 import android.graphics.PixelFormat
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
-import io.github.yehan2002.ishop.map.MapObject
-import io.github.yehan2002.ishop.map.StoreMap
+import io.github.yehan2002.ishop.navigation.MapObject
+import io.github.yehan2002.ishop.navigation.StoreMap
 
 class MapDrawable(private val storeMap: StoreMap, private val userPos: StoreMap.Point2D?) :
     Drawable() {

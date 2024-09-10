@@ -1,8 +1,8 @@
-package io.github.yehan2002.ishop.map
+package io.github.yehan2002.ishop.navigation
 
 sealed class MapObject {
     data object Empty : MapObject()
-    
+
     data class Section(val sectionId: Int, val name: String) : MapObject() {
         override fun toString(): String {
             return "Section: $name Tile: Empty"

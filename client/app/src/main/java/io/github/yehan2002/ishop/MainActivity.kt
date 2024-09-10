@@ -27,7 +27,7 @@ import io.github.yehan2002.ishop.databinding.ActivityMainBinding
 import io.github.yehan2002.ishop.drawable.DebugInfoDrawable
 import io.github.yehan2002.ishop.drawable.MapDrawable
 import io.github.yehan2002.ishop.drawable.TagDrawable
-import io.github.yehan2002.ishop.map.StoreMap
+import io.github.yehan2002.ishop.navigation.StoreNavigator
 import org.opencv.android.OpenCVLoader
 import org.opencv.objdetect.Objdetect
 import java.util.concurrent.ExecutorService
@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var detector: ArucoDetector
     private lateinit var rotation: RotationSensor
-    private lateinit var storeMap: StoreMap
+    private lateinit var navigator: StoreNavigator
 
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,9 +76,8 @@ class MainActivity : AppCompatActivity() {
 
         cameraExecutor = Executors.newSingleThreadExecutor()
 
-        storeMap = StoreMap(10, 11)
-        storeMap.loadTestMap()
 
+        navigator = StoreNavigator()
         rotation.startTracking()
     }
 
@@ -115,45 +114,42 @@ class MainActivity : AppCompatActivity() {
             }
 
             val tags = detector.detectMarkers(proxy.toBitmap())
-
             rotation.updateOrientationAngles()
+            navigator.addMarkers(tags)
 
             previewView.overlay.clear()
-            tags.forEach {
-                val inverse = getCorrectionMatrix(proxy, previewView)
 
-                previewView.overlay.add(
-                    TagDrawable(
-                        it,
-                        inverse
+            if (DISPLAY_TAGS) {
+                // display all detected tags as a overlay
+                tags.forEach {
+                    val inverse = getCorrectionMatrix(proxy, previewView)
+
+                    previewView.overlay.add(
+                        TagDrawable(
+                            it,
+                            inverse
+                        )
                     )
-                )
+                }
             }
 
             val processingTime = ((System.nanoTime() - startTime) / 1e6).roundToInt()
 
-            var estPos: StoreMap.Point2D? = null
-            if (tags.isNotEmpty()) {
-                estPos =
-                    storeMap.estimatePos(
-                        tags[0].id, tags[0].distance,
-                        tags[0].rotation?.facingYaw ?: 0.0
-                    )
-            }
-
+            // display the debug information overlay
             previewView.overlay.add(
                 DebugInfoDrawable(
                     processingTime,
                     tags.size,
-                    estPos,
+                    navigator.position,
                     "Rot 1: " + (180 * rotation.orientationAngles[0] / PI).roundToInt(),
                     "Rot 2: " + (180 * 2 * rotation.orientationAngles[1] / PI).roundToInt(),
                     "Rot 3: " + (180 * rotation.orientationAngles[2] / PI).roundToInt(),
-                    storeMap.getTileAt(estPos).toString()
+                    navigator.storeMap.getTileAt(navigator.position).toString()
                 )
             )
 
-            previewView.overlay.add(MapDrawable(storeMap, estPos))
+            // display the map
+            previewView.overlay.add(MapDrawable(navigator.storeMap, navigator.position))
 
             proxy.close()
         }
@@ -255,6 +251,8 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         const val TAG = "IShop_Log"
+        const val DISPLAY_TAGS = true
+
         private const val REQUEST_CODE_PERMISSIONS = 10
         private val REQUIRED_PERMISSIONS =
             mutableListOf(

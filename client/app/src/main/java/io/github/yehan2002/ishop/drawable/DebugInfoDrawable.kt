@@ -7,8 +7,7 @@ import android.graphics.ColorFilter
 import android.graphics.Paint
 import android.graphics.PixelFormat
 import android.graphics.drawable.Drawable
-import io.github.yehan2002.ishop.map.StoreMap
-import kotlin.math.roundToInt
+import io.github.yehan2002.ishop.navigation.StoreMap
 
 class DebugInfoDrawable(
     private val processTime: Int,

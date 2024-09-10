@@ -1,14 +1,14 @@
 package io.github.yehan2002.ishop
 
-import io.github.yehan2002.ishop.map.StoreMap
-import io.github.yehan2002.ishop.map.StoreMap.Point2D
+import io.github.yehan2002.ishop.navigation.StoreMap
+import io.github.yehan2002.ishop.navigation.StoreMap.Point2D
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class StoreMapTest {
     @Test
     fun estimatePos() {
-        val map = StoreMap(200.0, 200.0)
+        val map = StoreMap(200, 200)
         val markerPos = Point2D(100.0, 100.0)
         map.markers[1] = markerPos
 
