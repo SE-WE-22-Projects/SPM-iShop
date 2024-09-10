@@ -21,13 +21,14 @@ import Paper from '@mui/material/Paper';
 import { itemDataTable } from '../../inventory/itemComponents/ItemTable';
 import axios from 'axios';
 import ItemTableModal from './ItemTableModal';
+import { enqueueSnackbar } from 'notistack';
 
 const style = {
   position: 'absolute' as 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 750,
+  width: 740,
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
@@ -101,6 +102,14 @@ const AddPromotionModal = ({promoAddModalClose, open, addPromotion}:{promoAddMod
                             }}
                             autoComplete="off"
                             onSubmit={async (e) => {
+                                if(dis_percentage && dis_percentage>100){
+                                    enqueueSnackbar("Discount percentage should be less than 100%...", {variant:  "error"});
+                                    return;
+                                }
+                                if((dis_amount && selectedRow?.price) && dis_amount>selectedRow.price){
+                                    enqueueSnackbar("Discount amount should be less than current item price...", {variant:  "error"});
+                                    return;
+                                }
                                 e.preventDefault();
                                 const state = addPromotion({ name, desc, status, dis_percentage, dis_amount, start_date, end_date, itemId: selectedRow?.id });
                                 if(await state){
@@ -128,26 +137,27 @@ const AddPromotionModal = ({promoAddModalClose, open, addPromotion}:{promoAddMod
                                                 <TableHead>
                                                     <TableRow>
                                                         <TableCell>ID</TableCell>
-                                                        <TableCell align="right">Name</TableCell>
-                                                        <TableCell align="right">Category</TableCell>
-                                                        <TableCell align="right">Current Price</TableCell>
-                                                        <TableCell align="right">Amount</TableCell>
-                                                        <TableCell align="right">Unit</TableCell>
+                                                        <TableCell align="center">Name</TableCell>
+                                                        <TableCell align="center">Category</TableCell>
+                                                        <TableCell align="center">Current Price</TableCell>
+                                                        <TableCell align="center">Amount</TableCell>
+                                                        <TableCell align="center">Unit</TableCell>
                                                     </TableRow>
                                                 </TableHead>
                                                 <TableBody>
                                                     <TableRow
+                                                        tabIndex={-1}
                                                         key={1}
                                                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                                     >
                                                         <TableCell component="th" scope="row">
                                                             {selectedRow.id}
                                                         </TableCell>
-                                                        <TableCell align="right">{selectedRow.name}</TableCell>
-                                                        <TableCell align="right">{selectedRow.category}</TableCell>
-                                                        <TableCell align="right">{selectedRow.price}</TableCell>
-                                                        <TableCell align="right">{selectedRow.qty}</TableCell>
-                                                        <TableCell align="right">{selectedRow.unit}</TableCell>
+                                                        <TableCell align="center">{selectedRow.name}</TableCell>
+                                                        <TableCell align="center">{selectedRow.category}</TableCell>
+                                                        <TableCell align="center">{selectedRow.price}</TableCell>
+                                                        <TableCell align="center">{selectedRow.qty}</TableCell>
+                                                        <TableCell align="center">{selectedRow.unit}</TableCell>
                                                     </TableRow>
                                                 </TableBody>
                                             </Table>
