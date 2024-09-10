@@ -25,6 +25,7 @@ import io.github.yehan2002.ishop.aruco.CameraCalibration
 import io.github.yehan2002.ishop.aruco.RotationSensor
 import io.github.yehan2002.ishop.databinding.ActivityMainBinding
 import io.github.yehan2002.ishop.drawable.DebugInfoDrawable
+import io.github.yehan2002.ishop.drawable.MapDrawable
 import io.github.yehan2002.ishop.drawable.TagDrawable
 import io.github.yehan2002.ishop.map.StoreMap
 import org.opencv.android.OpenCVLoader
@@ -75,7 +76,7 @@ class MainActivity : AppCompatActivity() {
 
         cameraExecutor = Executors.newSingleThreadExecutor()
 
-        storeMap = StoreMap(100.0, 100.0)
+        storeMap = StoreMap(10, 11)
         storeMap.loadTestMap()
 
         rotation.startTracking()
@@ -151,6 +152,8 @@ class MainActivity : AppCompatActivity() {
                     storeMap.getTileAt(estPos).toString()
                 )
             )
+
+            previewView.overlay.add(MapDrawable(storeMap, estPos))
 
             proxy.close()
         }

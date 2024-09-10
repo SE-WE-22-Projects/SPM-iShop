@@ -7,17 +7,17 @@ import kotlin.math.cos
 import kotlin.math.roundToInt
 import kotlin.math.sin
 
-class StoreMap(val width: Double, val height: Double) {
-    var map: Array<Array<MapObject>> = Array(width.roundToInt()) {
-        Array(height.roundToInt()) { MapObject.Empty }
+class StoreMap(val width: Int, val height: Int) {
+    var map: Array<Array<MapObject>> = Array(width) {
+        Array(height) { MapObject.Empty }
     }
-    var markers = mutableMapOf<Int, Point2D>();
+    var markers = mutableMapOf<Int, Point2D>()
 
     fun estimatePos(markerId: Int, distance: Double, angle: Double): Point2D? {
         val pos = markers[markerId]
         if (pos == null) {
-            Log.d(TAG, "Invalid marker id");
-            return null;
+            Log.d(TAG, "Invalid marker id")
+            return null
         }
 
         val angleRad = (angle / 180) * PI
@@ -25,24 +25,24 @@ class StoreMap(val width: Double, val height: Double) {
         // calculate the position.
         // https://stackoverflow.com/a/13895314/6587830
         val position = Point2D(
-            pos.x + distance * cos(angleRad),
-            pos.y + distance * sin(angleRad)
+            pos.x - distance * sin(angleRad),
+            pos.y - distance * cos(angleRad)
         )
 
         // check if the position is within the map.
         // a buffer of 10 meters is added around the map.
         if (pos.x < -10 || pos.y < -10 || pos.x > height + 10 || pos.y > width + 10) {
-            Log.d(TAG, "Position outsize map");
-            return null;
+            Log.d(TAG, "Position outsize map")
+            return null
         }
 
         return position
     }
 
     fun getTileAt(pos: Point2D?): MapObject {
-        if (pos == null || pos.x < 0 || pos.x > height || pos.y < 0 || pos.y > width) return MapObject.Empty;
+        if (pos == null || pos.x < 0 || pos.x > height || pos.y < 0 || pos.y > width) return MapObject.Empty
 
-        return map[pos.x.roundToInt()][pos.y.roundToInt()];
+        return map[pos.x.roundToInt()][pos.y.roundToInt()]
     }
 
 
@@ -71,9 +71,9 @@ class StoreMap(val width: Double, val height: Double) {
             tag: MapObject.FloorTag
         ) {
 
-            var y = startY;
+            var y = startY
             for (rowPattern in areaPattern) {
-                var x = startX;
+                var x = startX
                 for (tile in rowPattern) {
                     map[x][y] = when (tile) {
                         'L' -> shelfLeft
@@ -84,7 +84,7 @@ class StoreMap(val width: Double, val height: Double) {
                     }
 
                     if (tile == 'T') {
-                        markers[tag.tagId] = Point2D(x.toDouble(), y.toDouble());
+                        markers[tag.tagId] = Point2D(x, y)
                     }
 
                     x += 1
@@ -97,7 +97,7 @@ class StoreMap(val width: Double, val height: Double) {
         for (idx in sections.indices) {
             addArea(
                 (idx / 2) * areaPattern[0].length,
-                (idx % 2) * areaPattern.size,
+                (idx % 2) * (areaPattern.size + 1),
                 sections[idx],
                 MapObject.Shelf(idx * 2 + 1, sections[idx]),
                 MapObject.Shelf(idx * 2 + 2, sections[idx]),
@@ -111,6 +111,9 @@ class StoreMap(val width: Double, val height: Double) {
      * A position represented as 2 doubles.
      */
     data class Point2D(val x: Double, val y: Double) {
+
+        constructor(x: Int, y: Int) : this(x.toDouble(), y.toDouble())
+
         /**
          * Returns a new point after adding dx and dy to the current point's coordinates.
          */
@@ -119,7 +122,5 @@ class StoreMap(val width: Double, val height: Double) {
         }
     }
 
-    companion object {
-
-    }
+    companion object
 }
