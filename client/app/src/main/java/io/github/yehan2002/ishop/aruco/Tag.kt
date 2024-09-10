@@ -11,6 +11,7 @@ class Tag(
     val position: Position? = null,
 ) {
     var corners: Array<PointF>
+    val detectedTime: Long
 
     val distance: Double
         get() {
@@ -25,6 +26,7 @@ class Tag(
             pointList.add(PointF(pointData[0].toFloat(), pointData[1].toFloat()))
         }
 
+        detectedTime = System.nanoTime()
         corners = pointList.toTypedArray()
     }
 

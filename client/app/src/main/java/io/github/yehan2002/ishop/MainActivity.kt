@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity() {
         cameraExecutor = Executors.newSingleThreadExecutor()
 
         storeMap = StoreMap(100.0, 100.0)
-        storeMap.markers[4] = StoreMap.Point2D(50.0, 50.0)
+        storeMap.loadTestMap()
 
         rotation.startTracking()
     }
@@ -148,6 +148,7 @@ class MainActivity : AppCompatActivity() {
                     "Rot 1: " + (180 * rotation.orientationAngles[0] / PI).roundToInt(),
                     "Rot 2: " + (180 * 2 * rotation.orientationAngles[1] / PI).roundToInt(),
                     "Rot 3: " + (180 * rotation.orientationAngles[2] / PI).roundToInt(),
+                    storeMap.getTileAt(estPos).toString()
                 )
             )
 
