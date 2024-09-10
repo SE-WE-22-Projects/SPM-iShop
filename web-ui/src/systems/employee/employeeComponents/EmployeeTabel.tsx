@@ -48,7 +48,7 @@ const EmployeeTabel  = ({data, query, updateOpen, employeeUpdateModalOpen, emplo
                     <TableCell>Contact No.</TableCell>
                     <TableCell>Email</TableCell>
                     <TableCell>Address</TableCell>
-                    <TableCell>Hier Date</TableCell>
+                    <TableCell>Hire Date</TableCell>
                     <TableCell>Basic salary</TableCell>
                     <TableCell>Status</TableCell>
                     <TableCell size="medium">Action</TableCell>
