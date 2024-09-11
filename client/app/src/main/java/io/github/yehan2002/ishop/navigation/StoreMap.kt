@@ -25,8 +25,8 @@ class StoreMap(val width: Int, val height: Int) {
         // calculate the position.
         // https://stackoverflow.com/a/13895314/6587830
         val position = Point2D(
-            pos.x - distance * sin(angleRad),
-            pos.y - distance * cos(angleRad)
+            pos.x + distance * cos(angleRad),
+            pos.y + distance * sin(angleRad)
         )
 
         // check if the position is within the map.
@@ -89,7 +89,7 @@ class StoreMap(val width: Int, val height: Int) {
                 "L***R"
             )
 
-            val map = StoreMap(areaPattern.size * 2, areaPattern[0].length * 2)
+            val map = StoreMap(areaPattern.size * 2, areaPattern[0].length * 2 + 1)
 
 
             fun addArea(
