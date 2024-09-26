@@ -1,23 +1,45 @@
 package io.github.yehan2002.ishop.navigation
 
 sealed class MapObject {
-    data object Empty : MapObject()
+    data object Invalid : MapObject()
 
-    data class Section(val sectionId: Int, val name: String) : MapObject() {
+
+    interface Valid {
+        fun position(): Section
+    }
+
+    data class Section(val sectionId: Int, val name: String) : MapObject(), Valid {
+        override fun position(): Section {
+            return this
+        }
+
         override fun toString(): String {
-            return "Section: $name Tile: Empty"
+            return "Floor"
         }
     }
 
-    data class Shelf(val shelfId: Int, val section: Section) : MapObject() {
+    data class Shelf(val shelfId: Int, val section: Section) : MapObject(), Valid {
+        override fun position(): Section {
+            return section
+        }
+
         override fun toString(): String {
-            return "Section: ${section.name} Tile: Shelf"
+            return "Shelf"
         }
     }
 
-    data class FloorTag(val tagId: Int, val section: Section) : MapObject() {
+    data class FloorTag(val tagId: Int, val section: Section) : MapObject(), Valid {
+        override fun position(): Section {
+            return section
+        }
+
         override fun toString(): String {
-            return "Section: ${section.name} Tile: FloorTag"
+            return "FloorTag"
         }
     }
+
+    companion object {
+        val UnknownSection = Section(-1, "Unknown")
+    }
+
 }

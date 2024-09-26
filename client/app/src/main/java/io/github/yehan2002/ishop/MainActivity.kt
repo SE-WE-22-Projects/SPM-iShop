@@ -32,7 +32,6 @@ import org.opencv.android.OpenCVLoader
 import org.opencv.objdetect.Objdetect
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import kotlin.math.PI
 import kotlin.math.roundToInt
 
 
@@ -141,12 +140,11 @@ class MainActivity : AppCompatActivity() {
                     processingTime,
                     tags.size,
                     navigator.position,
-                    "Rot 1: " + (180 * rotation.orientationAngles[0] / PI).roundToInt(),
-                    "Rot 2: " + (180 * 2 * rotation.orientationAngles[1] / PI).roundToInt(),
-                    "Rot 3: " + (180 * rotation.orientationAngles[2] / PI).roundToInt(),
-                    navigator.storeMap.getTileAt(navigator.position).toString()
+                    "Tile: ${navigator.currentTile}",
+                    "Section: ${navigator.section.name}(${navigator.section.sectionId})"
                 )
             )
+
 
             // display the map
             previewView.overlay.add(MapDrawable(navigator.storeMap, navigator.position))

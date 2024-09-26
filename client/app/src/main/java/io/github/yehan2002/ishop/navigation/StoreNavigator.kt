@@ -1,17 +1,24 @@
 package io.github.yehan2002.ishop.navigation
 
 import io.github.yehan2002.ishop.aruco.Tag
+import io.github.yehan2002.ishop.navigation.StoreNavigator.Companion.BUFFER_SIZE
 import io.github.yehan2002.ishop.util.RingBuffer
 
 class StoreNavigator {
     private var markerBuffer = RingBuffer<Map<Int, StoreMap.Point2D>>(BUFFER_SIZE)
     val storeMap: StoreMap = StoreMap.loadTestMap()
 
+    // TODO: alert on entering new section, tag detection
+
     /**
      * The current detected position of the user.
      * This can be null if the position cannot be determined.
      */
     var position: StoreMap.Point2D? = null
+
+    var currentTile: MapObject = MapObject.Invalid
+
+    var section: MapObject.Section = MapObject.UnknownSection
 
     /**
      * This method adds the given markers to the marker buffer.
@@ -66,6 +73,8 @@ class StoreNavigator {
         // no markers, cannot determine position
         if (positions.isEmpty()) {
             position = null
+            currentTile = MapObject.Invalid
+            section = MapObject.UnknownSection
             return
         }
 
@@ -75,6 +84,11 @@ class StoreNavigator {
 
         // get the average position of the user based on all detected tags.
         position = StoreMap.Point2D(positionSum.x / positions.size, positionSum.y / positions.size)
+
+        val tile = storeMap.getTileAt(position)
+        
+        currentTile = tile
+        section = if (tile is MapObject.Valid) tile.position() else MapObject.UnknownSection
     }
 
 

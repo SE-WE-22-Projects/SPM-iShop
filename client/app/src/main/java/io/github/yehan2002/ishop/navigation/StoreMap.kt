@@ -9,7 +9,7 @@ import kotlin.math.sin
 
 class StoreMap(val width: Int, val height: Int) {
     var map: Array<Array<MapObject>> = Array(width) {
-        Array(height) { MapObject.Empty }
+        Array(height) { MapObject.Invalid }
     }
     var markers = mutableMapOf<Int, Point2D>()
 
@@ -39,13 +39,17 @@ class StoreMap(val width: Int, val height: Int) {
         return position
     }
 
+    /**
+     * Gets the tile at the given position.
+     * If the position is null or outside the mapped area, [MapObject.Invalid] is returned.
+     */
     fun getTileAt(pos: Point2D?): MapObject {
-        if (pos == null) return MapObject.Empty
+        if (pos == null) return MapObject.Invalid
 
         val x = pos.x.roundToInt()
         val y = pos.y.roundToInt()
 
-        if (x < 0 || x > height || y < 0 || y > width) return MapObject.Empty
+        if (x < 0 || x > height || y < 0 || y > width) return MapObject.Invalid
 
         return map[pos.x.roundToInt()][pos.y.roundToInt()]
     }

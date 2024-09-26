@@ -52,7 +52,7 @@ class MapDrawable(private val storeMap: StoreMap, private val userPos: StoreMap.
 
                 val paint = when (tile) {
 
-                    MapObject.Empty -> empty
+                    MapObject.Invalid -> empty
                     is MapObject.FloorTag -> tag
                     is MapObject.Section -> empty
                     is MapObject.Shelf -> rack
