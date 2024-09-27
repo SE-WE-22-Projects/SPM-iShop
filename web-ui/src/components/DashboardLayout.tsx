@@ -4,6 +4,8 @@ import { Link, NonIndexRouteObject, Outlet } from 'react-router-dom'
 import Nav from './Navbar';
 import { drawerWidth, siteTheme } from '../config';
 import { Dashboard } from '@mui/icons-material';
+import Footer from './Footer';
+import bgImg from './componentAssets/blindWalkBg.png';
 
 /**
  * A object that contains all routes in a specific system.
@@ -40,7 +42,7 @@ interface Display {
     icon?: ReactNode;
 }
 
-interface Route extends NonIndexRouteObject {
+export interface Route extends NonIndexRouteObject {
     /**
      * Display details for the sidebar. If this is null, this will not be displayed in the sidebar.
      */
@@ -107,10 +109,10 @@ export const DashboardPage = ({ routes }: { routes: SystemRoutes }) => {
                         mb: 'auto'
                     }}>
                     <List className='sidebar'>
-                        <SideBarLink title="Dashboard" url={`/${routes.basePath}/`} icon={<Dashboard />} />
+                        <SideBarLink title="Dashboard" url={routes.basePath ? `/${routes.basePath}/` : `/`} icon={<Dashboard />} />
                         {routes.routes.map((e) => {
                             if (!e.display) return null;
-                            return <SideBarLink title={e.display.title} url={`/${routes.basePath}/${e.path}`} icon={e.display.icon} />;
+                            return <SideBarLink title={e.display.title} url={routes.basePath ? `/${routes.basePath}/${e.path}` : `/${e.path}`} icon={e.display.icon} />;
                         }
                         )}
                     </List>
@@ -123,11 +125,30 @@ export const DashboardPage = ({ routes }: { routes: SystemRoutes }) => {
                     px: "20px",
                     py: "40px",
                     width: "100%",
-                    minHeight: "100%"
+                    minHeight: "100%",
+                    backgroundColor: "rgba(255, 255, 255, 0.5)"
                 }}>
 
-                    <Box sx={{}}>
+                    <Box >
                         <Outlet />
+                        <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', zIndex: -2 }}>
+                            <div
+                                style={{
+                                    backgroundImage: `url(${bgImg})`,
+                                    backgroundSize: 'cover',
+                                    backgroundPosition: 'left',
+                                    opacity: 0.3,
+                                    position: 'absolute',
+                                    bottom: 10,
+                                    left: 135,
+                                    width: '50%',
+                                    height: '100%',
+                                    zIndex: -1,
+                                }}
+                            />
+                            <Footer />
+                        </div>
+                        
                     </Box>
                 </Card>
             </Box >

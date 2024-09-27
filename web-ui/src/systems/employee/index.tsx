@@ -1,6 +1,6 @@
 import Dashboard from "./Dashboard";
 import { SystemRoutes } from "../../components/DashboardLayout";
-import Page1 from "./Page1";
+import Page1 from "./Employee";
 import { People } from "@mui/icons-material";
 
 export const routes: SystemRoutes = {
@@ -11,9 +11,9 @@ export const routes: SystemRoutes = {
     routes: [
         {
             element: <Page1 />,
-            path: "page1",
+            path: "manageemployee",
             display: {
-                title: "Employee Page 1",
+                title: "Employee Management",
                 icon: <People />
             }
         }

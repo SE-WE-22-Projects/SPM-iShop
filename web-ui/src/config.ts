@@ -6,7 +6,7 @@ export const siteTheme = createTheme({
     palette: {
         mode: 'light',
         primary: {
-            main: '#003a2b',
+            main: '#1B508B',
         },
         secondary: {
             main: '#f50057',
