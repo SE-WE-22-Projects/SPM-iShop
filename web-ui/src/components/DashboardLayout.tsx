@@ -42,7 +42,7 @@ interface Display {
     icon?: ReactNode;
 }
 
-interface Route extends NonIndexRouteObject {
+export interface Route extends NonIndexRouteObject {
     /**
      * Display details for the sidebar. If this is null, this will not be displayed in the sidebar.
      */
@@ -109,10 +109,10 @@ export const DashboardPage = ({ routes }: { routes: SystemRoutes }) => {
                         mb: 'auto'
                     }}>
                     <List className='sidebar'>
-                        <SideBarLink title="Dashboard" url={`/${routes.basePath}/`} icon={<Dashboard />} />
+                        <SideBarLink title="Dashboard" url={routes.basePath ? `/${routes.basePath}/` : `/`} icon={<Dashboard />} />
                         {routes.routes.map((e) => {
                             if (!e.display) return null;
-                            return <SideBarLink title={e.display.title} url={`/${routes.basePath}/${e.path}`} icon={e.display.icon} />;
+                            return <SideBarLink title={e.display.title} url={routes.basePath ? `/${routes.basePath}/${e.path}` : `/${e.path}`} icon={e.display.icon} />;
                         }
                         )}
                     </List>

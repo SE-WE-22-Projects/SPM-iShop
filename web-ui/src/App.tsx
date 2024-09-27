@@ -1,12 +1,13 @@
-import { createBrowserRouter, Link, RouteObject, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, Link, Outlet, RouteObject, RouterProvider } from "react-router-dom";
 import { ReactElement } from "react";
 import inventory from "./systems/inventory";
 import mapping from "./systems/mapping";
 import employee from "./systems/employee";
 import promotions from "./systems/promotion";
-import { DashboardPage } from "./components/DashboardLayout";
+import { DashboardPage, Route } from "./components/DashboardLayout";
 
 let routes: Map<String, RouteObject> = new Map();
+let dashBoardTabs:Route[] = [];
 
 
 
@@ -38,10 +39,14 @@ importedRoutes.forEach((route) => {
   });
 
   childRoutes.push({ index: true, element: route.dashboard })
-
+  dashBoardTabs.push(...route.routes.map((r)=>{
+    r={...r};
+    r.path = route.basePath.toLowerCase()+"/"+r.path;
+    return r;
+  }));
   routes.set(route.basePath, {
     path: "/" + route.basePath.toLowerCase(),
-    element: <DashboardPage routes={route} />,
+    element: <Outlet />,
     children: childRoutes,
   });
 })
@@ -49,9 +54,10 @@ importedRoutes.forEach((route) => {
 // create router with all loaded routes
 const domRouter = createBrowserRouter([{
   path: "/",
-  element: <TempMain />
+  element: <DashboardPage routes={{title: "Test title", basePath:"",routes:dashBoardTabs , dashboard: <></>}} />,
+  children : [...routes.values()],
 },
-...routes.values(),
+
 ]);
 
 const App = () => {
