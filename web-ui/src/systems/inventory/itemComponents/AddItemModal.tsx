@@ -3,44 +3,38 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { useState } from 'react';
 import { Button, MenuItem, Stack, TextField } from '@mui/material';
+import { Cancel, Edit } from '@mui/icons-material';
 
 const style = {
-  position: 'absolute' as 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  borderRadius: 4,
-  bgcolor: 'background.paper',
-  boxShadow: 24,
-  p: 4,
-  
+    position: 'absolute' as 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 600,
+    borderRadius: 4,
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    p: 4,
+
 };
 
-export interface itemData{
-    name?: string;
-    desc?: string;
+export interface addItemData{
+    name?: string|null;
+    desc?: string|null;
     category?: string;
-    price?: number;
+    price?: number|null;
     unit?: string;
-    qty?: number;
-    rackId?: number;
+    qty?: number|null;
 }
 
-const AddItemModal=({ itemAddModalClose, open, addItem}:{ itemAddModalClose: ()=>void, open: boolean, addItem: (itemData: itemData)=> void}) => {
-    const [itemData,setItemData] = useState<itemData>({
-        category: "Grocery",
-        unit: "pieces",
-        rackId: 1
-    });
-
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = event.target;
-        setItemData((prevItemData) => ({
-            ...prevItemData,
-            [name]: value,
-        }));
-    }
+const AddItemModal=({ itemAddModalClose, open, addItem}:{ itemAddModalClose: ()=>void, open: boolean, addItem: (itemData: addItemData)=> void}) => {
+    // states for add Item data
+    const [name,setName] = useState<string|null>();
+    const [desc,setDesc] = useState<string|null>();
+    const [category,setCategory] = useState<string>("Grocery");
+    const [price,setPrice] = useState<number|null>();
+    const [unit,setUnit] = useState<string>("pieces");
+    const [qty,setQty] = useState<number|null>();
 
     return (
         <div>
@@ -51,27 +45,32 @@ const AddItemModal=({ itemAddModalClose, open, addItem}:{ itemAddModalClose: ()=
                 aria-describedby="modal-modal-description"
             >
                 <Box sx={style}>
-                <Typography id="modal-modal-title" variant="h5" component="h2">
-                    Add new Item
-                </Typography>
-                <Box id="modal-modal-description" sx={{ mt: 2 }}>
-                <Box
-                                component="form"
-                                sx={{
-                                    '& > :not(style)': { m: 3, width: '25ch' },
-                                }}
-                                autoComplete="off"
-                                onSubmit={(e) => {
-                                    e.preventDefault();
-                                    addItem(itemData);
-                                    //itemAddModalClose();
-                                }}
-                            >
+                    <Typography align="center" id="modal-modal-title" variant="h5" component="h2">
+                        Add new Item
+                    </Typography>
+                    <Box id="modal-modal-description" sx={{ mt: 2 }}>
+                        <Box
+                            component="form"
+                            sx={{
+                                '& > :not(style)': { m: 3, width: '60ch' },
+                            }}
+                            autoComplete="off"
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                addItem({name,desc,category,price,unit,qty});
+                                setName(null);
+                                setDesc(null);
+                                setPrice(null);
+                                setQty(null);
+                                //itemAddModalClose();
+                            }}
+                        >
+                            <Box>
+                                <TextField id="outlined-basic1" label="Item Name" variant="outlined" name="name" onChange={(e) => setName(e.target.value)} />
+                            </Box>
+                            <Stack direction="row" spacing={7}>
                                 <Box>
-                                    <TextField id="outlined-basic1" label="Item Name" variant="outlined" name="name" onChange={handleChange} />
-                                </Box>
-                                <Box>
-                                    <TextField id="outlined-basic1" label="Item Description" variant="outlined" name="desc" onChange={handleChange} />
+                                    <TextField id="outlined-basic1" label="Item Description" variant="outlined" name="desc" onChange={(e) => setDesc(e.target.value)} />
                                 </Box>
                                 <Box>
                                     <TextField
@@ -79,9 +78,10 @@ const AddItemModal=({ itemAddModalClose, open, addItem}:{ itemAddModalClose: ()=
                                         name="category"
                                         select
                                         label="Category"
-                                        defaultValue={"Grocery"}
+                                        defaultValue={category}
+                                        value={category}
                                         helperText="Please select rack ID"
-                                        onChange={handleChange}
+                                        onChange={(e) => setCategory(e.target.value)}
                                     >
                                         <MenuItem value={"Grocery"}>
                                             Grocery
@@ -106,66 +106,39 @@ const AddItemModal=({ itemAddModalClose, open, addItem}:{ itemAddModalClose: ()=
                                         </MenuItem>
                                     </TextField>
                                 </Box>
-                                <Box>
-                                    <TextField type="number" id="outlined-basic2" label="Unit Price" variant="outlined" name="price" onChange={handleChange} />
-                                </Box>
-                                <Box>
-                                    <TextField
-                                        id="outlined-select3"
-                                        name="unit"
-                                        select
-                                        label="Measurement Unit"
-                                        defaultValue={"pieces"}
-                                        helperText="Please select rack ID"
-                                        onChange={handleChange}
-                                    >
-                                        <MenuItem value={"pieces"}>
-                                            Pieces
-                                        </MenuItem>
-                                        <MenuItem value={"grams"}>
-                                            Grams
-                                        </MenuItem>
-                                        <MenuItem value={"liters"}>
-                                            Liters
-                                        </MenuItem>
-                                    </TextField>
-                                </Box>
-                                <Box>
-                                    <TextField type="number" id="outlined-basic2" label="Quantity" variant="outlined" name="qty" onChange={handleChange} />
-                                </Box>
-                                <Box>
-                                    <TextField
-                                        id="outlined-select3"
-                                        name="rackId"
-                                        select
-                                        label="Rack ID"
-                                        defaultValue={1}
-                                        helperText="Please select rack ID"
-                                        onChange={handleChange}
-                                    >
-                                        <MenuItem value={1}>
-                                            1
-                                        </MenuItem>
-                                        <MenuItem value={2}>
-                                            2
-                                        </MenuItem>
-                                        <MenuItem value={3}>
-                                            3
-                                        </MenuItem>
-                                        <MenuItem value={4}>
-                                            4
-                                        </MenuItem>
-                                        <MenuItem value={5}>
-                                            5
-                                        </MenuItem>
-                                    </TextField>
-                                </Box>
-                                <Stack direction="row" spacing={2}>
-                                    <Button variant="outlined" color="success" type='submit'>Create</Button>
-                                    <Button variant="outlined" color="error" onClick={itemAddModalClose} >Cancel</Button>
-                                </Stack>
+                            </Stack>
+                            <Stack direction="row" spacing={7}>
+                                <TextField type="number" id="outlined-basic2" label="Quantity" variant="outlined" name="qty" onChange={(e) => setQty(Number.parseInt(e.target.value))} />
+                                <TextField
+                                    id="outlined-select3"
+                                    name="unit"
+                                    select
+                                    label="Measurement Unit"
+                                    defaultValue={unit}
+                                    value={unit}
+                                    helperText="Please select measurement unit"
+                                    onChange={(e) => setUnit(e.target.value)}
+                                >
+                                    <MenuItem value={"pieces"}>
+                                        Pieces
+                                    </MenuItem>
+                                    <MenuItem value={"grams"}>
+                                        Grams
+                                    </MenuItem>
+                                    <MenuItem value={"liters"}>
+                                        Liters
+                                    </MenuItem>
+                                </TextField>
+                            </Stack>
+                            <Box>
+                                <TextField type="number" id="outlined-basic2" label="Unit Price" variant="outlined" name="price" onChange={(e) => setPrice(Number.parseFloat(e.target.value))} />
                             </Box>
-                </Box>
+                            <Stack direction="row" spacing={10}>
+                                <Button variant="outlined" color="success" type='submit' endIcon={<Edit/>} >Create</Button>
+                                <Button variant="outlined" color="warning" onClick={itemAddModalClose} endIcon={<Cancel/>} >Cancel</Button>
+                            </Stack>
+                        </Box>
+                    </Box>
                 </Box>
             </Modal>
         </div>
