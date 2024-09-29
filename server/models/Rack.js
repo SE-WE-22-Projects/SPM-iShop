@@ -1,7 +1,6 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require(".");
 const Section = require("./Section");
-const Item = require("./Item");
 
 const Rack = sequelize.define("rack", {
     tag_code: DataTypes.INTEGER,
@@ -12,7 +11,6 @@ const Rack = sequelize.define("rack", {
 });
 
 Rack.belongsTo(Section, { onDelete: "CASCADE", onUpdate: "CASCADE" });
-Item.belongsTo(Rack, { onDelete: "CASCADE", onUpdate: "CASCADE" })
 
 module.exports = Rack;
 
