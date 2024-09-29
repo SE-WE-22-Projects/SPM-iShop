@@ -7,6 +7,7 @@ import axios from "axios";
 import AddPromotionModal, { PromoData } from "./promotionComponents/AddPromotionModal";
 import { enqueueSnackbar } from "notistack";
 import { useConfirm } from 'material-ui-confirm';
+import PageLoader from "../../common/PageLoader";
 
 const Promotion = () => {
     // real time search
@@ -34,8 +35,10 @@ const Promotion = () => {
         setPromoList(res.data);
     }
 
+    const [isLoading,setIsLoading] = useState<boolean>(true);
     useEffect(()=>{
         getPromotions();
+        setTimeout(()=>setIsLoading(false),1000);
     },[]);
 
     // add promotion
@@ -150,18 +153,23 @@ const Promotion = () => {
     }
 
     return (
-       <div>
-            <Typography variant="h3" align="center"> Promotion Management</Typography>
-            <Box sx={{ display: "flex" }} my={2} mx={15} >
-                <SearchBar onSearch={search} />
-                <Box flexGrow={1}></Box>
-                <Button variant="outlined" startIcon={<Add />} onClick={promoAddModalOpen} >
-                    Add Promotion
-                </Button>
-            </Box>
-            <PromotionTable data={promoList} updateOpen={updateOpen} updatePromotion={updatePromotion} deletePromotion={deletePromotion} query={searchQuery} promoUpdateModalOpen={promoUpdateModalOpen} promoUpdateModalClose={promoUpdateModalClose}/>
-            <AddPromotionModal promoAddModalClose={promoAddModalClose} open={addOpen} addPromotion={addPromotion} />
-       </div>
+        <div>
+            {
+                isLoading ? <PageLoader /> :
+                    <div>
+                        <Typography variant="h3" align="center"> Promotion Management</Typography>
+                        <Box sx={{ display: "flex" }} my={2} mx={15} >
+                            <SearchBar onSearch={search} />
+                            <Box flexGrow={1}></Box>
+                            <Button variant="outlined" startIcon={<Add />} onClick={promoAddModalOpen} >
+                                Add Promotion
+                            </Button>
+                        </Box>
+                        <PromotionTable data={promoList} updateOpen={updateOpen} updatePromotion={updatePromotion} deletePromotion={deletePromotion} query={searchQuery} promoUpdateModalOpen={promoUpdateModalOpen} promoUpdateModalClose={promoUpdateModalClose} />
+                        <AddPromotionModal promoAddModalClose={promoAddModalClose} open={addOpen} addPromotion={addPromotion} />
+                    </div>
+            }
+        </div>
     );
 }
 
