@@ -7,6 +7,7 @@ import AddEmployeeeModel, { EmpAddData } from "./employeeComponents/AddEmployeee
 import axios from "axios";
 import { enqueueSnackbar } from "notistack";
 import { useConfirm } from 'material-ui-confirm';
+import PageLoader from "../../common/PageLoader";
 
 const Employee = () => {
     // real time search
@@ -92,8 +93,10 @@ const Employee = () => {
         setEmpList(res.data);
     }
 
+    const [isLoading,setIsLoading] = useState<boolean>(true);
     useEffect(()=>{
         getEmployees();
+        setTimeout(()=>setIsLoading(false),1000);
     },[]);
 
     // confirm box handle
@@ -190,16 +193,20 @@ const Employee = () => {
 
     return (
         <div>
-            <Typography variant="h3" align="center"> Employee Management</Typography>
-            <Box sx={{ display: "flex" }} my={2} mx={15} >
-                <SearchBar onSearch={search} />
-                <Box flexGrow={1}></Box> 
-                <Button variant="outlined" startIcon={<Add />} onClick={employeeAddModalOpen} >
-                    Add Employee
-                </Button>
-            </Box>
-            <EmployeeTabel data={empList} query={searchQuery} updateOpen={updateOpen} employeeUpdateModalOpen={employeeUpdateModalOpen} employeeUpdateModalClose={employeeUpdateModalClose} updateEmployee={updateEmployee} deleteEmployee={deleteEmployee}  />
-            <AddEmployeeeModel employeeAddModalClose={employeeAddModalClose} open={addOpen} addEmployee={addEmployee} />
+            {isLoading ? <PageLoader /> :
+                <div>
+                    <Typography variant="h3" align="center"> Employee Management</Typography>
+                    <Box sx={{ display: "flex" }} my={2} mx={15} >
+                        <SearchBar onSearch={search} />
+                        <Box flexGrow={1}></Box>
+                        <Button variant="outlined" startIcon={<Add />} onClick={employeeAddModalOpen} >
+                            Add Employee
+                        </Button>
+                    </Box>
+                    <EmployeeTabel data={empList} query={searchQuery} updateOpen={updateOpen} employeeUpdateModalOpen={employeeUpdateModalOpen} employeeUpdateModalClose={employeeUpdateModalClose} updateEmployee={updateEmployee} deleteEmployee={deleteEmployee} />
+                    <AddEmployeeeModel employeeAddModalClose={employeeAddModalClose} open={addOpen} addEmployee={addEmployee} />
+                </div>
+            }
         </div>
     )
 }
