@@ -31,7 +31,7 @@ const ItemTable = ({data, query, updateItem, deleteItem, updateOpen, itemUpdateM
     const [updateModalData,setUpdateModalData] = useState<itemDataTable>({});
   
     return (
-      <Paper sx={{ width: '100%', overflow: 'hidden', backgroundColor: "rgba(255, 255, 255, 0.4)" }}>
+      <Paper sx={{ width: '100%', overflow: 'hidden', backgroundColor: "rgba(255, 255, 255, 0.5)" }}>
         <TableContainer sx={{ maxHeight: 440, }}>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
@@ -51,7 +51,7 @@ const ItemTable = ({data, query, updateItem, deleteItem, updateOpen, itemUpdateM
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .filter((row: itemDataTable)=>{
                     if(query){
-                        return (row.name?.toLocaleLowerCase()?.startsWith(query));
+                        return (row.name?.toLowerCase()?.startsWith(query));
                     }
                     else{
                         return row;
