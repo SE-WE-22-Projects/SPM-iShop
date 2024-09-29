@@ -33,7 +33,7 @@ const PromotionTable = ({data, query, updatePromotion, deletePromotion, updateOp
     const [updateModalData,setUpdateModalData] = useState<PromotionType>({});
 
     return (
-        <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+        <Paper sx={{ width: '100%', overflow: 'hidden', backgroundColor: "rgba(255, 255, 255, 0.5)" }}>
             <TableContainer sx={{ maxHeight: 440 }}>
             <Table stickyHeader aria-label="sticky table">
                 <TableHead>
@@ -55,7 +55,7 @@ const PromotionTable = ({data, query, updatePromotion, deletePromotion, updateOp
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .filter((row: PromotionType)=>{
                         if(query){
-                            return (row.name?.startsWith(query));
+                            return (row.name?.toLowerCase()?.startsWith(query));
                         }
                         else{
                             return row;
