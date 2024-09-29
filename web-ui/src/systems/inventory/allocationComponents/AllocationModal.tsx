@@ -19,7 +19,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     },
   }));
 
-const AllocationModal = ({open, handleClose, data, allocation}:{open: boolean, handleClose :()=>void, data:itemDataTable, allocation: (itemID: number,rackId: number)=>void })=>{
+const AllocationModal = ({open, handleClose, data, allocation, rackList}:{open: boolean, handleClose :()=>void, data:itemDataTable, allocation: (itemID: number,rackId: number)=>void, rackList: any})=>{
     
     return (
       <React.Fragment>

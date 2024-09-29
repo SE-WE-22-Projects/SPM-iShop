@@ -4,7 +4,7 @@ import { IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHe
 import { MoreVert } from '@mui/icons-material';
 import AllocationModal from './AllocationModal';
 
-const UnallocatedItemTable = ({data, allocation, query, handleClickOpen, handleClose, open}: {data: itemDataTable[], allocation: (itemID: number,rackId: number)=>void, query: string, handleClickOpen: ()=>void, handleClose: ()=>void, open: boolean}) => {
+const UnallocatedItemTable = ({data, allocation, query, handleClickOpen, handleClose, open, rackList}: {data: itemDataTable[], allocation: (itemID: number,rackId: number)=>void, query: string, handleClickOpen: ()=>void, handleClose: ()=>void, open: boolean, rackList: any}) => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] =useState(10);
   
@@ -84,7 +84,7 @@ const UnallocatedItemTable = ({data, allocation, query, handleClickOpen, handleC
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
 
-        <AllocationModal handleClose={handleClose} open={open} allocation={allocation} data={modalData} />
+        <AllocationModal handleClose={handleClose} open={open} allocation={allocation} data={modalData} rackList={rackList} />
       </Paper>
   )
 }
