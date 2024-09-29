@@ -2,19 +2,22 @@ import { Paper, TableContainer, Table, TableHead, TableRow, TableCell, TableBody
 import {MoreVert} from '@mui/icons-material';
 import { useState } from "react";
 import { itemDataTable } from "../itemComponents/ItemTable";
+import AllocationModal from "./AllocationModal";
 
-const AllocatedItemTable = ({data, query, allocation}: {data:itemDataTable[], query:string, allocation: (itemID: number,rackId: number)=>void}) => {
+const AllocatedItemTable = ({data, query, allocation, handleClickOpen, handleClose, open, rackList}: {data:itemDataTable[], query:string, allocation: (itemID: number,rackId: number)=>void, handleClickOpen: ()=>void, handleClose: ()=>void, open: boolean, rackList: any}) => {
   const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] =useState(10);
-  
-    const handleChangePage = (event: unknown, newPage: number) => {
-      setPage(newPage);
-    };
-  
-    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setRowsPerPage(+event.target.value);
-      setPage(0);
-    };
+  const [rowsPerPage, setRowsPerPage] =useState(10);
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+
+  const [modalData,setModaldata] = useState<itemDataTable>({});
 
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden', backgroundColor: "rgba(255, 255, 255, 0.5)" }}>
@@ -60,8 +63,8 @@ const AllocatedItemTable = ({data, query, allocation}: {data:itemDataTable[], qu
                                 color='success'
                                 size='small'
                                 onClick={() => {
-                                  // setUpdateModalData(row);
-                                  // itemUpdateModalOpen();
+                                  handleClickOpen();
+                                  setModaldata(row);
                                 }}
                             >
                                 <MoreVert />
@@ -82,8 +85,7 @@ const AllocatedItemTable = ({data, query, allocation}: {data:itemDataTable[], qu
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-        {/* update modal */}
-        {/* <UpdateItemModal open={updateOpen} handleClose={itemUpdateModalClose} data={updateModalData} updateItem={updateItem} deleteItem={deleteItem} /> */}
+        <AllocationModal handleClose={handleClose} open={open} allocation={allocation} data={modalData} rackList={rackList}/>
       </Paper>
   )
 }
