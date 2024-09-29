@@ -1,11 +1,14 @@
 const express = require("express");
 const Tag = require("../../models/Tag");
 const yup = require('yup');
+const Section = require("../../models/Section");
 
 
 const tagSchema = yup.object({
     code: yup.number(),
-    name: yup.string(),
+    pos_x: yup.number(),
+    pos_y: yup.number(),
+    sectionId: yup.number().nullable(),
 })
 
 /**
@@ -42,7 +45,7 @@ const createTag = async (req, res) => {
  */
 const getAllTags = async (req, res) => {
     try {
-        var tagList = await Tag.findAll();
+        var tagList = await Tag.findAll({ include: Section });
         res.status(200).json(tagList);
     }
     catch (e) {
@@ -67,7 +70,7 @@ const getTagById = async (req, res) => {
     }
 
     try {
-        var tag = await Tag.findOne({ where: { id: tagId } });
+        var tag = await Tag.findOne({ where: { id: tagId }, include: Section });
         if (!tag) {
             res.status(404).send({ msg: "Tag not found" });
         } else {

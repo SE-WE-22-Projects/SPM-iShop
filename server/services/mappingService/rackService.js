@@ -1,10 +1,15 @@
 const express = require("express");
 const Rack = require("../../models/Rack");
 const yup = require('yup');
+const Section = require("../../models/Section");
 
 
 const rackSchema = yup.object({
-    name: yup.string(),
+    top_x: yup.number(),
+    top_y: yup.number(),
+    bottom_x: yup.number(),
+    bottom_y: yup.number(),
+    sectionId: yup.number().nullable(),
 })
 
 /**
@@ -41,7 +46,7 @@ const createRack = async (req, res) => {
  */
 const getAllRacks = async (req, res) => {
     try {
-        var rackList = await Rack.findAll();
+        var rackList = await Rack.findAll({ include: Section });
         res.status(200).json(rackList);
     }
     catch (e) {
@@ -66,7 +71,7 @@ const getRackById = async (req, res) => {
     }
 
     try {
-        var rack = await Rack.findOne({ where: { id: rackId } });
+        var rack = await Rack.findOne({ where: { id: rackId }, include: Section });
         if (!rack) {
             res.status(404).send({ msg: "Rack not found" });
         } else {
@@ -104,7 +109,7 @@ const updateRackById = async (req, res) => {
 
 
     try {
-        var rack = await Rack.findByPk(rackId);
+        var rack = await Rack.findByPk(rackId, { include: Section });
 
         if (!rack) {
             res.status(404).json({ msg: "The rack does not exist" });

@@ -3,7 +3,7 @@ const { sequelize } = require(".");
 const Section = require("./Section");
 
 const Tag = sequelize.define("tag", {
-    tag_code: DataTypes.INTEGER,
+    code: DataTypes.INTEGER,
     pos_x: DataTypes.FLOAT,
     pos_y: DataTypes.FLOAT
 });

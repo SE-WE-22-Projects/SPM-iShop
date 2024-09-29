@@ -5,6 +5,10 @@ const yup = require('yup');
 
 const sectionSchema = yup.object({
     name: yup.string(),
+    top_x: yup.number(),
+    top_y: yup.number(),
+    bottom_x: yup.number(),
+    bottom_y: yup.number(),
 })
 
 /**
