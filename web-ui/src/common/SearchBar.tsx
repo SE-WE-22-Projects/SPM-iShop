@@ -16,7 +16,7 @@ const SearchBar = ({ onSearch }: { onSearch: (str: string) => any }) => {
                 variant="outlined"
                 size={"small"}
                 onChange={(e) => {
-                    onSearch(e.target.value.toLocaleLowerCase());
+                    onSearch(e.target.value.toLowerCase());
                 }}
             />
         </div>
