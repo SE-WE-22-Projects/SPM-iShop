@@ -25,6 +25,7 @@ export default function ItemAllocation() {
   // api data holders
   const [unallocatedItemList,setUnallocatedItemList] = React.useState<itemDataTable[]>([]);
   const [allocatedItemList,setAllocatedItemList] = React.useState<itemDataTable[]>([]);
+  const [rackList,setRackList] = React.useState([]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -39,8 +40,13 @@ export default function ItemAllocation() {
   // get allocated item details
   const getAllocatedItems = async () => {
     const res = await axios.get("api/inventory/items/allocated");
-    console.log(res.data);
     setAllocatedItemList(res.data);
+  }
+
+  // get all rack details
+  const getAllRackDetails = async ()=> {
+    const res = await axios.get("api/inventory/mapping/rack");
+    setRackList(res.data);
   }
 
   // confirm box handle
@@ -54,7 +60,9 @@ export default function ItemAllocation() {
         try{
           await axios.put(`/items/allocate/${itemId}`,{rackId: rackId});
           enqueueSnackbar("Item allocated successfuly...", {variant:  "success"});
-          // close modal
+          handleClose();
+          getAllocatedItems();
+          getUnallocatedItems();
         }
         catch(e){
           enqueueSnackbar("failed to allocate item...", {variant: "error"});
@@ -80,6 +88,7 @@ export default function ItemAllocation() {
   useEffect(()=>{
     getAllocatedItems();
     getUnallocatedItems();
+    getAllRackDetails();
   },[]);
 
   return (
@@ -98,11 +107,11 @@ export default function ItemAllocation() {
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
         Item Two
-        <Allocation data={unallocatedItemList} allocation={allocateItemToRack} handleClickOpen={handleClickOpen} handleClose={handleClose} open={open}/>
+        <Allocation data={unallocatedItemList} allocation={allocateItemToRack} handleClickOpen={handleClickOpen} handleClose={handleClose} open={open} rackList={rackList} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
         Item Three
-        <ModifyAllocation data={allocatedItemList} allocation={allocateItemToRack} />
+        <ModifyAllocation data={allocatedItemList} allocation={allocateItemToRack} handleClickOpen={handleClickOpen} handleClose={handleClose} open={open} rackList={rackList}/>
       </CustomTabPanel>
     </Box>
   );
