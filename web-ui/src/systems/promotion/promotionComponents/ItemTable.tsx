@@ -4,7 +4,7 @@ import { itemDataTable } from "../../inventory/itemComponents/ItemTable";
 
 
 
-const ItemTable = ({data, setSelectedRow, handleClose}:{data: itemDataTable[], setSelectedRow: (data:itemDataTable)=>void, handleClose: ()=>void}) => {
+const ItemTable = ({data, setSelectedRow, handleClose, query}:{data: itemDataTable[], setSelectedRow: (data:itemDataTable)=>void, handleClose: ()=>void, query: string}) => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] =useState(10);
   
@@ -36,6 +36,14 @@ const ItemTable = ({data, setSelectedRow, handleClose}:{data: itemDataTable[], s
                     <TableBody>
                         {data
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                            .filter((row: itemDataTable)=>{
+                                if(query){
+                                    return (row.name?.toLowerCase()?.startsWith(query));
+                                }
+                                else{
+                                    return row;
+                                }
+                            })
                             .map((row: itemDataTable) => {
                                 return (
                                     <TableRow hover tabIndex={-1} key={row.id} onClick={()=>{
