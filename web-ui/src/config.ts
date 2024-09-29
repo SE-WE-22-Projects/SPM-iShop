@@ -12,6 +12,9 @@ export const siteTheme = createTheme({
             main: '#f50057',
         },
     },
+    typography: {
+        fontSize: 18,
+    }
 });
 
 // The width of the sidebar drawer
