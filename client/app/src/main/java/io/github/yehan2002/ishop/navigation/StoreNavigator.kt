@@ -6,7 +6,7 @@ import io.github.yehan2002.ishop.util.RingBuffer
 
 class StoreNavigator {
     private var markerBuffer = RingBuffer<Map<Int, StoreMap.Point2D>>(BUFFER_SIZE)
-    val storeMap: StoreMap = StoreMap.loadTestMap()
+    val storeMap: StoreMap = StoreMap.loadMapJSON(MapData)
 
     // TODO: alert on entering new section, tag detection
 
@@ -86,7 +86,7 @@ class StoreNavigator {
         position = StoreMap.Point2D(positionSum.x / positions.size, positionSum.y / positions.size)
 
         val tile = storeMap.getTileAt(position)
-        
+
         currentTile = tile
         section = if (tile is MapObject.Valid) tile.position() else MapObject.UnknownSection
     }

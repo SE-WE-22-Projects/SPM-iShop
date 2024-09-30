@@ -2,6 +2,7 @@ package io.github.yehan2002.ishop.navigation
 
 import android.util.Log
 import io.github.yehan2002.ishop.MainActivity.Companion.TAG
+import org.json.JSONObject
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.roundToInt
@@ -55,6 +56,28 @@ class StoreMap(val width: Int, val height: Int) {
     }
 
 
+    override fun toString(): String {
+        val sb = StringBuilder()
+
+        for (row in map) {
+            if (sb.isNotEmpty()) sb.append('\n')
+
+            for (tile in row) {
+                sb.append(
+                    when (tile) {
+                        MapObject.Invalid -> "U"
+                        is MapObject.FloorTag -> "T"
+                        is MapObject.Section -> tile.sectionId.toString()
+                        is MapObject.Shelf -> "R"
+                    }
+                )
+            }
+        }
+
+
+        return sb.toString()
+    }
+
     /**
      * A position represented as 2 doubles.
      */
@@ -74,7 +97,94 @@ class StoreMap(val width: Int, val height: Int) {
         }
     }
 
+
     companion object {
+        fun loadMapJSON(jsonData: String): StoreMap {
+            val json = JSONObject(jsonData)
+
+            val height = json.getJSONObject("size").getDouble("height")
+            val width = json.getJSONObject("size").getDouble("width")
+
+            val map = StoreMap((width).toInt(), (height).toInt())
+
+            val sections = mutableMapOf<Int, MapObject.Section>()
+
+            val sectionsArray = json.getJSONArray("sections")
+            for (i in 0..<sectionsArray.length()) {
+                val data = sectionsArray.getJSONObject(i)
+                val section =
+                    MapObject.Section(
+                        data.getInt("id"),
+                        data.getString("name")
+                    )
+                sections[section.sectionId] = section
+            }
+
+            val rackArray = json.getJSONArray("racks")
+            for (i in 0..<rackArray.length()) {
+                val data = rackArray.getJSONObject(i)
+                val section = sections[data.getInt("section")]!!
+
+                val rack = MapObject.Shelf(data.getInt("id"), section)
+
+                val topX = (data.getDouble("top_x")).toInt()
+                val topY = (data.getDouble("top_y")).toInt()
+                val bottomX = (data.getDouble("bottom_x")).toInt()
+                val bottomY = (data.getDouble("bottom_y")).toInt()
+
+                for (x in topX..<bottomX) {
+                    for (y in topY..<bottomY) {
+                        if (map.map[x][y] !== MapObject.Invalid) {
+                            throw RuntimeException("Tiles overlap ${map.map[x][y]}")
+                        }
+
+                        map.map[x][y] = rack
+                    }
+                }
+            }
+
+            val tagArray = json.getJSONArray("tags")
+            for (i in 0..<tagArray.length()) {
+                val data = tagArray.getJSONObject(i)
+                val section = sections[data.getInt("section")]!!
+
+                val tag = MapObject.FloorTag(data.getInt("code"), section)
+
+                val posX = (data.getDouble("pos_x")).toInt()
+                val posY = (data.getDouble("pos_y")).toInt()
+
+                if (map.map[posX][posY] !== MapObject.Invalid) {
+                    throw RuntimeException("Tiles overlap ${map.map[posX][posY]}")
+                }
+
+                map.map[posX][posY] = tag
+                map.markers[tag.tagId] = Point2D(posX, posY)
+            }
+
+            for (i in 0..<sectionsArray.length()) {
+                val data = sectionsArray.getJSONObject(i)
+                val section = sections[data.getInt("id")]!!
+
+                val topX = (data.getDouble("top_x")).toInt()
+                val topY = (data.getDouble("top_y")).toInt()
+                val bottomX = (data.getDouble("bottom_x")).toInt()
+                val bottomY = (data.getDouble("bottom_y")).toInt()
+
+                for (x in topX..<bottomX) {
+                    for (y in topY..<bottomY) {
+                        if (map.map[x][y] == MapObject.Invalid) {
+                            map.map[x][y] = section
+                        }
+
+                    }
+                }
+
+
+            }
+
+            return map
+        }
+
         fun loadTestMap(): StoreMap {
 
             // the test map has 4 sections that have 2 shelves and 2 tags each.
