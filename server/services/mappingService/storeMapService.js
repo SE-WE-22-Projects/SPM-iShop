@@ -66,7 +66,7 @@ const getStoreMap = async (req, res) => {
 
     const racks = rackData.map(r => {
         // TODO: validate the rack position coordinates.
-        return { id: r.id, top_x: r.top_x, top_y: r.top_y, bottom_x: r.bottom_x, bottom_y: r.bottom_y, section: t.sectionId }
+        return { id: r.id, top_x: r.top_x, top_y: r.top_y, bottom_x: r.bottom_x, bottom_y: r.bottom_y, section: r.sectionId }
     })
 
 
