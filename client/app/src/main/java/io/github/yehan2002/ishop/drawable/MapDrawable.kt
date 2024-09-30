@@ -31,8 +31,7 @@ class MapDrawable(private val storeMap: StoreMap, private val userPos: StoreMap.
 
     private val user = Paint().apply {
         style = Paint.Style.FILL
-        color = Color.BLUE
-        alpha = 200
+        color = Color.parseColor("#0084CA")
     }
 
     @SuppressLint("CanvasSize")
@@ -74,11 +73,10 @@ class MapDrawable(private val storeMap: StoreMap, private val userPos: StoreMap.
             val ux = userPos.x
             val uy = userPos.y
 
-            canvas.drawRect(
-                widthOffset + ((ux - 0.25) * TILE_SIZE).toFloat(),
-                ((uy - 0.25) * TILE_SIZE).toFloat(),
-                widthOffset + ((ux + 0.25) * TILE_SIZE).toFloat(),
-                ((uy + 0.25) * TILE_SIZE).toFloat(),
+            canvas.drawCircle(
+                widthOffset + (ux * TILE_SIZE).toFloat(),
+                (uy * TILE_SIZE).toFloat(),
+                (TILE_SIZE / 2.5).toFloat(),
                 user
             )
 
@@ -98,6 +96,6 @@ class MapDrawable(private val storeMap: StoreMap, private val userPos: StoreMap.
     override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 
     companion object {
-        const val TILE_SIZE = 64
+        const val TILE_SIZE = 32
     }
 }
