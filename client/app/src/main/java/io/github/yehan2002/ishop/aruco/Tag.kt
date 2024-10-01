@@ -4,6 +4,9 @@ import android.graphics.PointF
 import org.opencv.core.Mat
 
 
+/**
+ * This class contains the details of a single detected aruco tag.
+ */
 class Tag(
     val id: Int,
     tagCorners: Mat,
@@ -12,6 +15,10 @@ class Tag(
 ) {
     var corners: Array<PointF>
 
+    /**
+     * Gets the distance to the tag from the user.
+     * If the distance cannot be calculated, [Double.NaN] is returned.
+     */
     val distance: Double
         get() {
             if (position != null) return position.z
@@ -33,6 +40,5 @@ class Tag(
     }
 
     class Position(val x: Double, val y: Double, val z: Double)
-
 }
 

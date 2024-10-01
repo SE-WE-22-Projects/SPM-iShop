@@ -27,14 +27,11 @@ import io.github.yehan2002.ishop.drawable.TagDrawable
 import io.github.yehan2002.ishop.navigation.StoreNavigator
 import org.opencv.android.OpenCVLoader
 import org.opencv.objdetect.Objdetect
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 import kotlin.math.roundToInt
 
 
 class MainActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityMainBinding
-    private lateinit var cameraExecutor: ExecutorService
     private lateinit var detector: ArucoDetector
     private lateinit var navigator: StoreNavigator
 
@@ -61,13 +58,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         detector = ArucoDetector(
-            0.06,
-            Objdetect.getPredefinedDictionary(Objdetect.DICT_4X4_50),
+            Objdetect.getPredefinedDictionary(Objdetect.DICT_4X4_50), 0.06,
         )
 
-
-
-        cameraExecutor = Executors.newSingleThreadExecutor()
 
 
         navigator = StoreNavigator()
@@ -209,11 +202,6 @@ class MainActivity : AppCompatActivity() {
         ContextCompat.checkSelfPermission(
             baseContext, it
         ) == PackageManager.PERMISSION_GRANTED
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        cameraExecutor.shutdown()
     }
 
 

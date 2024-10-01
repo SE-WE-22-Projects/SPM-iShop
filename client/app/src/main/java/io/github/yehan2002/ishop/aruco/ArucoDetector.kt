@@ -21,27 +21,19 @@ import kotlin.math.roundToInt
 import kotlin.math.sin
 
 class ArucoDetector(
-    private val markerLength: Double,
     dictionary: Dictionary,
+    markerSize: Double
 ) {
-    private val detector: ArucoDetector = ArucoDetector(dictionary)
-    private val objPointsMat: MatOfPoint3f
+    private var detector: ArucoDetector = ArucoDetector(dictionary)
+    private lateinit var objPointsMat: MatOfPoint3f
 
     private var calibration = CameraCalibration()
+    private var markerLength: Double = -1.0
 
     init {
-
-        // create the object point matrix
-        val halfSize = this.markerLength / 2
-        val objPointsArray: MutableList<Point3> = ArrayList()
-        objPointsArray.add(Point3(-halfSize, halfSize, 0.0))
-        objPointsArray.add(Point3(halfSize, halfSize, 0.0))
-        objPointsArray.add(Point3(halfSize, -halfSize, 0.0))
-        objPointsArray.add(Point3(-halfSize, -halfSize, 0.0))
-
-        this.objPointsMat = MatOfPoint3f()
-        this.objPointsMat.fromList(objPointsArray)
+        setMarkerLength(markerSize)
     }
+
 
     /**
      * Sets the camera calibration values for pose estimation.
@@ -49,6 +41,27 @@ class ArucoDetector(
      */
     fun setCalibration(calibration: CameraCalibration) {
         this.calibration = calibration
+    }
+
+    /**
+     * Sets the length of the side of the aruco tag.
+     * Setting this to a negative value will disable distance and angle estimations.
+     */
+    fun setMarkerLength(length: Double) {
+        this.objPointsMat = MatOfPoint3f()
+        this.markerLength = length
+
+        // create the object point matrix if length is valid
+        if (length > 0) {
+            val halfSize = length / 2
+            val objPointsArray: MutableList<Point3> = ArrayList()
+            objPointsArray.add(Point3(-halfSize, halfSize, 0.0))
+            objPointsArray.add(Point3(halfSize, halfSize, 0.0))
+            objPointsArray.add(Point3(halfSize, -halfSize, 0.0))
+            objPointsArray.add(Point3(-halfSize, -halfSize, 0.0))
+
+            this.objPointsMat.fromList(objPointsArray)
+        }
     }
 
 
@@ -81,7 +94,7 @@ class ArucoDetector(
                 var rotation: Tag.Rotation? = null
                 var postion: Tag.Position? = null
 
-                if (calibration.isValid) {
+                if (calibration.isValid && markerLength > 0) {
                     val rvec = Mat(3, 1, CvType.CV_64F)
                     val tvec = Mat(3, 1, CvType.CV_64F)
 
@@ -140,6 +153,8 @@ class ArucoDetector(
                         )
                     }
                 }
+
+
 
                 detectedTags.add(
                     Tag(
