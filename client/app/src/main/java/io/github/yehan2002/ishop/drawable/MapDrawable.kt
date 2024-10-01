@@ -8,10 +8,10 @@ import android.graphics.Paint
 import android.graphics.PixelFormat
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
-import io.github.yehan2002.ishop.navigation.MapObject
-import io.github.yehan2002.ishop.navigation.StoreMap
+import io.github.yehan2002.ishop.navigation.MapObjects
+import io.github.yehan2002.ishop.navigation.ShopMap
 
-class MapDrawable(private val storeMap: StoreMap, private val userPos: StoreMap.Point2D?) :
+class MapDrawable(private val shopMap: ShopMap, private val userPos: ShopMap.Point2D?) :
     Drawable() {
     private val empty = Paint().apply {
         style = Paint.Style.FILL
@@ -36,11 +36,11 @@ class MapDrawable(private val storeMap: StoreMap, private val userPos: StoreMap.
 
     @SuppressLint("CanvasSize")
     override fun draw(canvas: Canvas) {
-        val widthOffset = canvas.width - storeMap.width * TILE_SIZE
+        val widthOffset = canvas.width - shopMap.width * TILE_SIZE
 
-        for (x in 0..<storeMap.width) {
-            for (y in 0..<storeMap.height) {
-                val tile = storeMap.map[x][y]
+        for (x in 0..<shopMap.width) {
+            for (y in 0..<shopMap.height) {
+                val tile = shopMap.map[x][y]
 
                 val rect = RectF(
                     widthOffset + (x * TILE_SIZE).toFloat(),
@@ -51,10 +51,10 @@ class MapDrawable(private val storeMap: StoreMap, private val userPos: StoreMap.
 
                 val paint = when (tile) {
 
-                    MapObject.Invalid -> empty
-                    is MapObject.FloorTag -> tag
-                    is MapObject.Section -> empty
-                    is MapObject.Shelf -> rack
+                    MapObjects.Invalid -> empty
+                    is MapObjects.FloorTag -> tag
+                    is MapObjects.Section -> empty
+                    is MapObjects.Shelf -> rack
                 }
 
 
@@ -66,7 +66,7 @@ class MapDrawable(private val storeMap: StoreMap, private val userPos: StoreMap.
             }
         }
 
-        val userTile = storeMap.getTileAt(userPos)
+        val userTile = shopMap.getTileAt(userPos)
         if (userPos != null && userTile != empty) {
             // user is inside the store
 

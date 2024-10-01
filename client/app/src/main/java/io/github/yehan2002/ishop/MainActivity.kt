@@ -139,7 +139,7 @@ class MainActivity : AppCompatActivity() {
 
 
             // display the map
-            previewView.overlay.add(MapDrawable(navigator.storeMap, navigator.position))
+            previewView.overlay.add(MapDrawable(navigator.shopMap, navigator.position))
 
             proxy.close()
         }

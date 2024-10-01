@@ -1,14 +1,14 @@
 package io.github.yehan2002.ishop.navigation
 
-sealed class MapObject {
-    data object Invalid : MapObject()
+sealed class MapObjects {
+    data object Invalid : MapObjects()
 
 
     interface Valid {
         fun position(): Section
     }
 
-    data class Section(val sectionId: Int, val name: String) : MapObject(), Valid {
+    data class Section(val sectionId: Int, val name: String) : MapObjects(), Valid {
         override fun position(): Section {
             return this
         }
@@ -18,7 +18,7 @@ sealed class MapObject {
         }
     }
 
-    data class Shelf(val shelfId: Int, val section: Section) : MapObject(), Valid {
+    data class Shelf(val shelfId: Int, val section: Section) : MapObjects(), Valid {
         override fun position(): Section {
             return section
         }
@@ -28,7 +28,7 @@ sealed class MapObject {
         }
     }
 
-    data class FloorTag(val tagId: Int, val section: Section) : MapObject(), Valid {
+    data class FloorTag(val tagId: Int, val section: Section) : MapObjects(), Valid {
         override fun position(): Section {
             return section
         }

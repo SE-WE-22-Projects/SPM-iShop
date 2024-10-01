@@ -8,9 +8,9 @@ import kotlin.math.cos
 import kotlin.math.roundToInt
 import kotlin.math.sin
 
-class StoreMap(val width: Int, val height: Int) {
-    var map: Array<Array<MapObject>> = Array(width) {
-        Array(height) { MapObject.Invalid }
+class ShopMap(val width: Int, val height: Int) {
+    var map: Array<Array<MapObjects>> = Array(width) {
+        Array(height) { MapObjects.Invalid }
     }
     var markers = mutableMapOf<Int, Point2D>()
 
@@ -42,15 +42,15 @@ class StoreMap(val width: Int, val height: Int) {
 
     /**
      * Gets the tile at the given position.
-     * If the position is null or outside the mapped area, [MapObject.Invalid] is returned.
+     * If the position is null or outside the mapped area, [MapObjects.Invalid] is returned.
      */
-    fun getTileAt(pos: Point2D?): MapObject {
-        if (pos == null) return MapObject.Invalid
+    fun getTileAt(pos: Point2D?): MapObjects {
+        if (pos == null) return MapObjects.Invalid
 
         val x = pos.x.roundToInt()
         val y = pos.y.roundToInt()
 
-        if (x < 0 || x > height || y < 0 || y > width) return MapObject.Invalid
+        if (x < 0 || x > height || y < 0 || y > width) return MapObjects.Invalid
 
         return map[pos.x.roundToInt()][pos.y.roundToInt()]
     }
@@ -65,10 +65,10 @@ class StoreMap(val width: Int, val height: Int) {
             for (tile in row) {
                 sb.append(
                     when (tile) {
-                        MapObject.Invalid -> "U"
-                        is MapObject.FloorTag -> "T"
-                        is MapObject.Section -> tile.sectionId.toString()
-                        is MapObject.Shelf -> "R"
+                        MapObjects.Invalid -> "U"
+                        is MapObjects.FloorTag -> "T"
+                        is MapObjects.Section -> tile.sectionId.toString()
+                        is MapObjects.Shelf -> "R"
                     }
                 )
             }
@@ -99,21 +99,21 @@ class StoreMap(val width: Int, val height: Int) {
 
 
     companion object {
-        fun loadMapJSON(jsonData: String): StoreMap {
+        fun loadMapJSON(jsonData: String): ShopMap {
             val json = JSONObject(jsonData)
 
             val height = json.getJSONObject("size").getDouble("height")
             val width = json.getJSONObject("size").getDouble("width")
 
-            val map = StoreMap((width).toInt(), (height).toInt())
+            val map = ShopMap((width).toInt(), (height).toInt())
 
-            val sections = mutableMapOf<Int, MapObject.Section>()
+            val sections = mutableMapOf<Int, MapObjects.Section>()
 
             val sectionsArray = json.getJSONArray("sections")
             for (i in 0..<sectionsArray.length()) {
                 val data = sectionsArray.getJSONObject(i)
                 val section =
-                    MapObject.Section(
+                    MapObjects.Section(
                         data.getInt("id"),
                         data.getString("name")
                     )
@@ -125,7 +125,7 @@ class StoreMap(val width: Int, val height: Int) {
                 val data = rackArray.getJSONObject(i)
                 val section = sections[data.getInt("section")]!!
 
-                val rack = MapObject.Shelf(data.getInt("id"), section)
+                val rack = MapObjects.Shelf(data.getInt("id"), section)
 
                 val topX = (data.getDouble("top_x")).toInt()
                 val topY = (data.getDouble("top_y")).toInt()
@@ -134,7 +134,7 @@ class StoreMap(val width: Int, val height: Int) {
 
                 for (x in topX..<bottomX) {
                     for (y in topY..<bottomY) {
-                        if (map.map[x][y] !== MapObject.Invalid) {
+                        if (map.map[x][y] !== MapObjects.Invalid) {
                             throw RuntimeException("Tiles overlap ${map.map[x][y]}")
                         }
 
@@ -148,12 +148,12 @@ class StoreMap(val width: Int, val height: Int) {
                 val data = tagArray.getJSONObject(i)
                 val section = sections[data.getInt("section")]!!
 
-                val tag = MapObject.FloorTag(data.getInt("code"), section)
+                val tag = MapObjects.FloorTag(data.getInt("code"), section)
 
                 val posX = (data.getDouble("pos_x")).toInt()
                 val posY = (data.getDouble("pos_y")).toInt()
 
-                if (map.map[posX][posY] !== MapObject.Invalid) {
+                if (map.map[posX][posY] !== MapObjects.Invalid) {
                     throw RuntimeException("Tiles overlap ${map.map[posX][posY]}")
                 }
 
@@ -172,7 +172,7 @@ class StoreMap(val width: Int, val height: Int) {
 
                 for (x in topX..<bottomX) {
                     for (y in topY..<bottomY) {
-                        if (map.map[x][y] == MapObject.Invalid) {
+                        if (map.map[x][y] == MapObjects.Invalid) {
                             map.map[x][y] = section
                         }
 
@@ -185,14 +185,14 @@ class StoreMap(val width: Int, val height: Int) {
             return map
         }
 
-        fun loadTestMap(): StoreMap {
+        fun loadTestMap(): ShopMap {
 
             // the test map has 4 sections that have 2 shelves and 2 tags each.
             val sections = arrayOf(
-                MapObject.Section(1, "Section A"),
-                MapObject.Section(2, "Section B"),
-                MapObject.Section(3, "Section C"),
-                MapObject.Section(4, "Section D")
+                MapObjects.Section(1, "Section A"),
+                MapObjects.Section(2, "Section B"),
+                MapObjects.Section(3, "Section C"),
+                MapObjects.Section(4, "Section D")
             )
 
             val areaPattern = arrayOf(
@@ -203,15 +203,15 @@ class StoreMap(val width: Int, val height: Int) {
                 "L***R"
             )
 
-            val map = StoreMap(areaPattern.size * 2, areaPattern[0].length * 2 + 1)
+            val map = ShopMap(areaPattern.size * 2, areaPattern[0].length * 2 + 1)
 
 
             fun addArea(
                 startX: Int, startY: Int,
-                section: MapObject.Section,
-                shelfLeft: MapObject.Shelf,
-                shelfRight: MapObject.Shelf,
-                tag: MapObject.FloorTag
+                section: MapObjects.Section,
+                shelfLeft: MapObjects.Shelf,
+                shelfRight: MapObjects.Shelf,
+                tag: MapObjects.FloorTag
             ) {
 
                 var y = startY
@@ -242,9 +242,9 @@ class StoreMap(val width: Int, val height: Int) {
                     (idx / 2) * areaPattern[0].length,
                     (idx % 2) * (areaPattern.size + 1),
                     sections[idx],
-                    MapObject.Shelf(idx * 2 + 1, sections[idx]),
-                    MapObject.Shelf(idx * 2 + 2, sections[idx]),
-                    MapObject.FloorTag(idx + 1, sections[idx])
+                    MapObjects.Shelf(idx * 2 + 1, sections[idx]),
+                    MapObjects.Shelf(idx * 2 + 2, sections[idx]),
+                    MapObjects.FloorTag(idx + 1, sections[idx])
                 )
             }
 

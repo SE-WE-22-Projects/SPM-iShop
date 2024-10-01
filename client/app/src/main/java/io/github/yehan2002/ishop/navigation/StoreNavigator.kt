@@ -5,8 +5,9 @@ import io.github.yehan2002.ishop.navigation.StoreNavigator.Companion.BUFFER_SIZE
 import io.github.yehan2002.ishop.util.RingBuffer
 
 class StoreNavigator {
-    private var markerBuffer = RingBuffer<Map<Int, StoreMap.Point2D>>(BUFFER_SIZE)
-    val storeMap: StoreMap = StoreMap.loadMapJSON(MapData)
+    private var markerBuffer = RingBuffer<Map<Int, ShopMap.Point2D>>(BUFFER_SIZE)
+
+    val shopMap: ShopMap = ShopMap.loadMapJSON(MapData)
 
     // TODO: alert on entering new section, tag detection
 
@@ -14,11 +15,11 @@ class StoreNavigator {
      * The current detected position of the user.
      * This can be null if the position cannot be determined.
      */
-    var position: StoreMap.Point2D? = null
+    var position: ShopMap.Point2D? = null
 
-    var currentTile: MapObject = MapObject.Invalid
+    var currentTile: MapObjects = MapObjects.Invalid
 
-    var section: MapObject.Section = MapObject.UnknownSection
+    var section: MapObjects.Section = MapObjects.UnknownSection
 
     /**
      * This method adds the given markers to the marker buffer.
@@ -30,14 +31,14 @@ class StoreNavigator {
         if (!markers.isNullOrEmpty()) {
             // convert the markers to a map of ids and estimated user positions
 
-            val markerPos = mutableMapOf<Int, StoreMap.Point2D>()
+            val markerPos = mutableMapOf<Int, ShopMap.Point2D>()
             for (marker in markers) {
                 // relative position cannot be determined if the rotation data is not available
                 if (marker.rotation == null) continue
 
                 // estimate the user position from the marker distance and rotation
                 val est =
-                    storeMap.estimatePos(marker.id, marker.distance, marker.rotation.yaw)
+                    shopMap.estimatePos(marker.id, marker.distance, marker.rotation.yaw)
 
                 if (est != null)
                     markerPos[marker.id] = est
@@ -73,8 +74,8 @@ class StoreNavigator {
         // no markers, cannot determine position
         if (positions.isEmpty()) {
             position = null
-            currentTile = MapObject.Invalid
-            section = MapObject.UnknownSection
+            currentTile = MapObjects.Invalid
+            section = MapObjects.UnknownSection
             return
         }
 
@@ -83,12 +84,12 @@ class StoreNavigator {
             .reduce { acc, point2D -> point2D.add(acc) }
 
         // get the average position of the user based on all detected tags.
-        position = StoreMap.Point2D(positionSum.x / positions.size, positionSum.y / positions.size)
+        position = ShopMap.Point2D(positionSum.x / positions.size, positionSum.y / positions.size)
 
-        val tile = storeMap.getTileAt(position)
+        val tile = shopMap.getTileAt(position)
 
         currentTile = tile
-        section = if (tile is MapObject.Valid) tile.position() else MapObject.UnknownSection
+        section = if (tile is MapObjects.Valid) tile.position() else MapObjects.UnknownSection
     }
 
 
@@ -104,17 +105,17 @@ class StoreNavigator {
         /**
          * Add a position with the given weight.
          */
-        fun add(weight: Int, newPos: StoreMap.Point2D) {
+        fun add(weight: Int, newPos: ShopMap.Point2D) {
             this.weight += weight
             this.x += newPos.x * weight
             this.y += newPos.y * weight
         }
 
         /**
-         * Convert the weighted position to [StoreMap.Point2D].
+         * Convert the weighted position to [ShopMap.Point2D].
          */
-        fun toPoint(): StoreMap.Point2D {
-            return StoreMap.Point2D(x / weight, y / weight)
+        fun toPoint(): ShopMap.Point2D {
+            return ShopMap.Point2D(x / weight, y / weight)
         }
     }
 

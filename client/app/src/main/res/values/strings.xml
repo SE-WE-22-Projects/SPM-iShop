@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">iShop</string>
     <string name="error_camera_support">Camera is not supported</string>
+    <string name="promo_btn">Promotions</string>
+    <string name="search_btn">Search</string>
+    <string name="search_btn_desc">Search for item in store</string>
+    <string name="promo_btn_desc">List the current ongoing promotions.</string>
 </resources>

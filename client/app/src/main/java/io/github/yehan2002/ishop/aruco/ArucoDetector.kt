@@ -23,8 +23,7 @@ import kotlin.math.sin
 class ArucoDetector(
     private val markerLength: Double,
     dictionary: Dictionary,
-
-    ) {
+) {
     private val detector: ArucoDetector = ArucoDetector(dictionary)
     private val objPointsMat: MatOfPoint3f
 
