@@ -19,7 +19,40 @@ val MapData = "{\n" +
         "      \"section\": 1\n" +
         "    }\n" +
         "  ],\n" +
-        "  \"racks\": [],\n" +
+        "  \"racks\": [\n" +
+        "    {\n" +
+        "      \"id\": 1,\n" +
+        "      \"top_x\": 0,\n" +
+        "      \"top_y\": 2.5,\n" +
+        "      \"bottom_x\": 1,\n" +
+        "      \"bottom_y\": 5,\n" +
+        "      \"section\": 1\n" +
+        "    },\n" +
+        "    {\n" +
+        "      \"id\": 2,\n" +
+        "      \"top_x\": 0,\n" +
+        "      \"top_y\": 0,\n" +
+        "      \"bottom_x\": 1,\n" +
+        "      \"bottom_y\": 2.5,\n" +
+        "      \"section\": 1\n" +
+        "    },\n" +
+        "    {\n" +
+        "      \"id\": 3,\n" +
+        "      \"top_x\": 4,\n" +
+        "      \"top_y\": 2.5,\n" +
+        "      \"bottom_x\": 5,\n" +
+        "      \"bottom_y\": 5,\n" +
+        "      \"section\": 1\n" +
+        "    },\n" +
+        "    {\n" +
+        "      \"id\": 4,\n" +
+        "      \"top_x\": 4,\n" +
+        "      \"top_y\": 0,\n" +
+        "      \"bottom_x\": 5,\n" +
+        "      \"bottom_y\": 2.5,\n" +
+        "      \"section\": 1\n" +
+        "    }\n" +
+        "  ],\n" +
         "  \"sections\": [\n" +
         "    {\n" +
         "      \"id\": 1,\n" +
