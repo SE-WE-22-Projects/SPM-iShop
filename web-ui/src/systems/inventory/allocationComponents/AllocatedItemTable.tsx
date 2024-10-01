@@ -18,6 +18,7 @@ const AllocatedItemTable = ({data, query, allocation, handleClickOpen, handleClo
   };
 
   const [modalData,setModaldata] = useState<itemDataTable>({});
+  const [rackId, setRackId] = useState<number>();
 
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden', backgroundColor: "rgba(255, 255, 255, 0.5)" }}>
@@ -65,6 +66,7 @@ const AllocatedItemTable = ({data, query, allocation, handleClickOpen, handleClo
                                 onClick={() => {
                                   handleClickOpen();
                                   setModaldata(row);
+                                  setRackId(row.rackId);
                                 }}
                             >
                                 <MoreVert />
@@ -85,7 +87,7 @@ const AllocatedItemTable = ({data, query, allocation, handleClickOpen, handleClo
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-        <AllocationModal handleClose={handleClose} open={open} allocation={allocation} data={modalData} rackList={rackList}/>
+        <AllocationModal handleClose={handleClose} open={open} allocation={allocation} data={modalData} rackList={rackList} rackId={rackId}/>
       </Paper>
   )
 }
