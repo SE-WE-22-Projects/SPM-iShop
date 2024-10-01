@@ -1,8 +1,9 @@
 import { Paper, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TablePagination, IconButton } from "@mui/material";
 import {MoreVert} from '@mui/icons-material';
 import { useState } from "react";
+import UpdateItemModal, { updateItemType } from "./UpdateItemModal";
 
-export interface data{
+export interface itemDataTable{
     id?: number;
     name?: string;
     desc?: string;
@@ -13,7 +14,7 @@ export interface data{
     rackId?: number;
 }
 
-const ItemTable = ({data, query}:{data: data[], query: string}) => {
+const ItemTable = ({data, query, updateItem, deleteItem, updateOpen, itemUpdateModalOpen, itemUpdateModalClose}:{data: itemDataTable[], query: string, updateItem: (data:updateItemType)=>void, deleteItem: (id:number|null)=>void, updateOpen:boolean, itemUpdateModalOpen: ()=>void, itemUpdateModalClose: ()=>void}) => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] =useState(10);
   
@@ -25,10 +26,13 @@ const ItemTable = ({data, query}:{data: data[], query: string}) => {
       setRowsPerPage(+event.target.value);
       setPage(0);
     };
+
+    // item update modal data
+    const [updateModalData,setUpdateModalData] = useState<itemDataTable>({});
   
     return (
-      <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-        <TableContainer sx={{ maxHeight: 440 }}>
+      <Paper sx={{ width: '100%', overflow: 'hidden', backgroundColor: "rgba(255, 255, 255, 0.4)" }}>
+        <TableContainer sx={{ maxHeight: 440, }}>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
@@ -39,22 +43,21 @@ const ItemTable = ({data, query}:{data: data[], query: string}) => {
                     <TableCell>Price</TableCell>
                     <TableCell>Unit</TableCell>
                     <TableCell>Quantity</TableCell>
-                    <TableCell>Rack Id</TableCell>
                     <TableCell size="medium">Action</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {data
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .filter((row: data)=>{
+                .filter((row: itemDataTable)=>{
                     if(query){
-                        return (row.name?.startsWith(query));
+                        return (row.name?.toLocaleLowerCase()?.startsWith(query));
                     }
                     else{
                         return row;
                     }
                 })
-                .map((row : data) => {
+                .map((row : itemDataTable) => {
                   return (
                     <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                         <TableCell key={row.id}>{row.id}</TableCell>
@@ -64,14 +67,13 @@ const ItemTable = ({data, query}:{data: data[], query: string}) => {
                         <TableCell key={row.price}>{row.price}</TableCell>
                         <TableCell key={row.unit}>{row.unit}</TableCell>
                         <TableCell key={row.qty}>{row.qty}</TableCell>
-                        <TableCell key={row.rackId}>{row.rackId}</TableCell>
                         <TableCell size="medium">
                             <IconButton
                                 color='success'
                                 size='small'
                                 onClick={() => {
-                                    // props.setLotModalData(row);
-                                    // props.handleLotModalOpen();
+                                  setUpdateModalData(row);
+                                  itemUpdateModalOpen();
                                 }}
                             >
                                 <MoreVert />
@@ -92,10 +94,10 @@ const ItemTable = ({data, query}:{data: data[], query: string}) => {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
+        {/* update modal */}
+        <UpdateItemModal open={updateOpen} handleClose={itemUpdateModalClose} data={updateModalData} updateItem={updateItem} deleteItem={deleteItem} />
       </Paper>
     );
 }
 
 export default  ItemTable;
-
-

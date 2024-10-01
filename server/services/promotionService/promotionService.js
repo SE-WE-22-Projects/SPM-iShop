@@ -79,7 +79,7 @@ const updatePromotion = async (req, res)=>{
         const promoID = Number.parseInt(req.params.id);
         const updates = req.body;
         // check existance of promotion
-        const promotion = await Promo.findByPk(promoID);
+        var promotion = await Promo.findByPk(promoID);
         if(!promotion){
            return  res.status(404).json({
                 message : "Promotion not found"
@@ -93,9 +93,8 @@ const updatePromotion = async (req, res)=>{
         });
     }
     catch(error){
-        res.status(500).send( error , "Could not update, error occured");
+        res.status(500).send("Could not update, error occured");
     }
-    
 }
 
 /**

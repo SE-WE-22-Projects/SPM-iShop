@@ -1,12 +1,14 @@
 const { DataTypes, Model } = require("sequelize");
 const { sequelize } = require(".");
-const Item = require("./Item");
+const Section = require("./Section");
 
 const Tag = sequelize.define("tag", {
-    tag_code: DataTypes.INTEGER
+    code: DataTypes.INTEGER,
+    pos_x: DataTypes.FLOAT,
+    pos_y: DataTypes.FLOAT
 });
 
-Tag.belongsTo(Item, { onDelete: "CASCADE", onUpdate: "CASCADE" })
+Tag.belongsTo(Section, { onDelete: "CASCADE", onUpdate: "CASCADE" })
 
 module.exports = Tag;
 
