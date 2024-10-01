@@ -1,9 +1,7 @@
 package io.github.yehan2002.ishop
 
-import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Matrix
-import android.hardware.SensorManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -22,7 +20,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import io.github.yehan2002.ishop.aruco.ArucoDetector
 import io.github.yehan2002.ishop.aruco.CameraCalibration
-import io.github.yehan2002.ishop.aruco.RotationSensor
 import io.github.yehan2002.ishop.databinding.ActivityMainBinding
 import io.github.yehan2002.ishop.drawable.DebugInfoDrawable
 import io.github.yehan2002.ishop.drawable.MapDrawable
@@ -39,7 +36,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityMainBinding
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var detector: ArucoDetector
-    private lateinit var rotation: RotationSensor
     private lateinit var navigator: StoreNavigator
 
     @RequiresApi(Build.VERSION_CODES.P)
@@ -69,15 +65,12 @@ class MainActivity : AppCompatActivity() {
             Objdetect.getPredefinedDictionary(Objdetect.DICT_4X4_50),
         )
 
-        rotation = RotationSensor(
-            getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        )
+
 
         cameraExecutor = Executors.newSingleThreadExecutor()
 
 
         navigator = StoreNavigator()
-        rotation.startTracking()
     }
 
     @RequiresApi(Build.VERSION_CODES.P)
@@ -113,7 +106,6 @@ class MainActivity : AppCompatActivity() {
             }
 
             val tags = detector.detectMarkers(proxy.toBitmap())
-            rotation.updateOrientationAngles()
             navigator.addMarkers(tags)
 
             previewView.overlay.clear()
@@ -222,7 +214,6 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         cameraExecutor.shutdown()
-        rotation.stopTracking()
     }
 
 
