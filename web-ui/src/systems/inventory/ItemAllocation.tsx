@@ -45,7 +45,7 @@ export default function ItemAllocation() {
 
   // get all rack details
   const getAllRackDetails = async ()=> {
-    const res = await axios.get("api/inventory/mapping/rack");
+    const res = await axios.get("api/mapping/rack");
     setRackList(res.data);
   }
 
@@ -53,12 +53,12 @@ export default function ItemAllocation() {
   const confirm = useConfirm();
 
   // allocate item to rack
-  const allocateItemToRack = async(itemId: number,rackId: number)=> {
+  const allocateItemToRack = async(itemId: number|null,rackId: number|null)=> {
     confirm({description: "Confirm Item Allocation"})
     .then(
       async()=>{
         try{
-          await axios.put(`/items/allocate/${itemId}`,{rackId: rackId});
+          await axios.put(`api/inventory/items/allocate/${itemId}`,{rackId: rackId});
           enqueueSnackbar("Item allocated successfuly...", {variant:  "success"});
           handleClose();
           getAllocatedItems();
@@ -102,15 +102,13 @@ export default function ItemAllocation() {
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
-        Item One
+        Need to add overview content
         <AllocationOverView />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        Item Two
         <Allocation data={unallocatedItemList} allocation={allocateItemToRack} handleClickOpen={handleClickOpen} handleClose={handleClose} open={open} rackList={rackList} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
-        Item Three
         <ModifyAllocation data={allocatedItemList} allocation={allocateItemToRack} handleClickOpen={handleClickOpen} handleClose={handleClose} open={open} rackList={rackList}/>
       </CustomTabPanel>
     </Box>
