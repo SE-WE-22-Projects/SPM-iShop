@@ -21,7 +21,7 @@ const hashPassword = async (password)=>{
  * used to comapare 
  * @param {string} password 
  * @param {string} hashedPassword 
- * @returns 
+ * @returns {boolean}
  */
 const validatePassword = async (password, hashedPassword) => {
     try {
