@@ -4,6 +4,7 @@ import mapping from "./systems/mapping";
 import employee from "./systems/employee";
 import promotions from "./systems/promotion";
 import { DashboardPage, Route } from "./components/DashboardLayout";
+import Login from "./Login";
 
 let dashBoardTabs: Route[] = [];
 
@@ -18,11 +19,17 @@ importedRoutes.forEach((route) => {
 })
 
 // create router with all loaded routes
-const domRouter = createBrowserRouter([{
-  path: "/",
-  element: <DashboardPage routes={{ title: "ShopVision", basePath: "", routes: dashBoardTabs, dashboard: <></> }} />,
-  children: [...dashBoardTabs],
-}]);
+const domRouter = createBrowserRouter([
+  {
+    path: "/",
+    element: <Login />
+  },
+  {
+    path: "/sys",
+    element: <DashboardPage routes={{ title: "ShopVision", basePath: "sys", routes: dashBoardTabs, dashboard: <></> }} />,
+    children: [...dashBoardTabs],
+  }
+]);
 
 const App = () => {
   return <RouterProvider router={domRouter} />
