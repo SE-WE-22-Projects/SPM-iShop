@@ -74,7 +74,6 @@ const Employee = () => {
         }
         //api call
         try{
-            console.log(empData);
             await axios.post("api/employee/employee",empData);
             enqueueSnackbar("Employee added successfuly...", {variant:  "success"});
             employeeAddModalClose();
