@@ -15,12 +15,12 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 500,
+  width: 550,
   bgcolor: 'background.paper',
   boxShadow: 24,
   height: '850px',
   p: 4,
-  // overflow: 'auto'
+  overflow: 'auto'
 };
 
 export interface EmpAddData{

@@ -8,6 +8,7 @@ import { enqueueSnackbar } from 'notistack';
 import axios from "axios";
 import { updateItemType } from "./itemComponents/UpdateItemModal";
 import { useConfirm } from 'material-ui-confirm';
+import PageLoader from "../../common/PageLoader";
 
 const Item = () => { 
     // real time search
@@ -37,8 +38,10 @@ const Item = () => {
         setItemList(res.data);
     }
 
+    const [isLoading,setIsLoading] = useState<boolean>(true);
     useEffect(()=>{
-        getItems();
+        getItems(); 
+        setTimeout(()=>setIsLoading(false),1000);
     },[]);
 
     // add item
@@ -155,16 +158,20 @@ const Item = () => {
 
     return (
         <div>
-            <Typography variant="h3" align="center"> Item Management</Typography>
-            <Box sx={{ display: "flex" }} my={2} mx={15} >
-                <SearchBar onSearch={search} />
-                <Box flexGrow={1}></Box> 
-                <Button variant="outlined" startIcon={<Add />} onClick={itemAddModalOpen} >
-                    Add Item
-                </Button>
-            </Box>
-            <ItemTable data={itemList} query={searchQuery} updateOpen={updateOpen} itemUpdateModalOpen={itemUpdateModalOpen} itemUpdateModalClose={itemUpdateModalClose}  updateItem={updateItem} deleteItem={deleteItem}  />
-            <AddItemModal itemAddModalClose={itemAddModalClose} open={addOpen} addItem={addItem} />
+            {isLoading ? <PageLoader /> :
+                <div>
+                    <Typography variant="h3" align="center"> Item Management</Typography>
+                    <Box sx={{ display: "flex" }} my={2} mx={15} >
+                        <SearchBar onSearch={search} />
+                        <Box flexGrow={1}></Box>
+                        <Button variant="outlined" startIcon={<Add />} onClick={itemAddModalOpen} >
+                            Add Item
+                        </Button>
+                    </Box>
+                    <ItemTable data={itemList} query={searchQuery} updateOpen={updateOpen} itemUpdateModalOpen={itemUpdateModalOpen} itemUpdateModalClose={itemUpdateModalClose} updateItem={updateItem} deleteItem={deleteItem} />
+                    <AddItemModal itemAddModalClose={itemAddModalClose} open={addOpen} addItem={addItem} />
+                </div>
+            }
         </div>     
     );
 }

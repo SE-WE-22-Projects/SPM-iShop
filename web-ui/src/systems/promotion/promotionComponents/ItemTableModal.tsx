@@ -4,6 +4,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import ItemTable from './ItemTable';
 import { itemDataTable } from '../../inventory/itemComponents/ItemTable';
 import { Box, Modal } from '@mui/material';
+import SearchBar from '../../../common/SearchBar';
+import { useState } from 'react';
 
 const style = {
     position: 'absolute' as 'absolute',
@@ -18,6 +20,10 @@ const style = {
   };
 
 const ItemTableModal = ({open, handleClose, data, setSelectedRow}:{open: boolean, handleClose :()=>void, data:itemDataTable[], setSelectedRow: (data:itemDataTable)=>void })=>{
+    const [searchQuery,setSearchQuery] = useState("");
+    const search = (query: string)=> {
+        setSearchQuery(query);
+    }
     return (
         <Modal
             open={open}
@@ -42,7 +48,10 @@ const ItemTableModal = ({open, handleClose, data, setSelectedRow}:{open: boolean
                     <CloseIcon />
                 </IconButton>
                 <Box id="modal-modal-description" sx={{ mt: 2 }}>
-                    <ItemTable data={data} setSelectedRow={setSelectedRow} handleClose={handleClose} />
+                    <Box>
+                        <SearchBar onSearch={search} />
+                    </Box>
+                    <ItemTable data={data} setSelectedRow={setSelectedRow} handleClose={handleClose} query={searchQuery} />
                 </Box>
             </Box>
         </Modal>

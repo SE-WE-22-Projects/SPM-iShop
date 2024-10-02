@@ -1,43 +1,34 @@
 import { Paper, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TablePagination, IconButton } from "@mui/material";
 import {MoreVert} from '@mui/icons-material';
 import { useState } from "react";
-import UpdateItemModal, { updateItemType } from "./UpdateItemModal";
+import { itemDataTable } from "../itemComponents/ItemTable";
+import AllocationModal from "./AllocationModal";
 
-export interface itemDataTable{
-    id?: number;
-    name?: string;
-    desc?: string;
-    category?: string,
-    unit?: string,
-    price?: number;
-    qty?: number;
-    rackId?: number;
-}
+const AllocatedItemTable = ({data, query, allocation, handleClickOpen, handleClose, open, rackList}: {data:itemDataTable[], query:string, allocation: (itemID: number,rackId: number)=>void, handleClickOpen: ()=>void, handleClose: ()=>void, open: boolean, rackList: any}) => {
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] =useState(10);
 
-const ItemTable = ({data, query, updateItem, deleteItem, updateOpen, itemUpdateModalOpen, itemUpdateModalClose}:{data: itemDataTable[], query: string, updateItem: (data:updateItemType)=>void, deleteItem: (id:number|null)=>void, updateOpen:boolean, itemUpdateModalOpen: ()=>void, itemUpdateModalClose: ()=>void}) => {
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] =useState(10);
-  
-    const handleChangePage = (event: unknown, newPage: number) => {
-      setPage(newPage);
-    };
-  
-    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setRowsPerPage(+event.target.value);
-      setPage(0);
-    };
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
 
-    // item update modal data
-    const [updateModalData,setUpdateModalData] = useState<itemDataTable>({});
-  
-    return (
-      <Paper sx={{ width: '100%', overflow: 'hidden', backgroundColor: "rgba(255, 255, 255, 0.5)" }}>
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+
+  const [modalData,setModaldata] = useState<itemDataTable>({});
+  const [rackId, setRackId] = useState<number>();
+
+  return (
+    <Paper sx={{ width: '100%', overflow: 'hidden', backgroundColor: "rgba(255, 255, 255, 0.5)" }}>
         <TableContainer sx={{ maxHeight: 440, }}>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
                     <TableCell>Item ID</TableCell>
                     <TableCell>Name</TableCell>
+                    <TableCell>Rack ID</TableCell>
                     <TableCell>Description</TableCell>
                     <TableCell>Category</TableCell>
                     <TableCell>Price</TableCell>
@@ -62,6 +53,7 @@ const ItemTable = ({data, query, updateItem, deleteItem, updateOpen, itemUpdateM
                     <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                         <TableCell key={row.id}>{row.id}</TableCell>
                         <TableCell key={row.name}>{row.name}</TableCell>
+                        <TableCell key={row.rackId}>{row.rackId}</TableCell>
                         <TableCell key={row.desc}>{row.desc}</TableCell>
                         <TableCell key={row.category}>{row.category}</TableCell>
                         <TableCell key={row.price}>{row.price}</TableCell>
@@ -72,8 +64,9 @@ const ItemTable = ({data, query, updateItem, deleteItem, updateOpen, itemUpdateM
                                 color='success'
                                 size='small'
                                 onClick={() => {
-                                  setUpdateModalData(row);
-                                  itemUpdateModalOpen();
+                                  handleClickOpen();
+                                  setModaldata(row);
+                                  setRackId(row.rackId);
                                 }}
                             >
                                 <MoreVert />
@@ -94,10 +87,9 @@ const ItemTable = ({data, query, updateItem, deleteItem, updateOpen, itemUpdateM
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-        {/* update modal */}
-        <UpdateItemModal open={updateOpen} handleClose={itemUpdateModalClose} data={updateModalData} updateItem={updateItem} deleteItem={deleteItem} />
+        <AllocationModal handleClose={handleClose} open={open} allocation={allocation} data={modalData} rackList={rackList} rackId={rackId}/>
       </Paper>
-    );
+  )
 }
 
-export default  ItemTable;
+export default AllocatedItemTable

@@ -7,9 +7,9 @@ const SALT_ROUNDS = Number.parseInt(process.env.SALT_ROUNDS);
  */
 const hashPassword = async (password)=>{
     try{
-        const salt = await bcrypt.genSaltSync(SALT_ROUNDS);
+        const salt = await bcrypt.genSalt(SALT_ROUNDS);
         //const hash = bcrypt.hashSync(password, salt);
-        const hash = await bcrypt.hashSync(password, salt);
+        const hash = await bcrypt.hash(password, salt);
         return hash;
     }
     catch(error){
@@ -21,7 +21,7 @@ const hashPassword = async (password)=>{
  * used to comapare 
  * @param {string} password 
  * @param {string} hashedPassword 
- * @returns 
+ * @returns {boolean}
  */
 const validatePassword = async (password, hashedPassword) => {
     try {

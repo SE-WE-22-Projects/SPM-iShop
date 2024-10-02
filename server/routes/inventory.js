@@ -13,5 +13,12 @@ router.get('/item/:itemId',inventoryService.getItemById);
 router.put('/item/:itemId',inventoryService.updateItemById);
 // delete item by id route
 router.delete('/item/:itemId',inventoryService.deleteItemById);
+// get all unalloacated items
+router.get('/items/unallocated',inventoryService.getUnallocatedItems);
+// get all allocated items
+router.get('/items/allocated',inventoryService.getAllocatedItems);
+// allocate rack to item
+router.put('/items/allocate/:itemId',inventoryService.allocateRackToItem);
+
 
 module.exports = router;

@@ -1,20 +1,10 @@
-import { Paper, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TablePagination, IconButton } from "@mui/material";
-import {MoreVert} from '@mui/icons-material';
-import { useState } from "react";
-import UpdateItemModal, { updateItemType } from "./UpdateItemModal";
+import React, { useState } from 'react'
+import { itemDataTable } from '../itemComponents/ItemTable'
+import { IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@mui/material';
+import { MoreVert } from '@mui/icons-material';
+import AllocationModal from './AllocationModal';
 
-export interface itemDataTable{
-    id?: number;
-    name?: string;
-    desc?: string;
-    category?: string,
-    unit?: string,
-    price?: number;
-    qty?: number;
-    rackId?: number;
-}
-
-const ItemTable = ({data, query, updateItem, deleteItem, updateOpen, itemUpdateModalOpen, itemUpdateModalClose}:{data: itemDataTable[], query: string, updateItem: (data:updateItemType)=>void, deleteItem: (id:number|null)=>void, updateOpen:boolean, itemUpdateModalOpen: ()=>void, itemUpdateModalClose: ()=>void}) => {
+const UnallocatedItemTable = ({data, allocation, query, handleClickOpen, handleClose, open, rackList}: {data: itemDataTable[], allocation: (itemID: number,rackId: number)=>void, query: string, handleClickOpen: ()=>void, handleClose: ()=>void, open: boolean, rackList: any}) => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] =useState(10);
   
@@ -27,11 +17,10 @@ const ItemTable = ({data, query, updateItem, deleteItem, updateOpen, itemUpdateM
       setPage(0);
     };
 
-    // item update modal data
-    const [updateModalData,setUpdateModalData] = useState<itemDataTable>({});
-  
-    return (
-      <Paper sx={{ width: '100%', overflow: 'hidden', backgroundColor: "rgba(255, 255, 255, 0.5)" }}>
+    const [modalData,setModaldata] = useState<itemDataTable>({});
+
+  return (
+    <Paper sx={{ width: '100%', overflow: 'hidden', backgroundColor: "rgba(255, 255, 255, 0.5)" }}>
         <TableContainer sx={{ maxHeight: 440, }}>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
@@ -72,8 +61,8 @@ const ItemTable = ({data, query, updateItem, deleteItem, updateOpen, itemUpdateM
                                 color='success'
                                 size='small'
                                 onClick={() => {
-                                  setUpdateModalData(row);
-                                  itemUpdateModalOpen();
+                                    setModaldata(row);
+                                    handleClickOpen()
                                 }}
                             >
                                 <MoreVert />
@@ -94,10 +83,10 @@ const ItemTable = ({data, query, updateItem, deleteItem, updateOpen, itemUpdateM
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-        {/* update modal */}
-        <UpdateItemModal open={updateOpen} handleClose={itemUpdateModalClose} data={updateModalData} updateItem={updateItem} deleteItem={deleteItem} />
+
+        <AllocationModal handleClose={handleClose} open={open} allocation={allocation} data={modalData} rackList={rackList} />
       </Paper>
-    );
+  )
 }
 
-export default  ItemTable;
+export default UnallocatedItemTable
