@@ -1,7 +1,6 @@
 import { createTheme } from "@mui/material";
 
 // MUI theme for the site
-// TODO: replace with theme colors
 export const siteTheme = createTheme({
     palette: {
         mode: 'light',
