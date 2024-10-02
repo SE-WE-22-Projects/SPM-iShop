@@ -9,6 +9,7 @@ import { enqueueSnackbar } from 'notistack'
 import axios from 'axios'
 import { useConfirm } from 'material-ui-confirm'
 import PageLoader from '../../common/PageLoader'
+import AddSectionModel from './sectionComponents/AddSectionModel'
 
 const Section = () => {
     // real time search
@@ -157,6 +158,7 @@ const Section = () => {
                         </Button>
                     </Box>
                     <SectionTable data={sectionList} query={searchQuery} updateOpen={updateOpen} sectionUpdateModalOpen={sectionUpdateModalOpen} sectionUpdateModalClose={sectionUpdateModalClose} updateSection={updateSection} deleteSection={deleteSection} />
+                    <AddSectionModel open={addOpen} handleClose={sectionAddModalClose} addSection={addSection} />
                 </div>
             }
         </div>
