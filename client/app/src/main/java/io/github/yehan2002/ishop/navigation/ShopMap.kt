@@ -2,6 +2,7 @@ package io.github.yehan2002.ishop.navigation
 
 import android.util.Log
 import io.github.yehan2002.ishop.MainActivity.Companion.TAG
+import io.github.yehan2002.ishop.aruco.Tag
 import org.json.JSONObject
 import kotlin.math.cos
 import kotlin.math.roundToInt
@@ -13,7 +14,7 @@ class ShopMap(val width: Int, val height: Int) {
     }
     var markers = mutableMapOf<Int, Point2D>()
 
-    fun estimatePos(markerId: Int, distance: Double, angle: Double): Point2D? {
+    fun estimatePos(markerId: Int, distance: Double, angle: Tag.Rotation): Point2D? {
         val pos = markers[markerId]
         if (pos == null) {
             Log.d(TAG, "Invalid marker id")
@@ -23,8 +24,8 @@ class ShopMap(val width: Int, val height: Int) {
         // calculate the position.
         // https://stackoverflow.com/a/13895314/6587830
         val position = Point2D(
-            pos.x + distance * cos(angle),
-            pos.y + distance * sin(angle)
+            pos.x + distance * cos(angle.yaw),
+            pos.y + distance * sin(angle.yaw)
         )
 
         // check if the position is within the map.
@@ -91,6 +92,12 @@ class ShopMap(val width: Int, val height: Int) {
 
         fun add(p: Point2D): Point2D {
             return add(p.x, p.y)
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (other == null || other !is Point2D) return false
+            
+            return other.x == this.x && other.y == this.y
         }
     }
 

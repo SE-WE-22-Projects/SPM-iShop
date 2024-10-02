@@ -38,7 +38,7 @@ class StoreNavigator {
 
                 // estimate the user position from the marker distance and rotation
                 val est =
-                    shopMap.estimatePos(marker.id, marker.distance, marker.rotation.yaw)
+                    shopMap.estimatePos(marker.id, marker.distance, marker.rotation)
 
                 if (est != null)
                     markerPos[marker.id] = est

@@ -1,6 +1,6 @@
 package io.github.yehan2002.ishop.navigation
 
-val MapData = "{\n" +
+const val MapData = "{\n" +
         "  \"size\": {\n" +
         "    \"width\": 15,\n" +
         "    \"height\": 15\n" +

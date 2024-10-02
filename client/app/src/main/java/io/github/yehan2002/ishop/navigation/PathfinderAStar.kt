@@ -1,0 +1,101 @@
+package io.github.yehan2002.ishop.navigation
+
+import java.util.PriorityQueue
+import kotlin.math.abs
+
+class PathfinderAStar(private val map: ShopMap) {
+
+    private val tileInfo: Array<Array<TileInfo>> = Array(map.width) { x ->
+        Array(map.height) { y -> TileInfo(x, y) }
+    }
+
+    fun findRoute(start: ShopMap.Point2D, end: ShopMap.Point2D): Array<ShopMap.Point2D> {
+        resetState()
+
+        val queue = PriorityQueue<TileInfo> { t1, t2 -> return@PriorityQueue t1.score - t2.score }
+
+        queue.add(tileInfo[start.x.toInt()][start.y.toInt()])
+
+        var foundPath = false
+        var currentTile: TileInfo? = null
+
+        while (!queue.isEmpty()) {
+            do {
+
+                if (queue.isEmpty()) break
+                currentTile = queue.remove()
+
+            } while (!currentTile!!.open)
+
+
+            currentTile!!.open = false
+
+            if (currentTile.x == end.x.toInt() && currentTile.y == end.y.toInt()) {
+                foundPath = true
+                break
+            }
+
+            for (dir in DIRECTIONS) {
+                val nextX = currentTile.x + dir.x
+                val nextY = currentTile.y + dir.y
+
+                if (isValidTile(nextX, nextY)) {
+                    val newTile = tileInfo[nextX][nextY]
+                    newTile.score = currentTile.score + getScore(end, nextX, nextY)
+                    newTile.parent = currentTile
+                    queue.add(newTile)
+                }
+            }
+
+
+        }
+
+        if (!foundPath) return arrayOf()
+
+        val path = mutableListOf<ShopMap.Point2D>()
+        while (currentTile != null) {
+            path.add(ShopMap.Point2D(currentTile.x, currentTile.y));
+            currentTile = currentTile.parent
+        }
+
+        return path.toTypedArray()
+
+    }
+
+
+    private fun isValidTile(x: Int, y: Int): Boolean {
+        if (x < 0 || y < 0 || x >= map.width || y >= map.height) return false
+
+        return map.map[x][y] !is MapObjects.Shelf
+    }
+
+
+    private fun getScore(end: ShopMap.Point2D, x: Int, y: Int): Int {
+        return abs(end.x.toInt() - x) + abs(end.y.toInt() - y) + 1
+    }
+
+    private fun resetState() {
+        for (row in tileInfo) {
+            for (info in row) {
+                info.parent = null
+                info.open = false
+                info.score = 0
+            }
+        }
+    }
+
+
+    companion object {
+        private val DIRECTIONS =
+            arrayOf(Direction(-1, 0), Direction(1, 0), Direction(0, -1), Direction(0, 1))
+
+        private class Direction(val x: Int, val y: Int)
+        private class TileInfo(
+            val x: Int,
+            val y: Int,
+            var parent: TileInfo? = null,
+            var open: Boolean = false,
+            var score: Int = 0
+        )
+    }
+}
