@@ -35,10 +35,7 @@ class Tag(
         corners = pointList.toTypedArray()
     }
 
-    class Rotation(val roll: Double, val pitch: Double, val yaw: Double) {
-        val facingYaw: Double = ((if (yaw < 0) 360 + yaw else yaw) + 90) % 360
-    }
-
+    class Rotation(val roll: Double, val pitch: Double, val yaw: Double)
     class Position(val x: Double, val y: Double, val z: Double)
 }
 

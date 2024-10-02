@@ -106,8 +106,10 @@ class TagDrawable(
 
         // display rotation information
         if (tag.rotation != null) {
+            val yaw = Math.toDegrees(tag.rotation.yaw)
+
             canvas.drawText(
-                String.format("%.2f°", tag.rotation.facingYaw),
+                String.format("%.2f°", ((if (yaw < 0) 360 + yaw else yaw) + 90) % 360),
                 (pts[0] + pts[4]) / 2,
                 (pts[1] + pts[5]) / 2 + 64,
                 contentTextPaint
@@ -115,7 +117,11 @@ class TagDrawable(
 
             if (DEBUG_TAGS) {
                 canvas.drawText(
-                    String.format("%.2f %.2f", tag.rotation.roll, tag.rotation.pitch),
+                    String.format(
+                        "%.2f %.2f",
+                        Math.toDegrees(tag.rotation.roll),
+                        Math.toDegrees(tag.rotation.pitch)
+                    ),
                     (pts[0] + pts[4]) / 2,
                     (pts[1] + pts[5]) / 2 + 96,
                     contentTextPaint

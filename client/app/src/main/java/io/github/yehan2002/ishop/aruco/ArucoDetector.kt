@@ -14,10 +14,8 @@ import org.opencv.core.Point3
 import org.opencv.core.Scalar
 import org.opencv.objdetect.ArucoDetector
 import org.opencv.objdetect.Dictionary
-import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.atan2
-import kotlin.math.roundToInt
 import kotlin.math.sin
 
 class ArucoDetector(
@@ -133,16 +131,10 @@ class ArucoDetector(
                         val rotationMat = Mat(3, 3, CvType.CV_32FC1)
                         Calib3d.Rodrigues(rvec, rotationMat)
 
-                        val roll =
-                            180 * atan2(-rotationMat.get(2, 1)[0], rotationMat.get(2, 2)[0]) / PI
-                        val pitch = 180 * sin(rotationMat.get(2, 0)[0]) / PI
-                        val yaw =
-                            180 * atan2(-rotationMat.get(1, 0)[0], rotationMat.get(0, 0)[0]) / PI
-
                         rotation = Tag.Rotation(
-                            roll = round2(roll),
-                            pitch = round2(pitch),
-                            yaw = round2(yaw)
+                            roll = atan2(-rotationMat.get(2, 1)[0], rotationMat.get(2, 2)[0]),
+                            pitch = sin(rotationMat.get(2, 0)[0]),
+                            yaw = atan2(-rotationMat.get(1, 0)[0], rotationMat.get(0, 0)[0])
                         )
 
                         // calculate the distance
@@ -173,14 +165,6 @@ class ArucoDetector(
         return detectedTags.toTypedArray()
     }
 
-    /**
-     * Rounds the given double to 2 decimal points.
-     */
-    private fun round2(value: Double): Double {
-        if (value.isNaN()) return Double.NaN
-
-        return (value * 100.0).roundToInt() / 100.0
-    }
 
     /**
      * Returns if the given vector is a valid finite vector.

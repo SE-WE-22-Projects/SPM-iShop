@@ -3,7 +3,6 @@ package io.github.yehan2002.ishop.navigation
 import android.util.Log
 import io.github.yehan2002.ishop.MainActivity.Companion.TAG
 import org.json.JSONObject
-import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.roundToInt
 import kotlin.math.sin
@@ -21,13 +20,11 @@ class ShopMap(val width: Int, val height: Int) {
             return null
         }
 
-        val angleRad = (angle / 180) * PI
-
         // calculate the position.
         // https://stackoverflow.com/a/13895314/6587830
         val position = Point2D(
-            pos.x + distance * cos(angleRad),
-            pos.y + distance * sin(angleRad)
+            pos.x + distance * cos(angle),
+            pos.y + distance * sin(angle)
         )
 
         // check if the position is within the map.
