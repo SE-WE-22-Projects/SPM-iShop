@@ -8,15 +8,15 @@ const {secretKey} = require('./jwtConfig');
  * @param {string} role 
  * @returns 
  */
-const generateToken = (id,email,role)=>{
+const generateToken = (id,username,email,role)=>{
     const payload = {
         id,
+        username,
         email,
         role,
     };
-    return jwt.sign(payload,secretKey,{expiresIn: "3h"});
+    return jwt.sign(payload,secretKey,{expiresIn: "3h", algorithm: 'HS512'});
 }
-
 
 module.exports = {
     generateToken
