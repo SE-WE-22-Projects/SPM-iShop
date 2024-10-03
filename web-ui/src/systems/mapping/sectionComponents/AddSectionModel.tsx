@@ -78,19 +78,19 @@ const AddSectionModel = ({open, handleClose, addSection}:{open: boolean, handleC
                         {/* ########################    Top Cordinations   ###################### */}
                         <Stack direction="row" spacing={10}>
                             <Box>
-                                <TextField type="number" id="outlined-basic2" label="Top Y cordination" variant="outlined" onChange={(e) => setTop_y(Number.parseInt(e.target.value))} />
+                                <TextField type="number" id="outlined-basic2" label="Top Y cordination" variant="outlined" onChange={(e) => setTop_y(Number(e.target.value))} />
                             </Box>
                             <Box>
-                                <TextField type="number" id="outlined-basic2" label="Top X cordination" variant="outlined" onChange={(e) => setTop_x(Number.parseInt(e.target.value))} />
+                                <TextField type="number" id="outlined-basic2" label="Top X cordination" variant="outlined" onChange={(e) => setTop_x(Number(e.target.value))} />
                             </Box>
                         </Stack>
                         {/* ########################    Bottom Cordinations   ###################### */}
                         <Stack direction="row" spacing={10}>
                             <Box>
-                                <TextField type="number" id="outlined-basic2" label="Bottom Y cordination" variant="outlined" onChange={(e) => setBottom_y(Number.parseInt(e.target.value))} />
+                                <TextField type="number" id="outlined-basic2" label="Bottom Y cordination" variant="outlined" onChange={(e) => setBottom_y(Number(e.target.value))} />
                             </Box>
                             <Box>
-                                <TextField type="number" id="outlined-basic2" label="Bottom X cordination" variant="outlined" onChange={(e) => setBottom_x(Number.parseInt(e.target.value))} />
+                                <TextField type="number" id="outlined-basic2" label="Bottom X cordination" variant="outlined" onChange={(e) => setBottom_x(Number(e.target.value))} />
                             </Box>
                         </Stack>
                         <Stack direction="row" spacing={10}>
