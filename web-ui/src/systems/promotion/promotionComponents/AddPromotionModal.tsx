@@ -76,7 +76,17 @@ const AddPromotionModal = ({promoAddModalClose, open, addPromotion}:{promoAddMod
     };
 
     useEffect(()=>{
+        setName(null);
+        setDesc(null);
+        setStatus(true);
+        setDis_percentage(null);
+        setDis_amount(null);
+        setStart_date(null);
+        setEnd_date(null);
+        setPromoType(true);
+        setSelectedRow(null);
         getItems();
+
     },[]);
 
     return (
@@ -112,18 +122,6 @@ const AddPromotionModal = ({promoAddModalClose, open, addPromotion}:{promoAddMod
                                 }
                                 e.preventDefault();
                                 const state = addPromotion({ name, desc, status, dis_percentage, dis_amount, start_date, end_date, itemId: selectedRow?.id });
-                                if(await state){
-                                    setName(null);
-                                    setDesc(null);
-                                    setStatus(true);
-                                    setDis_percentage(null);
-                                    setDis_amount(null);
-                                    setStart_date(null);
-                                    setEnd_date(null);
-                                    setPromoType(true);
-                                    setSelectedRow(null);
-                                }
-                                
                             }}
                         >
                             <Stack direction="column" spacing={1}>

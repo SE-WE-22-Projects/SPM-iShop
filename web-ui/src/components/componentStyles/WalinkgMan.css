@@ -102,7 +102,9 @@
 /* Cane Animation */
 @keyframes caneSwing {
     0% { transform: rotate(-40deg); }
-    50% { transform: rotate(-42deg); }
-    100% { transform: rotate(-44deg); }
+    25% { transform: rotate(-45deg); }
+    50% { transform: rotate(-50deg); }
+    50% { transform: rotate(-45deg); }
+    100% { transform: rotate(-40deg); }
 }
 
