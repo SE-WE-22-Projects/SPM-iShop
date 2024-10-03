@@ -126,7 +126,6 @@ const deletePromotion = async (req, res) => {
  */
 const getPromotionsBySectionID = async (req, res) => {
   const sectionID = Number.parseInt(req.params.sectionID);
-  console.log(sectionID);
 
   try {
     const promotions = await Promo.findAll({
@@ -142,7 +141,6 @@ const getPromotionsBySectionID = async (req, res) => {
       },
       attributes: ["desc"],
     });
-    console.log(promotions);
 
     const promotionDescriptions = promotions.map((promo) => promo.desc);
 
@@ -150,9 +148,9 @@ const getPromotionsBySectionID = async (req, res) => {
       promotionDescriptions,
     });
   } catch (error) {
-    console.error("Error fetching promotions: ", error); // Log the error
+    console.error("Error fetching promotions for the section: ", error);
     res.status(500).json({
-      error: "Failed to fetch promotions",
+      error: "Failed to fetch promotions for the section",
     });
   }
 };
