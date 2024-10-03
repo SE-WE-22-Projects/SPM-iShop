@@ -87,8 +87,8 @@ class MapDrawable(
             val uy = userPos.y
 
             canvas.drawCircle(
-                widthOffset + (ux * TILE_SIZE).toFloat(),
-                (uy * TILE_SIZE).toFloat(),
+                widthOffset + ((ux + 0.5) * TILE_SIZE).toFloat(),
+                ((uy + 0.5) * TILE_SIZE).toFloat(),
                 (TILE_SIZE / 2.5).toFloat(),
                 user
             )

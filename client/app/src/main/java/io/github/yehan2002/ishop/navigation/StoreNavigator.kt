@@ -79,6 +79,7 @@ class StoreNavigator {
             position = null
             currentTile = MapObjects.Invalid
             section = MapObjects.UnknownSection
+            route = null
             return
         }
 

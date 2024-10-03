@@ -44,10 +44,15 @@ class PathfinderAStar(private val map: ShopMap) {
 
                 if (isValidTile(nextX, nextY)) {
                     val newTile = tileInfo[nextX][nextY]
+                    val score = currentTile.score + getScore(end, nextX, nextY)
+
                     if (newTile.open) {
-                        newTile.score = currentTile.score + getScore(end, nextX, nextY)
+                        newTile.score = score
                         newTile.parent = currentTile
                         queue.add(newTile)
+                    } else if (newTile.score > score) {
+                        newTile.score = score
+                        newTile.parent = currentTile
                     }
                 }
             }
