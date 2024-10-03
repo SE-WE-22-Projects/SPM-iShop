@@ -19,13 +19,21 @@ import io.github.yehan2002.ishop.drawable.MapDrawable
 import io.github.yehan2002.ishop.drawable.TagDrawable
 import io.github.yehan2002.ishop.navigation.MapObjects
 import io.github.yehan2002.ishop.navigation.StoreNavigator
+import io.github.yehan2002.ishop.net.ShopService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.opencv.android.OpenCVLoader
+import retrofit2.Retrofit
+import retrofit2.converter.jackson.JacksonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import kotlin.math.roundToInt
 
 
 class MainActivity : AppCompatActivity(), StoreNavigator.NavigationHandler {
     private lateinit var viewBinding: ActivityMainBinding
     private lateinit var navigator: StoreNavigator
+    private lateinit var shopService: ShopService
 
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +49,12 @@ class MainActivity : AppCompatActivity(), StoreNavigator.NavigationHandler {
         }
 
         navigator = StoreNavigator(this)
+
+        val retrofit = Retrofit.Builder().baseUrl("http://192.168.8.156:5000")
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(JacksonConverterFactory.create())
+            .build()
+        shopService = retrofit.create(ShopService::class.java)
 
         // Request camera permissions
         if (allPermissionsGranted()) {
@@ -123,11 +137,35 @@ class MainActivity : AppCompatActivity(), StoreNavigator.NavigationHandler {
     private fun onSearchClick() {
         Toast.makeText(this, "Search items", Toast.LENGTH_SHORT)
             .show()
+        CoroutineScope(Dispatchers.IO).launch {
+            Log.i(TAG, shopService.getMap())
+        }
     }
 
     private fun onPromoClick() {
-        Toast.makeText(this, "Currently Promotions", Toast.LENGTH_SHORT)
+        Toast.makeText(this, "Loading Promotions", Toast.LENGTH_SHORT)
             .show()
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val promos = shopService.getPromotions(navigator.section.sectionId)
+                runOnUiThread {
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Found ${promos.promos.size} promotions",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to get promotions", e)
+                runOnUiThread {
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Failed to get promotions",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
     }
 
     override fun onSectionChange(section: MapObjects.Section, prevSection: MapObjects.Section) {
