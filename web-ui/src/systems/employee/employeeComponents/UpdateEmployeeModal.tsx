@@ -15,58 +15,58 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useEffect, useState } from 'react';
 import { Cancel, Delete, Edit } from '@mui/icons-material';
 import React from 'react';
-import managerImg from  '../employeeAssets/managerImg.png';
+import managerImg from '../employeeAssets/managerImg.png';
 import assistanceImg from '../employeeAssets/assistanceImg.png';
 import cashierImg from '../employeeAssets/cashierImg.png';
 import otherEmpImg from '../employeeAssets/otherEmpImg.png';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
-      padding: theme.spacing(2),
+        padding: theme.spacing(2),
     },
     '& .MuiDialogActions-root': {
-      padding: theme.spacing(1),
+        padding: theme.spacing(1),
     },
-  }));
+}));
 
-const setEmpRoleImg = (role: string)=>{
-    if(role === "Manager"){
+const setEmpRoleImg = (role: string) => {
+    if (role === "Manager") {
         return (
             <img src={managerImg} width={240} />
         )
     }
-    else if(role === "Assistance"){
+    else if (role === "Assistance") {
         return (
             <img src={assistanceImg} width={240} />
         )
     }
-    else if(role === "Cashier"){
+    else if (role === "Cashier") {
         return (
             <img src={cashierImg} width={240} />
         )
     }
-    else if(role === "Other"){
+    else if (role === "Other") {
         return (
             <img src={otherEmpImg} width={240} />
         )
     }
 }
 
-const UpdateEmployeeModal = ({open, handleClose, data, updateEmployee, deleteEmployee}:{open: boolean, handleClose :()=>void, data:EmployeeData, updateEmployee: (data:EmployeeData)=>void, deleteEmployee: (id:number|null)=>void})=>{
+const UpdateEmployeeModal = ({ open, handleClose, data, updateEmployee, deleteEmployee }: { open: boolean, handleClose: () => void, data: EmployeeData, updateEmployee: (data: EmployeeData) => void, deleteEmployee: (id: number | null) => void }) => {
     // states for add employee
-    const [id,setId] = useState<number|null>(data.id ?? null)
-    const [name,setName] = useState<string|null>(data.name ?? "");
-    const [role,setRole] = useState<string>("Manager");
-    const [dateOfBirth,setDateOfBirth] = useState<Dayjs|null>(data.dateOfBirth ?? null);
-    const [gender,setGender] = useState<string>("male");
-    const [contactNumber,setContactNumber] = useState<number|null>(data.contactNumber ?? null);
-    const [email,setEmail] = useState<string|null>(data.email ?? null);
-    const [address,setAddress] = useState<string|null>(data.email ?? null);
-    const [hireDate,setHireDate] = useState<Dayjs|null>(data.hireDate ?? null);
-    const [basicSalary,setBasicSalary] = useState<number|null>(data.basicSalary ?? null);
-    const [employmentStatus,setEmploymentStatus] = useState<string>("full-time");
+    const [id, setId] = useState<number | null>(data.id ?? null)
+    const [name, setName] = useState<string | null>(data.name ?? "");
+    const [role, setRole] = useState<string>("Manager");
+    const [dateOfBirth, setDateOfBirth] = useState<Dayjs | null>(data.dateOfBirth ?? null);
+    const [gender, setGender] = useState<string>("male");
+    const [contactNumber, setContactNumber] = useState<number | null>(data.contactNumber ?? null);
+    const [email, setEmail] = useState<string | null>(data.email ?? null);
+    const [address, setAddress] = useState<string | null>(data.email ?? null);
+    const [hireDate, setHireDate] = useState<Dayjs | null>(data.hireDate ?? null);
+    const [basicSalary, setBasicSalary] = useState<number | null>(data.basicSalary ?? null);
+    const [employmentStatus, setEmploymentStatus] = useState<string>("full-time");
 
-    useEffect(()=>{
+    useEffect(() => {
         setId(data.id ?? null);
         setName(data.name ?? null);
         setRole(data.role ?? "Manager");
@@ -78,8 +78,8 @@ const UpdateEmployeeModal = ({open, handleClose, data, updateEmployee, deleteEmp
         setHireDate(data.hireDate ?? null);
         setBasicSalary(data.basicSalary ?? null);
         setEmploymentStatus(data.employmentStatus ?? "full-time");
-    },[data]);
-    
+    }, [data]);
+
     return (
         <React.Fragment>
             <BootstrapDialog
@@ -116,19 +116,7 @@ const UpdateEmployeeModal = ({open, handleClose, data, updateEmployee, deleteEmp
                             autoComplete="off"
                             onSubmit={(e) => {
                                 e.preventDefault();
-                                updateEmployee({id, name, role, dateOfBirth, gender, contactNumber, email, address, hireDate, basicSalary, employmentStatus });
-                                // clear states
-                                setId(null);
-                                setName(null);
-                                setRole("Manager");
-                                setDateOfBirth(null);
-                                setGender("male");
-                                setContactNumber(null);
-                                setEmail(null);
-                                setAddress(null);
-                                setHireDate(null);
-                                setBasicSalary(null);
-                                setEmploymentStatus("full-time");
+                                updateEmployee({ id, name, role, dateOfBirth, gender, contactNumber, email, address, hireDate, basicSalary, employmentStatus });
                             }}
                         >
                             <Stack direction="row" spacing={8}>
@@ -181,7 +169,7 @@ const UpdateEmployeeModal = ({open, handleClose, data, updateEmployee, deleteEmp
                                         <FormControlLabel value={"female"} control={<Radio />} label="Female" />
                                     </RadioGroup>
                                 </Box>
-                                
+
                             </Stack>
                             <Stack direction="row" spacing={8}>
                                 <Box>
@@ -217,10 +205,10 @@ const UpdateEmployeeModal = ({open, handleClose, data, updateEmployee, deleteEmp
                                 <FormControlLabel value={"contract"} control={<Radio />} label="contract" />
                             </RadioGroup>
                             <Stack direction="row" spacing={10}>
-                        <Button variant="outlined" color="error" onClick={()=>deleteEmployee(id)} size="large" endIcon={<Delete/>} >Delete</Button>
-                        <Button variant="outlined" color="success" size="large" type='submit' endIcon={<Edit/>} >Update</Button>
-                        <Button variant="outlined" color="warning" onClick={handleClose} size="large" endIcon={<Cancel/>} >Cancel</Button>
-                    </Stack>
+                                <Button variant="outlined" color="error" onClick={() => deleteEmployee(id)} size="large" endIcon={<Delete />} >Delete</Button>
+                                <Button variant="outlined" color="success" size="large" type='submit' endIcon={<Edit />} >Update</Button>
+                                <Button variant="outlined" color="warning" onClick={handleClose} size="large" endIcon={<Cancel />} >Cancel</Button>
+                            </Stack>
                         </Box>
                     </Box>
                 </DialogContent>

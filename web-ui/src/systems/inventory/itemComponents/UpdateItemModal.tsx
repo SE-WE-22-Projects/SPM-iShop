@@ -138,10 +138,6 @@ const UpdateItemModal = ({open, handleClose, data, updateItem, deleteItem}:{open
                     onSubmit={(e) => {
                         e.preventDefault();
                         updateItem({id, name, desc, category, price, unit, qty});
-                        setName(null);
-                        setDesc(null);
-                        setPrice(null);
-                        setQty(null);
                         //itemAddModalClose();
                     }}
                 >

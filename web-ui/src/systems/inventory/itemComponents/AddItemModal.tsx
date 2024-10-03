@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, MenuItem, Stack, TextField } from '@mui/material';
 import { Cancel, Edit } from '@mui/icons-material';
 
@@ -36,6 +36,13 @@ const AddItemModal=({ itemAddModalClose, open, addItem}:{ itemAddModalClose: ()=
     const [unit,setUnit] = useState<string>("pieces");
     const [qty,setQty] = useState<number|null>();
 
+    useEffect(() => {
+        setName(null);
+        setDesc(null);
+        setPrice(null);
+        setQty(null);
+    },[]);
+
     return (
         <div>
             <Modal
@@ -58,10 +65,7 @@ const AddItemModal=({ itemAddModalClose, open, addItem}:{ itemAddModalClose: ()=
                             onSubmit={(e) => {
                                 e.preventDefault();
                                 addItem({name,desc,category,price,unit,qty});
-                                setName(null);
-                                setDesc(null);
-                                setPrice(null);
-                                setQty(null);
+                                
                                 //itemAddModalClose();
                             }}
                         >

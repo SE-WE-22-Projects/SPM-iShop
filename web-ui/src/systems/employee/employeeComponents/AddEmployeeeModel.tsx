@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, FormControlLabel, FormLabel, MenuItem, Radio, RadioGroup, Stack, TextField } from '@mui/material';
 import dayjs, { Dayjs } from 'dayjs';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
@@ -48,6 +48,20 @@ const AddEmployeeeModel = ({employeeAddModalClose,open,addEmployee}:{employeeAdd
   const [basicSalary,setBasicSalary] = useState<number|null>();
   const [employmentStatus,setEmploymentStatus] = useState<string>("full-time");
 
+  useEffect(()=>{
+    // clear states
+    setName(null);
+    setRole("Manager");
+    setDateOfBirth(null);
+    setGender("male");
+    setContactNumber(null);
+    setEmail(null);
+    setAddress(null);
+    setHireDate(null);
+    setBasicSalary(null);
+    setEmploymentStatus("full-time");
+  },[]);
+
   return (
     <div>
       <Modal
@@ -70,17 +84,6 @@ const AddEmployeeeModel = ({employeeAddModalClose,open,addEmployee}:{employeeAdd
               onSubmit={(e) => {
                 e.preventDefault();
                 addEmployee({ name, role, dateOfBirth, gender, contactNumber, email, address, hireDate, basicSalary, employmentStatus });
-                // clear states
-                setName(null);
-                setRole("Manager");
-                setDateOfBirth(null);
-                setGender("male");
-                setContactNumber(null);
-                setEmail(null);
-                setAddress(null);
-                setHireDate(null);
-                setBasicSalary(null);
-                setEmploymentStatus("full-time");
               }}
             >
               <Stack direction="row" spacing={10}>

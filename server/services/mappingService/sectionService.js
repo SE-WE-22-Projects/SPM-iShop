@@ -99,7 +99,7 @@ const updateSectionById = async (req, res) => {
     }
 
     try {
-        sectionData = await sectionSchema.validate(req.body);
+        var sectionData = await sectionSchema.validate(req.body);
     } catch (e) {
         console.error("bad request", e);
         res.status(400).send({ msg: "bad request" });

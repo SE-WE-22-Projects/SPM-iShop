@@ -1,8 +1,10 @@
-import { Map, People } from "@mui/icons-material";
+import { Map, People, ViewQuilt } from "@mui/icons-material";
 import { SystemRoutes } from "../../components/DashboardLayout";
 import Dashboard from "./Dashboard";
 import Page1 from "./Page1";
 import MapEditor from "./MapEditor";
+import Section from "./Section";
+import Rack from "./Rack";
 
 
 export const routes: SystemRoutes = {
@@ -25,6 +27,22 @@ export const routes: SystemRoutes = {
             display: {
                 title: "Map Editor",
                 icon: <Map />
+            }
+        },
+        {
+            element: <Section />,
+            path: "section",
+            display: {
+                title: "Section Management",
+                icon: <ViewQuilt />
+            }
+        },
+        {
+            element: <Rack />,
+            path: "rack",
+            display: {
+                title: "Rack Management",
+                icon: <ViewQuilt />
             }
         }
     ]

@@ -74,7 +74,6 @@ const Employee = () => {
         }
         //api call
         try{
-            console.log(empData);
             await axios.post("api/employee/employee",empData);
             enqueueSnackbar("Employee added successfuly...", {variant:  "success"});
             employeeAddModalClose();
@@ -149,7 +148,7 @@ const Employee = () => {
             enqueueSnackbar("Employee status is required...", {variant:  "error"});
             return;
         }
-        confirm( {description: "Confirm Employee Item Details"})
+        confirm( {description: "Confirm Employee Details"})
         .then(
             async ()=>{
                 try{
@@ -169,6 +168,7 @@ const Employee = () => {
         })
     }
 
+    // delete employee
     const deleteEmployee = (id:number|null)=>{
         confirm( {description: "Confirm Delete Employee Details"})
         .then(
