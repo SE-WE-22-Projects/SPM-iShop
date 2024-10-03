@@ -1,5 +1,6 @@
 package io.github.yehan2002.ishop.navigation
 
+import io.github.yehan2002.ishop.util.Point2D
 import java.util.PriorityQueue
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
@@ -10,7 +11,7 @@ class PathfinderAStar(private val map: ShopMap) {
         Array(map.height) { y -> TileInfo(x, y) }
     }
 
-    fun findRoute(start: ShopMap.Point2D, end: ShopMap.Point2D): Array<ShopMap.Point2D> {
+    fun findRoute(start: Point2D, end: Point2D): Array<Point2D> {
         resetState()
 
         val queue = PriorityQueue<TileInfo> { t1, t2 -> return@PriorityQueue t1.score - t2.score }
@@ -62,9 +63,9 @@ class PathfinderAStar(private val map: ShopMap) {
 
         if (!foundPath) return arrayOf()
 
-        val path = mutableListOf<ShopMap.Point2D>()
+        val path = mutableListOf<Point2D>()
         while (currentTile != null) {
-            path.add(ShopMap.Point2D(currentTile.x, currentTile.y))
+            path.add(Point2D(currentTile.x, currentTile.y))
             currentTile = currentTile.parent
         }
 
@@ -80,7 +81,7 @@ class PathfinderAStar(private val map: ShopMap) {
     }
 
 
-    private fun getScore(end: ShopMap.Point2D, x: Int, y: Int): Int {
+    private fun getScore(end: Point2D, x: Int, y: Int): Int {
         val dx = (end.x.toInt() - x)
         val dy = (end.y.toInt() - y)
         return sqrt((dx * dx + dy * dy).toDouble()).roundToInt()

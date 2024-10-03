@@ -1,13 +1,27 @@
 package io.github.yehan2002.ishop.navigation
 
-import io.github.yehan2002.ishop.aruco.Tag
+import android.util.Log
+import androidx.camera.core.ImageProxy
+import io.github.yehan2002.ishop.MainActivity.Companion.TAG
+import io.github.yehan2002.ishop.camera.CameraBridge
 import io.github.yehan2002.ishop.navigation.StoreNavigator.Companion.BUFFER_SIZE
+import io.github.yehan2002.ishop.navigation.aruco.ArucoDetector
+import io.github.yehan2002.ishop.navigation.aruco.Tag
+import io.github.yehan2002.ishop.util.Point2D
 import io.github.yehan2002.ishop.util.RingBuffer
+import org.opencv.objdetect.Objdetect
 
 class StoreNavigator {
-    private var markerBuffer = RingBuffer<Map<Int, ShopMap.Point2D>>(BUFFER_SIZE)
+    private var markerBuffer = RingBuffer<Map<Int, Point2D>>(BUFFER_SIZE)
+
+    var lastTags: Array<Tag>? = null
+        private set
 
     val shopMap: ShopMap = ShopMap.loadMapJSON(MapData)
+    val detector = ArucoDetector(
+        dictionary = Objdetect.getPredefinedDictionary(Objdetect.DICT_4X4_50),
+        markerSize = 0.06,
+    )
 
     // TODO: alert on entering new section, tag detection
 
@@ -15,14 +29,28 @@ class StoreNavigator {
      * The current detected position of the user.
      * This can be null if the position cannot be determined.
      */
-    var position: ShopMap.Point2D? = null
+    var position: Point2D? = null
 
     var currentTile: MapObjects = MapObjects.Invalid
 
     var section: MapObjects.Section = MapObjects.UnknownSection
 
 
-    var route: Array<ShopMap.Point2D>? = null
+    var route: Array<Point2D>? = null
+
+    fun findMarkers(bridge: CameraBridge, proxy: ImageProxy) {
+        val tags: Array<Tag>
+
+        try {
+            tags = detector.detectMarkers(bridge, proxy.toBitmap())
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to find tags", e)
+            return
+        }
+
+        addMarkers(tags)
+
+    }
 
     /**
      * This method adds the given markers to the marker buffer.
@@ -30,11 +58,11 @@ class StoreNavigator {
      * markers detected within the last [BUFFER_SIZE] calls to this method.
      * This method must be called each time a frame is processed even if there are no detected markers.
      */
-    fun addMarkers(markers: Array<Tag>?) {
+    private fun addMarkers(markers: Array<Tag>?) {
         if (!markers.isNullOrEmpty()) {
             // convert the markers to a map of ids and estimated user positions
 
-            val markerPos = mutableMapOf<Int, ShopMap.Point2D>()
+            val markerPos = mutableMapOf<Int, Point2D>()
             for (marker in markers) {
                 // relative position cannot be determined if the rotation data is not available
                 if (marker.rotation == null) continue
@@ -53,6 +81,7 @@ class StoreNavigator {
             markerBuffer.add(null)
         }
 
+        lastTags = markers
         updatePosition()
     }
 
@@ -89,7 +118,7 @@ class StoreNavigator {
 
         // get the average position of the user based on all detected tags.
         val userPosition =
-            ShopMap.Point2D(positionSum.x / positions.size, positionSum.y / positions.size)
+            Point2D(positionSum.x / positions.size, positionSum.y / positions.size)
 
         val tile = shopMap.getTileAt(position)
 
@@ -97,7 +126,7 @@ class StoreNavigator {
         currentTile = tile
         section = if (tile is MapObjects.Valid) tile.position() else MapObjects.UnknownSection
 
-        route = shopMap.pathfinder.findRoute(userPosition, ShopMap.Point2D(10, 10))
+        route = shopMap.pathfinder.findRoute(userPosition, Point2D(10, 10))
     }
 
 
@@ -113,7 +142,7 @@ class StoreNavigator {
         /**
          * Add a position with the given weight.
          */
-        fun add(weight: Int, newPos: ShopMap.Point2D) {
+        fun add(weight: Int, newPos: Point2D) {
             this.weight += weight
             this.x += newPos.x * weight
             this.y += newPos.y * weight
@@ -122,8 +151,8 @@ class StoreNavigator {
         /**
          * Convert the weighted position to [ShopMap.Point2D].
          */
-        fun toPoint(): ShopMap.Point2D {
-            return ShopMap.Point2D(x / weight, y / weight)
+        fun toPoint(): Point2D {
+            return Point2D(x / weight, y / weight)
         }
     }
 

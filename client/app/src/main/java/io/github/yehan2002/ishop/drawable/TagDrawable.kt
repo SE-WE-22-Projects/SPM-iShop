@@ -9,7 +9,7 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.PixelFormat
 import android.graphics.drawable.Drawable
-import io.github.yehan2002.ishop.aruco.Tag
+import io.github.yehan2002.ishop.navigation.aruco.Tag
 
 class TagDrawable(
     private val tag: Tag,
@@ -59,15 +59,7 @@ class TagDrawable(
 
     @SuppressLint("DefaultLocale")
     override fun draw(canvas: Canvas) {
-
-        // convert the image points into point on the screen
-        val pts = floatArrayOf(
-            tag.corners[0].x, tag.corners[0].y,
-            tag.corners[1].x, tag.corners[1].y,
-            tag.corners[2].x, tag.corners[2].y,
-            tag.corners[3].x, tag.corners[3].y,
-        )
-        correction.mapPoints(pts)
+        val pts = tag.corners
 
         // paint a square over the detected tag
         val path = Path()

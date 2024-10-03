@@ -1,8 +1,9 @@
-package io.github.yehan2002.ishop.aruco
+package io.github.yehan2002.ishop.navigation.aruco
 
 import android.graphics.Bitmap
 import android.util.Log
 import io.github.yehan2002.ishop.MainActivity.Companion.TAG
+import io.github.yehan2002.ishop.camera.CameraBridge
 import org.opencv.android.Utils
 import org.opencv.calib3d.Calib3d
 import org.opencv.core.CvType
@@ -25,21 +26,12 @@ class ArucoDetector(
     private var detector: ArucoDetector = ArucoDetector(dictionary)
     private lateinit var objPointsMat: MatOfPoint3f
 
-    private var calibration = CameraCalibration()
     private var markerLength: Double = -1.0
 
     init {
         setMarkerLength(markerSize)
     }
 
-
-    /**
-     * Sets the camera calibration values for pose estimation.
-     * Distances and angles of the tags will be unavailable until this method is called.
-     */
-    fun setCalibration(calibration: CameraCalibration) {
-        this.calibration = calibration
-    }
 
     /**
      * Sets the length of the side of the aruco tag.
@@ -68,7 +60,7 @@ class ArucoDetector(
      * @param bitmap the bitmap to process
      * @return an array containing all found tags
      */
-    fun detectMarkers(bitmap: Bitmap): Array<Tag> {
+    fun detectMarkers(camera: CameraBridge, bitmap: Bitmap): Array<Tag> {
         val detectedTags = mutableListOf<Tag>()
 
 
@@ -92,7 +84,7 @@ class ArucoDetector(
                 var rotation: Tag.Rotation? = null
                 var postion: Tag.Position? = null
 
-                if (calibration.isValid && markerLength > 0) {
+                if (camera.calibration.isValid && markerLength > 0) {
                     val rvec = Mat(3, 1, CvType.CV_64F)
                     val tvec = Mat(3, 1, CvType.CV_64F)
 
@@ -112,8 +104,9 @@ class ArucoDetector(
                         // calculate the position and pose of the tag
                         Calib3d.solvePnP(
                             objPointsMat,
-                            cornerPoints, calibration.cameraMatrix,
-                            calibration.distortionCoefficients,
+                            cornerPoints,
+                            camera.calibration.cameraMatrix,
+                            camera.calibration.distortionCoefficients,
                             rvec, tvec,
                             false,
                             Calib3d.SOLVEPNP_IPPE_SQUARE
@@ -137,21 +130,22 @@ class ArucoDetector(
                             yaw = atan2(-rotationMat.get(1, 0)[0], rotationMat.get(0, 0)[0])
                         )
 
+
                         // calculate the distance
+                        val scale = camera.calibration.distanceScale
                         postion = Tag.Position(
-                            tvec.get(0, 0)[0] * calibration.distanceScale,
-                            tvec.get(1, 0)[0] * calibration.distanceScale,
-                            tvec.get(2, 0)[0] * calibration.distanceScale
+                            tvec.get(0, 0)[0] * scale,
+                            tvec.get(1, 0)[0] * scale,
+                            tvec.get(2, 0)[0] * scale
                         )
+
                     }
                 }
-
-
-
+                
                 detectedTags.add(
                     Tag(
                         tagId,
-                        corners[i],
+                        corners = getCornerPoints(camera, corners[i]),
                         rotation = rotation,
                         position = postion
                     )
@@ -161,10 +155,20 @@ class ArucoDetector(
         }
 
         image.release()
-
         return detectedTags.toTypedArray()
     }
 
+
+    private fun getCornerPoints(camera: CameraBridge, corner: Mat): FloatArray {
+        val cornerPoints = floatArrayOf(
+            corner.get(0, 0)[0].toFloat(), corner.get(0, 0)[1].toFloat(),
+            corner.get(0, 1)[0].toFloat(), corner.get(0, 1)[1].toFloat(),
+            corner.get(0, 2)[0].toFloat(), corner.get(0, 2)[1].toFloat(),
+            corner.get(0, 3)[0].toFloat(), corner.get(0, 3)[1].toFloat(),
+        )
+        camera.correctionMatrix.mapPoints(cornerPoints)
+        return cornerPoints
+    }
 
     /**
      * Returns if the given vector is a valid finite vector.

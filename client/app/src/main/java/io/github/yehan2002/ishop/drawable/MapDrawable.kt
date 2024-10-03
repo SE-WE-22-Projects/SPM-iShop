@@ -11,11 +11,12 @@ import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import io.github.yehan2002.ishop.navigation.MapObjects
 import io.github.yehan2002.ishop.navigation.ShopMap
+import io.github.yehan2002.ishop.util.Point2D
 
 class MapDrawable(
     private val shopMap: ShopMap,
-    private val userPos: ShopMap.Point2D?,
-    private val userRoute: Array<ShopMap.Point2D>?
+    private val userPos: Point2D?,
+    private val userRoute: Array<Point2D>?
 ) :
     Drawable() {
     private val empty = Paint().apply {

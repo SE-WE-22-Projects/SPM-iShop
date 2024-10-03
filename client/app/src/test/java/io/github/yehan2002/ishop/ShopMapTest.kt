@@ -1,7 +1,7 @@
 package io.github.yehan2002.ishop
 
 import io.github.yehan2002.ishop.navigation.ShopMap
-import io.github.yehan2002.ishop.navigation.ShopMap.Point2D
+import io.github.yehan2002.ishop.util.Point2D
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
