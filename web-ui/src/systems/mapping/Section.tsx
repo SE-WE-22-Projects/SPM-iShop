@@ -10,6 +10,7 @@ import axios from 'axios'
 import { useConfirm } from 'material-ui-confirm'
 import PageLoader from '../../common/PageLoader'
 import AddSectionModel from './sectionComponents/AddSectionModel'
+import { invalidCordinate } from '../../common/validCordinate'
 
 const Section = () => {
     // real time search
@@ -42,20 +43,20 @@ const Section = () => {
             enqueueSnackbar("Section Name is required...", {variant:  "error"});
             return;
         }
-        else if(!data.top_y){
-            enqueueSnackbar("Section Top Y cordination is required...", {variant:  "error"});
+        else if(invalidCordinate(data.top_y)){
+            enqueueSnackbar("Section Top Y cordinate is required...", {variant:  "error"});
             return;
         }
-        else if(!data.top_x){
-            enqueueSnackbar("Section Top X cordination is required...", {variant:  "error"});
+        else if(invalidCordinate(data.top_x)){
+            enqueueSnackbar("Section Top X cordinate is required...", {variant:  "error"});
             return;
         }
-        else if(!data.bottom_y){
-            enqueueSnackbar("Section Bottom Y is required...", {variant:  "error"});
+        else if(invalidCordinate(data.bottom_y)){
+            enqueueSnackbar("Section Bottom Y cordinate is required...", {variant:  "error"});
             return;
         }
-        else if(!data.bottom_x){
-            enqueueSnackbar("Section Bottom X is required...", {variant:  "error"});
+        else if(invalidCordinate(data.bottom_x)){
+            enqueueSnackbar("Section Bottom X cordinate is required...", {variant:  "error"});
             return;
         }
         try{
@@ -87,19 +88,19 @@ const Section = () => {
             enqueueSnackbar("Section Name is required...", {variant:  "error"});
             return;
         }
-        else if(!data.top_y){
+        else if(invalidCordinate(data.top_y)){
             enqueueSnackbar("Section Top Y cordination is required...", {variant:  "error"});
             return;
         }
-        else if(!data.top_x){
+        else if(invalidCordinate(data.top_x)){
             enqueueSnackbar("Section Top X cordination is required...", {variant:  "error"});
             return;
         }
-        else if(!data.bottom_y){
+        else if(invalidCordinate(data.bottom_y)){
             enqueueSnackbar("Section Bottom Y is required...", {variant:  "error"});
             return;
         }
-        else if(!data.bottom_x){
+        else if(invalidCordinate(data.bottom_x)){
             enqueueSnackbar("Section Bottom X is required...", {variant:  "error"});
             return;
         }
