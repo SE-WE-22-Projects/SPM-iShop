@@ -83,6 +83,7 @@ const UpdateEmployeeModal = ({open, handleClose, data, updateEmployee, deleteEmp
     return (
         <React.Fragment>
             <BootstrapDialog
+                maxWidth='md'
                 onClose={handleClose}
                 aria-labelledby="customized-dialog-title"
                 open={open}

@@ -14,6 +14,7 @@ app.use(cors());
 
 // connect routes
 const router = require('./routes/router');
+const { auth } = require('./middleware/auth');
 app.use('/api', router);
 
 
