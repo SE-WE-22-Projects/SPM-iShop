@@ -21,6 +21,9 @@ class StoreNavigator {
 
     var section: MapObjects.Section = MapObjects.UnknownSection
 
+
+    var route: Array<ShopMap.Point2D>? = null
+
     /**
      * This method adds the given markers to the marker buffer.
      * The position of the user is determined using the average position of the user relative to all
@@ -84,12 +87,16 @@ class StoreNavigator {
             .reduce { acc, point2D -> point2D.add(acc) }
 
         // get the average position of the user based on all detected tags.
-        position = ShopMap.Point2D(positionSum.x / positions.size, positionSum.y / positions.size)
+        val userPosition =
+            ShopMap.Point2D(positionSum.x / positions.size, positionSum.y / positions.size)
 
         val tile = shopMap.getTileAt(position)
 
+        position = userPosition
         currentTile = tile
         section = if (tile is MapObjects.Valid) tile.position() else MapObjects.UnknownSection
+
+        route = shopMap.pathfinder.findRoute(userPosition, ShopMap.Point2D(10, 10))
     }
 
 

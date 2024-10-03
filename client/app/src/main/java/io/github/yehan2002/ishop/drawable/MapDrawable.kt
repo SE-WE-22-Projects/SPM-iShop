@@ -5,13 +5,18 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.ColorFilter
 import android.graphics.Paint
+import android.graphics.Path
 import android.graphics.PixelFormat
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import io.github.yehan2002.ishop.navigation.MapObjects
 import io.github.yehan2002.ishop.navigation.ShopMap
 
-class MapDrawable(private val shopMap: ShopMap, private val userPos: ShopMap.Point2D?) :
+class MapDrawable(
+    private val shopMap: ShopMap,
+    private val userPos: ShopMap.Point2D?,
+    private val userRoute: Array<ShopMap.Point2D>?
+) :
     Drawable() {
     private val empty = Paint().apply {
         style = Paint.Style.FILL
@@ -34,10 +39,16 @@ class MapDrawable(private val shopMap: ShopMap, private val userPos: ShopMap.Poi
         color = Color.parseColor("#0084CA")
     }
 
+    private val userPath = Paint().apply {
+        style = Paint.Style.STROKE
+        color = Color.parseColor("#0084CA")
+    }
+
     @SuppressLint("CanvasSize")
     override fun draw(canvas: Canvas) {
         val widthOffset = canvas.width - shopMap.width * TILE_SIZE
 
+        // display the shop map
         for (x in 0..<shopMap.width) {
             for (y in 0..<shopMap.height) {
                 val tile = shopMap.map[x][y]
@@ -66,6 +77,8 @@ class MapDrawable(private val shopMap: ShopMap, private val userPos: ShopMap.Poi
             }
         }
 
+
+        // display the user's position
         val userTile = shopMap.getTileAt(userPos)
         if (userPos != null && userTile != empty) {
             // user is inside the store
@@ -80,6 +93,24 @@ class MapDrawable(private val shopMap: ShopMap, private val userPos: ShopMap.Poi
                 user
             )
 
+        }
+
+        if (userRoute != null) {
+            val path = Path()
+
+            var first = true
+
+            for (pos in userRoute) {
+                val px = widthOffset + (pos.x + 0.5) * TILE_SIZE
+                val py = (pos.y + 0.5) * TILE_SIZE
+
+                if (first) path.moveTo(px.toFloat(), py.toFloat())
+                else path.lineTo(px.toFloat(), py.toFloat())
+
+                first = false
+            }
+
+            canvas.drawPath(path, userPath)
         }
     }
 

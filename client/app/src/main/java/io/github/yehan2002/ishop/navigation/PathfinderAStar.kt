@@ -1,7 +1,8 @@
 package io.github.yehan2002.ishop.navigation
 
 import java.util.PriorityQueue
-import kotlin.math.abs
+import kotlin.math.roundToInt
+import kotlin.math.sqrt
 
 class PathfinderAStar(private val map: ShopMap) {
 
@@ -14,21 +15,23 @@ class PathfinderAStar(private val map: ShopMap) {
 
         val queue = PriorityQueue<TileInfo> { t1, t2 -> return@PriorityQueue t1.score - t2.score }
 
-        queue.add(tileInfo[start.x.toInt()][start.y.toInt()])
+        val startTile = tileInfo[start.x.toInt()][start.y.toInt()]
+        queue.add(startTile)
 
         var foundPath = false
         var currentTile: TileInfo? = null
 
+
+        main@
         while (!queue.isEmpty()) {
             do {
+                if (queue.isEmpty()) break@main
 
-                if (queue.isEmpty()) break
                 currentTile = queue.remove()
 
             } while (!currentTile!!.open)
 
-
-            currentTile!!.open = false
+            currentTile.open = false
 
             if (currentTile.x == end.x.toInt() && currentTile.y == end.y.toInt()) {
                 foundPath = true
@@ -41,9 +44,11 @@ class PathfinderAStar(private val map: ShopMap) {
 
                 if (isValidTile(nextX, nextY)) {
                     val newTile = tileInfo[nextX][nextY]
-                    newTile.score = currentTile.score + getScore(end, nextX, nextY)
-                    newTile.parent = currentTile
-                    queue.add(newTile)
+                    if (newTile.open) {
+                        newTile.score = currentTile.score + getScore(end, nextX, nextY)
+                        newTile.parent = currentTile
+                        queue.add(newTile)
+                    }
                 }
             }
 
@@ -54,7 +59,7 @@ class PathfinderAStar(private val map: ShopMap) {
 
         val path = mutableListOf<ShopMap.Point2D>()
         while (currentTile != null) {
-            path.add(ShopMap.Point2D(currentTile.x, currentTile.y));
+            path.add(ShopMap.Point2D(currentTile.x, currentTile.y))
             currentTile = currentTile.parent
         }
 
@@ -71,14 +76,16 @@ class PathfinderAStar(private val map: ShopMap) {
 
 
     private fun getScore(end: ShopMap.Point2D, x: Int, y: Int): Int {
-        return abs(end.x.toInt() - x) + abs(end.y.toInt() - y) + 1
+        val dx = (end.x.toInt() - x)
+        val dy = (end.y.toInt() - y)
+        return sqrt((dx * dx + dy * dy).toDouble()).roundToInt()
     }
 
     private fun resetState() {
         for (row in tileInfo) {
             for (info in row) {
                 info.parent = null
-                info.open = false
+                info.open = true
                 info.score = 0
             }
         }
@@ -95,7 +102,7 @@ class PathfinderAStar(private val map: ShopMap) {
             val y: Int,
             var parent: TileInfo? = null,
             var open: Boolean = false,
-            var score: Int = 0
+            var score: Int = 0,
         )
     }
 }

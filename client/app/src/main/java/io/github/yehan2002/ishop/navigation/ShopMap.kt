@@ -14,6 +14,8 @@ class ShopMap(val width: Int, val height: Int) {
     }
     var markers = mutableMapOf<Int, Point2D>()
 
+    val pathfinder = PathfinderAStar(this)
+
     fun estimatePos(markerId: Int, distance: Double, angle: Tag.Rotation): Point2D? {
         val pos = markers[markerId]
         if (pos == null) {
@@ -96,8 +98,14 @@ class ShopMap(val width: Int, val height: Int) {
 
         override fun equals(other: Any?): Boolean {
             if (other == null || other !is Point2D) return false
-            
+
             return other.x == this.x && other.y == this.y
+        }
+
+        override fun hashCode(): Int {
+            var result = x.hashCode()
+            result = 31 * result + y.hashCode()
+            return result
         }
     }
 
