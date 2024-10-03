@@ -18,7 +18,7 @@ const Section = () => {
     setSearchQuery(str);
     }
 
-    // handle add employee modal
+    // handle add secton modal
     const [addOpen, setAddOpen] = useState(false);
     const sectionAddModalOpen = () => setAddOpen(true);
     const sectionAddModalClose = () => setAddOpen(false);
