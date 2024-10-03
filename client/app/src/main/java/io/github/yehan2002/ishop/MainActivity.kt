@@ -3,6 +3,7 @@ package io.github.yehan2002.ishop
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.OptIn
@@ -27,6 +28,7 @@ import org.opencv.android.OpenCVLoader
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.util.Locale
 import kotlin.math.roundToInt
 
 
@@ -34,6 +36,8 @@ class MainActivity : AppCompatActivity(), StoreNavigator.NavigationHandler {
     private lateinit var viewBinding: ActivityMainBinding
     private lateinit var navigator: StoreNavigator
     private lateinit var shopService: ShopService
+
+    private lateinit var textToSpeechEngine: TextToSpeech
 
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,6 +59,14 @@ class MainActivity : AppCompatActivity(), StoreNavigator.NavigationHandler {
             .addConverterFactory(JacksonConverterFactory.create())
             .build()
         shopService = retrofit.create(ShopService::class.java)
+
+        textToSpeechEngine = TextToSpeech(
+            this
+        ) { status ->
+            if (status == TextToSpeech.SUCCESS) {
+                textToSpeechEngine.language = Locale.US
+            }
+        }
 
         // Request camera permissions
         if (allPermissionsGranted()) {
@@ -125,13 +137,18 @@ class MainActivity : AppCompatActivity(), StoreNavigator.NavigationHandler {
         bridge.start()
     }
 
+    /**
+     * Handles the user clicking anywhere on the screen to get the current location.
+     * This method plays a TTS message that contains the current location.
+     */
     private fun onLocationClick() {
-        Toast.makeText(
-            this,
-            "Currently in the ${navigator.section.name} section",
-            Toast.LENGTH_SHORT
-        )
-            .show()
+        // check if the user is in a valid section
+        if (navigator.section == MapObjects.UnknownSection) {
+            tts(getString(R.string.tts_loc_error))
+            return
+        }
+
+        tts(getString(R.string.tts_loc, navigator.section.name))
     }
 
     private fun onSearchClick() {
@@ -142,28 +159,35 @@ class MainActivity : AppCompatActivity(), StoreNavigator.NavigationHandler {
         }
     }
 
+    /**
+     * Handles the user clicking the promotions button.
+     * All promotions in the current section are played as TTS messages.
+     */
     private fun onPromoClick() {
-        Toast.makeText(this, "Loading Promotions", Toast.LENGTH_SHORT)
-            .show()
         CoroutineScope(Dispatchers.IO).launch {
             try {
+
+                // check if the user is in a valid section
+                if (navigator.section == MapObjects.UnknownSection) {
+                    tts(getString(R.string.tts_loc_error))
+                    return@launch
+                }
+
+                // get the promotions from the server
                 val promos = shopService.getPromotions(navigator.section.sectionId)
-                runOnUiThread {
-                    Toast.makeText(
-                        this@MainActivity,
-                        "Found ${promos.promos.size} promotions",
-                        Toast.LENGTH_SHORT
-                    ).show()
+
+                if (promos.promos.isEmpty()) {
+                    // no promotions in the section
+                    tts(getString(R.string.tts_promo_none))
+                } else {
+                    tts(getString(R.string.tts_promo_number, promos.promos.size))
+                    for (promo in promos.promos) {
+                        tts(promo, flush = false)
+                    }
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to get promotions", e)
-                runOnUiThread {
-                    Toast.makeText(
-                        this@MainActivity,
-                        "Failed to get promotions",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+                tts(getString(R.string.tts_promo_error))
             }
         }
     }
@@ -172,6 +196,26 @@ class MainActivity : AppCompatActivity(), StoreNavigator.NavigationHandler {
         Toast.makeText(this, "Section changed to ${section.name}", Toast.LENGTH_SHORT).show()
     }
 
+    /**
+     * Plays the given text as a TTS message.
+     * If flush is true, any pending messages are canceled before playing the current message.
+     */
+    private fun tts(text: String, flush: Boolean = true) {
+        runOnUiThread {
+            textToSpeechEngine.speak(
+                text,
+                if (flush) TextToSpeech.QUEUE_FLUSH else TextToSpeech.QUEUE_ADD,
+                null,
+                TAG
+            )
+
+            Toast.makeText(
+                this,
+                text,
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(
@@ -199,6 +243,16 @@ class MainActivity : AppCompatActivity(), StoreNavigator.NavigationHandler {
                 finish()
             }
         }
+    }
+
+    override fun onPause() {
+        textToSpeechEngine.stop()
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        textToSpeechEngine.shutdown()
+        super.onDestroy()
     }
 
     companion object {

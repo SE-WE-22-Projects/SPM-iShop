@@ -5,4 +5,10 @@
     <string name="search_btn">Search</string>
     <string name="search_btn_desc">Search for item in store</string>
     <string name="promo_btn_desc">List the current ongoing promotions.</string>
+
+    <string name="tts_loc_error">Unable to find current location</string>
+    <string name="tts_loc">Currently in the %1$s section</string>
+    <string name="tts_promo_none">No promotions found</string>
+    <string name="tts_promo_number">Found %1$d promotions</string>
+    <string name="tts_promo_error">Failed to get promotions due to network issue</string>
 </resources>
