@@ -4,6 +4,7 @@ import Dashboard from "./Dashboard";
 import Page1 from "./Page1";
 import MapEditor from "./MapEditor";
 import Section from "./Section";
+import Rack from "./Rack";
 
 
 export const routes: SystemRoutes = {
@@ -33,6 +34,14 @@ export const routes: SystemRoutes = {
             path: "section",
             display: {
                 title: "Section Management",
+                icon: <ViewQuilt />
+            }
+        },
+        {
+            element: <Rack />,
+            path: "rack",
+            display: {
+                title: "Rack Management",
                 icon: <ViewQuilt />
             }
         }
