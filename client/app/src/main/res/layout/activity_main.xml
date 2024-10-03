@@ -5,6 +5,9 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:backgroundTint="@android:color/transparent"
+    android:foregroundTint="@android:color/transparent"
+    android:foregroundTintMode="add"
     tools:context=".MainActivity">
 
     <RelativeLayout
@@ -26,37 +29,31 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <LinearLayout
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/app_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:focusable="auto"
+                android:focusableInTouchMode="true"
+                android:foregroundTint="@android:color/transparent"
+                app:itemActiveIndicatorStyle="@style/Widget.Material3.BottomNavigationView"
+                app:itemTextAppearanceActiveBoldEnabled="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
-
-                <Button
-                    android:id="@+id/btn_promo"
-                    style="@android:style/Widget.Material.Light.Button.Small"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@string/promo_btn_desc"
-                    android:text="@string/promo_btn" />
-
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
-
-                <Button
-                    android:id="@+id/btn_search"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@string/search_btn_desc"
-                    android:text="@string/search_btn" />
-
-            </LinearLayout>
-
+                app:layout_constraintStart_toStartOf="parent"
+                app:menu="@menu/bottom_toolbar" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     </RelativeLayout>
 

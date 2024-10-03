@@ -11,7 +11,7 @@ import io.github.yehan2002.ishop.util.Point2D
 import io.github.yehan2002.ishop.util.RingBuffer
 import org.opencv.objdetect.Objdetect
 
-class StoreNavigator {
+class StoreNavigator(private val handler: NavigationHandler) {
     private var markerBuffer = RingBuffer<Map<Int, Point2D>>(BUFFER_SIZE)
 
     var lastTags: Array<Tag>? = null
@@ -119,12 +119,18 @@ class StoreNavigator {
         // get the average position of the user based on all detected tags.
         val userPosition =
             Point2D(positionSum.x / positions.size, positionSum.y / positions.size)
-
         val tile = shopMap.getTileAt(position)
+
+        val newSection =
+            if (tile is MapObjects.Valid) tile.position() else MapObjects.UnknownSection
+
+        if (newSection != section) {
+            handler.onSectionChange(newSection, section)
+        }
 
         position = userPosition
         currentTile = tile
-        section = if (tile is MapObjects.Valid) tile.position() else MapObjects.UnknownSection
+        section = newSection
 
         route = shopMap.pathfinder.findRoute(userPosition, Point2D(10, 10))
     }
@@ -149,11 +155,15 @@ class StoreNavigator {
         }
 
         /**
-         * Convert the weighted position to [ShopMap.Point2D].
+         * Convert the weighted position to [Point2D].
          */
         fun toPoint(): Point2D {
             return Point2D(x / weight, y / weight)
         }
+    }
+
+    interface NavigationHandler {
+        fun onSectionChange(section: MapObjects.Section, prevSection: MapObjects.Section)
     }
 
 

@@ -17,12 +17,13 @@ import io.github.yehan2002.ishop.databinding.ActivityMainBinding
 import io.github.yehan2002.ishop.drawable.DebugInfoDrawable
 import io.github.yehan2002.ishop.drawable.MapDrawable
 import io.github.yehan2002.ishop.drawable.TagDrawable
+import io.github.yehan2002.ishop.navigation.MapObjects
 import io.github.yehan2002.ishop.navigation.StoreNavigator
 import org.opencv.android.OpenCVLoader
 import kotlin.math.roundToInt
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), StoreNavigator.NavigationHandler {
     private lateinit var viewBinding: ActivityMainBinding
     private lateinit var navigator: StoreNavigator
 
@@ -36,10 +37,10 @@ class MainActivity : AppCompatActivity() {
         if (!OpenCVLoader.initLocal()) {
             Log.e(TAG, "OpenCV initialization failed")
             (Toast.makeText(this, "OpenCV initialization failed", Toast.LENGTH_LONG)).show()
-            return
+            finish()
         }
 
-        navigator = StoreNavigator()
+        navigator = StoreNavigator(this)
 
         // Request camera permissions
         if (allPermissionsGranted()) {
@@ -50,6 +51,18 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
+        viewBinding.viewFinder.setOnClickListener {
+            this.onLocationClick()
+        }
+
+        viewBinding.appBar.setOnItemSelectedListener {
+            when (it.itemId) {
+                R.id.promo_btn -> this.onPromoClick()
+                R.id.search_btn -> this.onSearchClick()
+            }
+
+            return@setOnItemSelectedListener true
+        }
 
     }
 
@@ -96,6 +109,29 @@ class MainActivity : AppCompatActivity() {
             )
         }
         bridge.start()
+    }
+
+    private fun onLocationClick() {
+        Toast.makeText(
+            this,
+            "Currently in the ${navigator.section.name} section",
+            Toast.LENGTH_SHORT
+        )
+            .show()
+    }
+
+    private fun onSearchClick() {
+        Toast.makeText(this, "Search items", Toast.LENGTH_SHORT)
+            .show()
+    }
+
+    private fun onPromoClick() {
+        Toast.makeText(this, "Currently Promotions", Toast.LENGTH_SHORT)
+            .show()
+    }
+
+    override fun onSectionChange(section: MapObjects.Section, prevSection: MapObjects.Section) {
+        Toast.makeText(this, "Section changed to ${section.name}", Toast.LENGTH_SHORT).show()
     }
 
 

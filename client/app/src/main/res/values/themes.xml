@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="LaunchTheme" parent="Theme.Material3.DayNight" />
+    <style name="LaunchTheme" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">#5762D5</item>
+    </style>
 </resources>
