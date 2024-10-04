@@ -24,6 +24,9 @@ import io.github.yehan2002.visionguide.util.TTS
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 import org.opencv.android.OpenCVLoader
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
@@ -55,17 +58,50 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
 
         navigator = StoreNavigator(this)
 
-        val serverUrl = intent.getStringExtra("server")
+        val serverUrls = intent.getStringArrayExtra("servers")
         val markerSize = intent.getDoubleExtra("marker_size", -1.0)
 
-        if (serverUrl !== null && markerSize > 0) {
-            val retrofit = Retrofit.Builder()
-                .baseUrl(serverUrl)
-                .addConverterFactory(ScalarsConverterFactory.create())
-                .addConverterFactory(JacksonConverterFactory.create())
-                .build()
-            shopService = retrofit.create(ShopService::class.java)
+        if (serverUrls !== null && markerSize < 0) {
             navigator.setMarkerSize(markerSize)
+
+            CoroutineScope(Dispatchers.IO).launch {
+                val client = OkHttpClient()
+                for (url in serverUrls) {
+
+                    try {
+                        val serverURL = "http://$url:5000"
+                        Log.i(TAG, "Checking URL $serverURL")
+
+                        val request: Request = Request.Builder()
+                            .url("$serverURL/api/test/204").get()
+                            .build()
+
+                        val call = client.newCall(request)
+                        val response: Response = call.execute()
+
+                        if (response.code() == 204) {
+                            Log.i(TAG, "Found URL $serverURL")
+
+                            val retrofit = Retrofit.Builder()
+                                .baseUrl(serverURL)
+                                .addConverterFactory(ScalarsConverterFactory.create())
+                                .addConverterFactory(JacksonConverterFactory.create())
+                                .build()
+
+                            shopService = retrofit.create(ShopService::class.java)
+                            loadShopMap()
+                            return@launch
+                        }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Failed to connect", e)
+                    }
+                }
+
+                tts.say(getString(R.string.tts_server_error))
+                finish()
+            }
+
+
         } else {
             Toast.makeText(this, "Running in dev mode", Toast.LENGTH_SHORT).show()
 
@@ -75,9 +111,9 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
                 .addConverterFactory(JacksonConverterFactory.create())
                 .build()
             shopService = retrofit.create(ShopService::class.java)
+            loadShopMap()
         }
 
-        loadShopMap()
         startCamera()
 
         viewBinding.viewFinder.setOnClickListener {

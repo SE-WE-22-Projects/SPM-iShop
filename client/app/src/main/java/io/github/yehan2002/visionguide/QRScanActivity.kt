@@ -100,7 +100,7 @@ class QRScanActivity : CameraActivity() {
         if (shopQR.type != "SV") return false
 
         val intent = Intent(this, MainActivity::class.java)
-        intent.putExtra("server", shopQR.server)
+        intent.putExtra("servers", shopQR.server.toTypedArray())
         intent.putExtra("size", shopQR.size)
         startActivity(intent)
         finish()
@@ -120,9 +120,7 @@ class QRScanActivity : CameraActivity() {
 
     data class ShopQR(
         @JsonProperty("t") val type: String,
-        @JsonProperty("s") val server: String,
+        @JsonProperty("i") val server: List<String>,
         @JsonProperty("ms") val size: Double = 0.06
-    ) {
-
-    }
+    )
 }
