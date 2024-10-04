@@ -1,5 +1,6 @@
 package io.github.yehan2002.ishop.net
 
+import io.github.yehan2002.ishop.net.dto.Item
 import io.github.yehan2002.ishop.net.dto.MapData
 import io.github.yehan2002.ishop.net.dto.Promotions
 import retrofit2.http.GET
@@ -14,6 +15,6 @@ interface ShopService {
     suspend fun getMap(): MapData
 
     @GET("/api/inventory/search")
-    suspend fun searchItem(@Query("q") query: String): Any
+    suspend fun searchItem(@Query("q") query: String): Item?
 }
 

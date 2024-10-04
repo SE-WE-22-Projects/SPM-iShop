@@ -18,6 +18,7 @@ import io.github.yehan2002.ishop.drawable.TagDrawable
 import io.github.yehan2002.ishop.navigation.MapObjects
 import io.github.yehan2002.ishop.navigation.StoreNavigator
 import io.github.yehan2002.ishop.net.ShopService
+import io.github.yehan2002.ishop.net.dto.Item
 import io.github.yehan2002.ishop.net.dto.MapData
 import io.github.yehan2002.ishop.util.TTS
 import kotlinx.coroutines.CoroutineScope
@@ -162,9 +163,23 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
     }
 
     private fun onSearchClick() {
-        Toast.makeText(this, "Search items", Toast.LENGTH_SHORT)
-            .show()
-        loadShopMap()
+        CoroutineScope(Dispatchers.IO).launch {
+
+            val item: Item?
+            try {
+                item = shopService.searchItem("Laptop")
+                if (item == null) {
+                    tts.say(getString(R.string.tts_search_not_found))
+                    return@launch
+                }
+            } catch (e: Exception) {
+                tts.say(getString(R.string.tts_search_error))
+                Log.e(TAG, "Failed to search", e)
+                return@launch
+            }
+
+            Log.i(TAG, "Item $item")
+        }
     }
 
     /**
