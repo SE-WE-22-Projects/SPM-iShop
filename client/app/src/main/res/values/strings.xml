@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">iShop</string>
+    <string name="app_name_dev">iShop (DEV)</string>
+
     <string name="error_camera_support">Camera is not supported</string>
     <string name="promo_btn">Promotions</string>
     <string name="search_btn">Search</string>
@@ -11,4 +13,5 @@
     <string name="tts_promo_none">No promotions found</string>
     <string name="tts_promo_number">Found %1$d promotions</string>
     <string name="tts_promo_error">Failed to get promotions due to network issue</string>
+    <string name="scan_qr_text">Scan Shop QR Code to Start Navigation</string>
 </resources>

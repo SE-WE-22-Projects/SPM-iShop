@@ -153,6 +153,5 @@ class ShopMap(val width: Int, val height: Int) {
 
             return map
         }
-
     }
 }

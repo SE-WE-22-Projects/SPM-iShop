@@ -3,6 +3,7 @@ package io.github.yehan2002.ishop.camera
 import android.graphics.Matrix
 import android.graphics.Rect
 import android.os.Build
+import android.util.Log
 import android.view.ViewGroupOverlay
 import androidx.annotation.OptIn
 import androidx.annotation.RequiresApi
@@ -15,6 +16,7 @@ import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
+import io.github.yehan2002.ishop.MainActivity.Companion.TAG
 
 /**
  * This class acts as a bridge between the camera and the App.
@@ -73,8 +75,12 @@ class CameraBridge(
             }
 
             previewView.overlay.clear()
-            
-            handler(this, proxy)
+
+            try {
+                handler(this, proxy)
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to process frame", e)
+            }
 
             proxy.close()
         }

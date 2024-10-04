@@ -1,18 +1,16 @@
 package io.github.yehan2002.ishop
 
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.camera2.interop.ExperimentalCamera2Interop
 import androidx.camera.view.PreviewView
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import io.github.yehan2002.ishop.camera.CameraActivity
 import io.github.yehan2002.ishop.camera.CameraBridge
 import io.github.yehan2002.ishop.databinding.ActivityMainBinding
 import io.github.yehan2002.ishop.drawable.DebugInfoDrawable
@@ -21,6 +19,7 @@ import io.github.yehan2002.ishop.drawable.TagDrawable
 import io.github.yehan2002.ishop.navigation.MapObjects
 import io.github.yehan2002.ishop.navigation.StoreNavigator
 import io.github.yehan2002.ishop.net.ShopService
+import io.github.yehan2002.ishop.net.dto.MapData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -32,12 +31,12 @@ import java.util.Locale
 import kotlin.math.roundToInt
 
 
-class MainActivity : AppCompatActivity(), StoreNavigator.NavigationHandler {
+class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
     private lateinit var viewBinding: ActivityMainBinding
     private lateinit var navigator: StoreNavigator
     private lateinit var shopService: ShopService
 
-    private lateinit var textToSpeechEngine: TextToSpeech
+    private lateinit var textToSpeechEngine: TextToSpeech;
 
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,14 +51,6 @@ class MainActivity : AppCompatActivity(), StoreNavigator.NavigationHandler {
             finish()
         }
 
-        navigator = StoreNavigator(this)
-
-        val retrofit = Retrofit.Builder().baseUrl("http://192.168.8.156:5000")
-            .addConverterFactory(ScalarsConverterFactory.create())
-            .addConverterFactory(JacksonConverterFactory.create())
-            .build()
-        shopService = retrofit.create(ShopService::class.java)
-
         textToSpeechEngine = TextToSpeech(
             this
         ) { status ->
@@ -68,17 +59,41 @@ class MainActivity : AppCompatActivity(), StoreNavigator.NavigationHandler {
             }
         }
 
-        // Request camera permissions
-        if (allPermissionsGranted()) {
-            startCamera()
-        } else {
-            ActivityCompat.requestPermissions(
-                this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
-            )
+        navigator = StoreNavigator(this)
+        val retrofit = Retrofit.Builder()
+            .baseUrl(intent.getStringExtra("server") ?: "http://192.168.8.156:5000")
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(JacksonConverterFactory.create())
+            .build()
+        shopService = retrofit.create(ShopService::class.java)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val map: MapData
+            try {
+                map = shopService.getMap()
+            } catch (e: Exception) {
+                tts("Failed to load shop map due to network issue")
+                Log.e(TAG, "Failed to load shop map", e)
+                return@launch
+            }
+
+            navigator.loadMap(map)
+
+            runOnUiThread {
+                viewBinding.mapLoader.visibility = View.GONE
+                tts("Loaded shop map successfully")
+            }
         }
+
+
+        startCamera()
 
         viewBinding.viewFinder.setOnClickListener {
             this.onLocationClick()
+        }
+
+        viewBinding.mapLoader.setOnClickListener {
+            tts("Loading the shop map")
         }
 
         viewBinding.appBar.setOnItemSelectedListener {
@@ -94,7 +109,7 @@ class MainActivity : AppCompatActivity(), StoreNavigator.NavigationHandler {
 
     @RequiresApi(Build.VERSION_CODES.P)
     @OptIn(ExperimentalCamera2Interop::class)
-    private fun startCamera() {
+    override fun onCameraStart() {
         val previewView: PreviewView = viewBinding.viewFinder
         val bridge = CameraBridge(this, previewView) { bridge, proxy ->
             val startTime = System.nanoTime()
@@ -154,10 +169,7 @@ class MainActivity : AppCompatActivity(), StoreNavigator.NavigationHandler {
     private fun onSearchClick() {
         Toast.makeText(this, "Search items", Toast.LENGTH_SHORT)
             .show()
-        CoroutineScope(Dispatchers.IO).launch {
-            val map = shopService.getMap()
-            navigator.loadMap(map)
-        }
+
     }
 
     /**
@@ -218,34 +230,6 @@ class MainActivity : AppCompatActivity(), StoreNavigator.NavigationHandler {
         }
     }
 
-    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
-        ContextCompat.checkSelfPermission(
-            baseContext, it
-        ) == PackageManager.PERMISSION_GRANTED
-    }
-
-
-    @RequiresApi(Build.VERSION_CODES.P)
-    @OptIn(ExperimentalCamera2Interop::class)
-    override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String>, grantResults:
-        IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if (requestCode == REQUEST_CODE_PERMISSIONS) {
-            if (allPermissionsGranted()) {
-                startCamera()
-            } else {
-                Toast.makeText(
-                    this,
-                    "Permissions not granted by the user.",
-                    Toast.LENGTH_SHORT
-                ).show()
-                finish()
-            }
-        }
-    }
 
     override fun onPause() {
         textToSpeechEngine.stop()
@@ -260,11 +244,5 @@ class MainActivity : AppCompatActivity(), StoreNavigator.NavigationHandler {
     companion object {
         const val TAG = "IShop_Log"
         const val DISPLAY_TAGS = true
-
-        private const val REQUEST_CODE_PERMISSIONS = 10
-        private val REQUIRED_PERMISSIONS =
-            mutableListOf(
-                android.Manifest.permission.CAMERA,
-            ).toTypedArray()
     }
 }
