@@ -9,8 +9,6 @@ import android.graphics.Path
 import android.graphics.PixelFormat
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
-import android.util.Log
-import io.github.yehan2002.visionguide.MainActivity.Companion.TAG
 import io.github.yehan2002.visionguide.navigation.MapObjects
 import io.github.yehan2002.visionguide.navigation.ShopMap
 import io.github.yehan2002.visionguide.util.Point2D
@@ -19,7 +17,8 @@ class MapDrawable(
     private val shopMap: ShopMap,
     private val userPos: Point2D?,
     private val userRoute: Array<Point2D>?,
-    private val navigationTarget: Point2D?
+    private val navigationTarget: Point2D?,
+    private val userFacing: ShopMap.Direction
 ) :
     Drawable() {
     private val empty = Paint().apply {
@@ -57,7 +56,8 @@ class MapDrawable(
 
     @SuppressLint("CanvasSize")
     override fun draw(canvas: Canvas) {
-        val widthOffset = canvas.width - shopMap.width * TILE_SIZE
+        val widthOffset = (canvas.width - shopMap.width * TILE_SIZE) / 2
+        val heightOffset = canvas.height - 240 - shopMap.height * TILE_SIZE
 
         // display the shop map
         for (x in 0..<shopMap.width) {
@@ -66,9 +66,9 @@ class MapDrawable(
 
                 val rect = RectF(
                     widthOffset + (x * TILE_SIZE).toFloat(),
-                    (y * TILE_SIZE).toFloat(),
+                    heightOffset + (y * TILE_SIZE).toFloat(),
                     widthOffset + ((x + 1) * TILE_SIZE).toFloat(),
-                    ((y + 1) * TILE_SIZE).toFloat(),
+                    heightOffset + ((y + 1) * TILE_SIZE).toFloat(),
                 )
 
                 val paint = when (tile) {
@@ -99,31 +99,49 @@ class MapDrawable(
 
             canvas.drawCircle(
                 widthOffset + ((ux + 0.5) * TILE_SIZE).toFloat(),
-                ((uy + 0.5) * TILE_SIZE).toFloat(),
+                heightOffset + ((uy + 0.5) * TILE_SIZE).toFloat(),
                 (USER_SIZE).toFloat(),
                 user
             )
+            if (userFacing != ShopMap.Direction.UNKNOWN) {
 
+                @Suppress("KotlinConstantConditions")
+                val angle = when (userFacing) {
+                    ShopMap.Direction.NORTH -> 240F
+                    ShopMap.Direction.SOUTH -> 60F
+                    ShopMap.Direction.EAST -> -30F
+                    ShopMap.Direction.WEST -> 150F
+                    ShopMap.Direction.UNKNOWN -> throw RuntimeException("unreachable")
+                }
+
+                canvas.drawArc(
+                    widthOffset + ((ux + 0.5) * TILE_SIZE - USER_SIZE).toFloat(),
+                    heightOffset + ((uy + 0.5) * TILE_SIZE - USER_SIZE).toFloat(),
+                    widthOffset + ((ux + 0.5) * TILE_SIZE + USER_SIZE).toFloat(),
+                    heightOffset + ((uy + 0.5) * TILE_SIZE + USER_SIZE).toFloat(),
+                    angle, 60F, true,
+                    target
+                )
+            }
         }
 
         if (userRoute != null && userPos != null) {
             val path = Path()
 
+
             val ux = userPos.x * ShopMap.SCALE * TILE_SIZE
             val uy = userPos.y * ShopMap.SCALE * TILE_SIZE
 
             path.moveTo(
-                widthOffset + ux.toFloat(), uy.toFloat()
+                widthOffset + ux.toFloat(), heightOffset + uy.toFloat()
             )
-            Log.i(TAG, "Start $ux $uy")
 
             for (i in userRoute.indices.reversed()) {
                 val pos = userRoute[i].mul(ShopMap.SCALE)
 
                 val px = widthOffset + (pos.x + 0.25) * TILE_SIZE
-                val py = (pos.y + 0.25) * TILE_SIZE
+                val py = heightOffset + (pos.y + 0.25) * TILE_SIZE
 
-                Log.i(TAG, "$px $py")
                 path.lineTo(px.toFloat(), py.toFloat())
             }
 
@@ -136,7 +154,7 @@ class MapDrawable(
 
             canvas.drawCircle(
                 widthOffset + ((ux + 0.5) * TILE_SIZE).toFloat(),
-                ((uy + 0.5) * TILE_SIZE).toFloat(),
+                heightOffset + ((uy + 0.5) * TILE_SIZE).toFloat(),
                 (USER_SIZE / 2).toFloat(),
                 target
             )
@@ -157,7 +175,8 @@ class MapDrawable(
     override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 
     companion object {
-        const val TILE_SIZE = (32 / ShopMap.SCALE)
-        const val USER_SIZE = 32 / 2.5
+        private const val DISPLAY_SCALE = 2
+        const val TILE_SIZE = (32 / ShopMap.SCALE) * DISPLAY_SCALE
+        const val USER_SIZE = 32 / 2.5 * DISPLAY_SCALE
     }
 }

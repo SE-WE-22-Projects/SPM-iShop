@@ -160,11 +160,17 @@ class StoreNavigator(private val handler: NavigationHandler) {
         currentTile = tile
         section = newSection
 
+
+
         tick++
 
         val currentTarget = target
         if (currentTarget != null) {
-            if (tick % 10 == 0)
+            if (userPosition.distance(currentTarget) < 1) {
+                target = null
+                route = null
+                handler.onDestinationReached()
+            } else if (tick % 10 == 0)
                 route = shopMap.findRoute(userPosition, currentTarget)
         } else {
             route = null
@@ -201,6 +207,8 @@ class StoreNavigator(private val handler: NavigationHandler) {
 
     interface NavigationHandler {
         fun onSectionChange(section: MapObjects.Section, prevSection: MapObjects.Section)
+        fun onDestinationReached()
+        fun onRouteDirectionChange()
     }
 
 

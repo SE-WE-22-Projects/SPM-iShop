@@ -24,4 +24,6 @@
     <string name="tts_search_not_found">No items found in the shop</string>
     <string name="tts_nav_no_route">Unable to find a route to the item</string>
     <string name="tts_server_error">Failed to connect to server</string>
+    <string name="tts_nav_complete">You have reached your destination</string>
+    <string name="tts_nav_no_dest">No destination selected</string>
 </resources>

@@ -1,5 +1,7 @@
 package io.github.yehan2002.visionguide.util
 
+import kotlin.math.sqrt
+
 /**
  * A position represented as 2 doubles.
  */
@@ -31,6 +33,13 @@ data class Point2D(val x: Double, val y: Double) {
     fun mul(v: Int): Point2D = mul(v.toDouble())
 
     fun div(v: Int): Point2D = div(v.toDouble())
+
+    fun distance(p2: Point2D): Double {
+        val dx = x - p2.x
+        val dy = y - p2.y
+
+        return sqrt(dx * dx + dy * dy)
+    }
 
     override fun equals(other: Any?): Boolean {
         if (other == null || other !is Point2D) return false

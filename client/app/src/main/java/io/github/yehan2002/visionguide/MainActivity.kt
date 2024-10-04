@@ -16,6 +16,7 @@ import io.github.yehan2002.visionguide.drawable.DebugInfoDrawable
 import io.github.yehan2002.visionguide.drawable.MapDrawable
 import io.github.yehan2002.visionguide.drawable.TagDrawable
 import io.github.yehan2002.visionguide.navigation.MapObjects
+import io.github.yehan2002.visionguide.navigation.ShopMap
 import io.github.yehan2002.visionguide.navigation.StoreNavigator
 import io.github.yehan2002.visionguide.net.ShopService
 import io.github.yehan2002.visionguide.net.dto.Item
@@ -112,6 +113,7 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
                 .build()
             shopService = retrofit.create(ShopService::class.java)
             loadShopMap()
+            navigator.setMarkerSize(0.17)
         }
 
         startCamera()
@@ -128,12 +130,14 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
             when (it.itemId) {
                 R.id.promo_btn -> this.onPromoClick()
                 R.id.search_btn -> this.onSearchClick()
+                R.id.navigate_btn -> this.onNavigateClick()
             }
 
             return@setOnItemSelectedListener true
         }
 
     }
+
 
     @RequiresApi(Build.VERSION_CODES.P)
     @OptIn(ExperimentalCamera2Interop::class)
@@ -175,7 +179,8 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
                     navigator.shopMap,
                     navigator.position,
                     navigator.route,
-                    navigator.target
+                    navigator.target,
+                    navigator.userFacing
                 )
             )
         }
@@ -242,6 +247,27 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
         }
     }
 
+    private fun onNavigateClick() {
+        if (navigator.target == null) {
+            tts.say(getString(R.string.tts_nav_no_dest))
+            return
+        }
+        val route = navigator.route
+        val facing = navigator.userFacing
+
+        if (facing == ShopMap.Direction.UNKNOWN) {
+            tts.say(getString(R.string.tts_loc_error))
+            return
+        }
+
+        if (route == null) {
+            tts.say(getString(R.string.tts_nav_no_route))
+            return
+        }
+
+
+    }
+
     /**
      * Handles the user clicking the promotions button.
      * All promotions in the current section are played as TTS messages.
@@ -277,6 +303,14 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
 
     override fun onSectionChange(section: MapObjects.Section, prevSection: MapObjects.Section) {
         Toast.makeText(this, "Section changed to ${section.name}", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onDestinationReached() {
+        tts.say(getString(R.string.tts_nav_complete))
+    }
+
+    override fun onRouteDirectionChange() {
+        TODO("Not yet implemented")
     }
 
     override fun onPause() {
