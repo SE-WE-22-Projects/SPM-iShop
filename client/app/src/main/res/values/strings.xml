@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">iShop</string>
-    <string name="app_name_dev">iShop (DEV)</string>
+    <string name="app_name">VisionGuide</string>
+    <string name="app_name_dev">VisionGuide (Dev)</string>
 
     <string name="error_camera_support">Camera is not supported</string>
     <string name="promo_btn">Promotions</string>

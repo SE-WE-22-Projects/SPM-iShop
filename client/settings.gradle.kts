@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "iShop"
+rootProject.name = "VisionGuide"
 include(":app")
  
