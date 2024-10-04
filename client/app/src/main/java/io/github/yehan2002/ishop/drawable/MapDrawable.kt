@@ -5,13 +5,19 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.ColorFilter
 import android.graphics.Paint
+import android.graphics.Path
 import android.graphics.PixelFormat
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
-import io.github.yehan2002.ishop.navigation.MapObject
-import io.github.yehan2002.ishop.navigation.StoreMap
+import io.github.yehan2002.ishop.navigation.MapObjects
+import io.github.yehan2002.ishop.navigation.ShopMap
+import io.github.yehan2002.ishop.util.Point2D
 
-class MapDrawable(private val storeMap: StoreMap, private val userPos: StoreMap.Point2D?) :
+class MapDrawable(
+    private val shopMap: ShopMap,
+    private val userPos: Point2D?,
+    private val userRoute: Array<Point2D>?
+) :
     Drawable() {
     private val empty = Paint().apply {
         style = Paint.Style.FILL
@@ -31,17 +37,22 @@ class MapDrawable(private val storeMap: StoreMap, private val userPos: StoreMap.
 
     private val user = Paint().apply {
         style = Paint.Style.FILL
-        color = Color.BLUE
-        alpha = 200
+        color = Color.parseColor("#0084CA")
+    }
+
+    private val userPath = Paint().apply {
+        style = Paint.Style.STROKE
+        color = Color.parseColor("#0084CA")
     }
 
     @SuppressLint("CanvasSize")
     override fun draw(canvas: Canvas) {
-        val widthOffset = canvas.width - storeMap.width * TILE_SIZE
+        val widthOffset = canvas.width - shopMap.width * TILE_SIZE
 
-        for (x in 0..<storeMap.width) {
-            for (y in 0..<storeMap.height) {
-                val tile = storeMap.map[x][y]
+        // display the shop map
+        for (x in 0..<shopMap.width) {
+            for (y in 0..<shopMap.height) {
+                val tile = shopMap.getTileAt(x, y)
 
                 val rect = RectF(
                     widthOffset + (x * TILE_SIZE).toFloat(),
@@ -52,10 +63,10 @@ class MapDrawable(private val storeMap: StoreMap, private val userPos: StoreMap.
 
                 val paint = when (tile) {
 
-                    MapObject.Invalid -> empty
-                    is MapObject.FloorTag -> tag
-                    is MapObject.Section -> empty
-                    is MapObject.Shelf -> rack
+                    MapObjects.Invalid -> empty
+                    is MapObjects.FloorTag -> tag
+                    is MapObjects.Section -> empty
+                    is MapObjects.Shelf -> rack
                 }
 
 
@@ -67,21 +78,42 @@ class MapDrawable(private val storeMap: StoreMap, private val userPos: StoreMap.
             }
         }
 
-        val userTile = storeMap.getTileAt(userPos)
+
+        // display the user's position
+        val userTile = shopMap.getTileAt(userPos)
         if (userPos != null && userTile != empty) {
             // user is inside the store
 
-            val ux = userPos.x
-            val uy = userPos.y
+            val ux = userPos.x * ShopMap.SCALE
+            val uy = userPos.y * ShopMap.SCALE
 
-            canvas.drawRect(
-                widthOffset + ((ux - 0.25) * TILE_SIZE).toFloat(),
-                ((uy - 0.25) * TILE_SIZE).toFloat(),
-                widthOffset + ((ux + 0.25) * TILE_SIZE).toFloat(),
-                ((uy + 0.25) * TILE_SIZE).toFloat(),
+            canvas.drawCircle(
+                widthOffset + ((ux + 0.5) * TILE_SIZE).toFloat(),
+                ((uy + 0.5) * TILE_SIZE).toFloat(),
+                (USER_SIZE).toFloat(),
                 user
             )
 
+        }
+
+        if (userRoute != null) {
+            val path = Path()
+
+            var first = true
+
+            for (i in userRoute.indices) {
+                val pos = userRoute[i].mul(ShopMap.SCALE)
+
+                val px = widthOffset + (pos.x + 0.5) * TILE_SIZE
+                val py = (pos.y + 0.5) * TILE_SIZE
+
+                if (first) path.moveTo(px.toFloat(), py.toFloat())
+                else path.lineTo(px.toFloat(), py.toFloat())
+
+                first = false
+            }
+
+            canvas.drawPath(path, userPath)
         }
     }
 
@@ -98,6 +130,7 @@ class MapDrawable(private val storeMap: StoreMap, private val userPos: StoreMap.
     override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 
     companion object {
-        const val TILE_SIZE = 64
+        const val TILE_SIZE = (32 / ShopMap.SCALE).toInt()
+        const val USER_SIZE = 32 / 2.5
     }
 }

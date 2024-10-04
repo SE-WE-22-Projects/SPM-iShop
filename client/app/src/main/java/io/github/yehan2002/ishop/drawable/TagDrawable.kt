@@ -9,7 +9,7 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.PixelFormat
 import android.graphics.drawable.Drawable
-import io.github.yehan2002.ishop.aruco.Tag
+import io.github.yehan2002.ishop.navigation.aruco.Tag
 
 class TagDrawable(
     private val tag: Tag,
@@ -59,15 +59,7 @@ class TagDrawable(
 
     @SuppressLint("DefaultLocale")
     override fun draw(canvas: Canvas) {
-
-        // convert the image points into point on the screen
-        val pts = floatArrayOf(
-            tag.corners[0].x, tag.corners[0].y,
-            tag.corners[1].x, tag.corners[1].y,
-            tag.corners[2].x, tag.corners[2].y,
-            tag.corners[3].x, tag.corners[3].y,
-        )
-        correction.mapPoints(pts)
+        val pts = tag.corners
 
         // paint a square over the detected tag
         val path = Path()
@@ -106,8 +98,10 @@ class TagDrawable(
 
         // display rotation information
         if (tag.rotation != null) {
+            val yaw = Math.toDegrees(tag.rotation.yaw)
+
             canvas.drawText(
-                String.format("%.2f°", tag.rotation.facingYaw),
+                String.format("%.2f°", ((if (yaw < 0) 360 + yaw else yaw) + 90) % 360),
                 (pts[0] + pts[4]) / 2,
                 (pts[1] + pts[5]) / 2 + 64,
                 contentTextPaint
@@ -115,7 +109,11 @@ class TagDrawable(
 
             if (DEBUG_TAGS) {
                 canvas.drawText(
-                    String.format("%.2f %.2f", tag.rotation.roll, tag.rotation.pitch),
+                    String.format(
+                        "%.2f %.2f",
+                        Math.toDegrees(tag.rotation.roll),
+                        Math.toDegrees(tag.rotation.pitch)
+                    ),
                     (pts[0] + pts[4]) / 2,
                     (pts[1] + pts[5]) / 2 + 96,
                     contentTextPaint

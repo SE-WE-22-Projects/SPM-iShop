@@ -1,4 +1,4 @@
-package io.github.yehan2002.ishop.aruco
+package io.github.yehan2002.ishop.camera
 
 import android.content.Context
 import android.hardware.camera2.CameraCharacteristics
@@ -104,7 +104,7 @@ class CameraCalibration() {
             context: Context,
             cameraId: String,
             imageProxy: ImageProxy
-        ): CameraCalibration? {
+        ): CameraCalibration {
 
             val cameraManager = context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
             val char = cameraManager.getCameraCharacteristics(cameraId)
@@ -123,7 +123,7 @@ class CameraCalibration() {
                     Toast.LENGTH_LONG
                 ).show()
 
-                return null
+                throw UnsupportedOperationException("Camera is not supported")
             }
 
             // calculate distance scaling

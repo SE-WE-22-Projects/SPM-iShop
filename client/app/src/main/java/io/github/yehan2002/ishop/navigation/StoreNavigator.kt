@@ -1,12 +1,30 @@
 package io.github.yehan2002.ishop.navigation
 
-import io.github.yehan2002.ishop.aruco.Tag
+import android.util.Log
+import androidx.camera.core.ImageProxy
+import io.github.yehan2002.ishop.MainActivity.Companion.TAG
+import io.github.yehan2002.ishop.camera.CameraBridge
 import io.github.yehan2002.ishop.navigation.StoreNavigator.Companion.BUFFER_SIZE
+import io.github.yehan2002.ishop.navigation.aruco.ArucoDetector
+import io.github.yehan2002.ishop.navigation.aruco.Tag
+import io.github.yehan2002.ishop.net.dto.MapData
+import io.github.yehan2002.ishop.util.Point2D
 import io.github.yehan2002.ishop.util.RingBuffer
+import org.opencv.objdetect.Objdetect
 
-class StoreNavigator {
-    private var markerBuffer = RingBuffer<Map<Int, StoreMap.Point2D>>(BUFFER_SIZE)
-    val storeMap: StoreMap = StoreMap.loadTestMap()
+class StoreNavigator(private val handler: NavigationHandler) {
+    private var markerBuffer = RingBuffer<Map<Int, Point2D>>(BUFFER_SIZE)
+
+    var lastTags: Array<Tag>? = null
+        private set
+
+    var shopMap: ShopMap = ShopMap(0, 0)
+        private set
+
+    private val detector = ArucoDetector(
+        dictionary = Objdetect.getPredefinedDictionary(Objdetect.DICT_4X4_50),
+        markerSize = 0.06,
+    )
 
     // TODO: alert on entering new section, tag detection
 
@@ -14,11 +32,39 @@ class StoreNavigator {
      * The current detected position of the user.
      * This can be null if the position cannot be determined.
      */
-    var position: StoreMap.Point2D? = null
+    var position: Point2D? = null
 
-    var currentTile: MapObject = MapObject.Invalid
+    var currentTile: MapObjects = MapObjects.Invalid
 
-    var section: MapObject.Section = MapObject.UnknownSection
+    var section: MapObjects.Section = MapObjects.UnknownSection
+
+
+    var route: Array<Point2D>? = null
+
+    private var tick = 0
+
+
+    fun findMarkers(bridge: CameraBridge, proxy: ImageProxy) {
+        val tags: Array<Tag>
+
+        try {
+            tags = detector.detectMarkers(bridge, proxy.toBitmap())
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to find tags", e)
+            return
+        }
+
+        addMarkers(tags)
+    }
+
+    fun loadMap(data: MapData) {
+        shopMap = ShopMap.loadMapJSON(data)
+
+        position = null
+        currentTile = MapObjects.Invalid
+        section = MapObjects.UnknownSection
+        route = null
+    }
 
     /**
      * This method adds the given markers to the marker buffer.
@@ -26,18 +72,18 @@ class StoreNavigator {
      * markers detected within the last [BUFFER_SIZE] calls to this method.
      * This method must be called each time a frame is processed even if there are no detected markers.
      */
-    fun addMarkers(markers: Array<Tag>?) {
+    private fun addMarkers(markers: Array<Tag>?) {
         if (!markers.isNullOrEmpty()) {
             // convert the markers to a map of ids and estimated user positions
 
-            val markerPos = mutableMapOf<Int, StoreMap.Point2D>()
+            val markerPos = mutableMapOf<Int, Point2D>()
             for (marker in markers) {
                 // relative position cannot be determined if the rotation data is not available
                 if (marker.rotation == null) continue
 
                 // estimate the user position from the marker distance and rotation
                 val est =
-                    storeMap.estimatePos(marker.id, marker.distance, marker.rotation.yaw)
+                    shopMap.estimatePos(marker.id, marker.distance, marker.rotation)
 
                 if (est != null)
                     markerPos[marker.id] = est
@@ -49,6 +95,7 @@ class StoreNavigator {
             markerBuffer.add(null)
         }
 
+        lastTags = markers
         updatePosition()
     }
 
@@ -73,8 +120,9 @@ class StoreNavigator {
         // no markers, cannot determine position
         if (positions.isEmpty()) {
             position = null
-            currentTile = MapObject.Invalid
-            section = MapObject.UnknownSection
+            currentTile = MapObjects.Invalid
+            section = MapObjects.UnknownSection
+            route = null
             return
         }
 
@@ -83,12 +131,27 @@ class StoreNavigator {
             .reduce { acc, point2D -> point2D.add(acc) }
 
         // get the average position of the user based on all detected tags.
-        position = StoreMap.Point2D(positionSum.x / positions.size, positionSum.y / positions.size)
+        val userPosition =
+            Point2D(positionSum.x / positions.size, positionSum.y / positions.size)
+        val tile = shopMap.getTileAt(position)
 
-        val tile = storeMap.getTileAt(position)
-        
+        val newSection =
+            if (tile is MapObjects.Valid) tile.position() else MapObjects.UnknownSection
+
+        if (newSection != section) {
+            handler.onSectionChange(newSection, section)
+        }
+
+        position = userPosition
         currentTile = tile
-        section = if (tile is MapObject.Valid) tile.position() else MapObject.UnknownSection
+        section = newSection
+
+        tick++
+
+        if (tick % 10 == 0) {
+            route = shopMap.findRoute(userPosition, Point2D(10, 10))
+        }
+
     }
 
 
@@ -104,18 +167,22 @@ class StoreNavigator {
         /**
          * Add a position with the given weight.
          */
-        fun add(weight: Int, newPos: StoreMap.Point2D) {
+        fun add(weight: Int, newPos: Point2D) {
             this.weight += weight
             this.x += newPos.x * weight
             this.y += newPos.y * weight
         }
 
         /**
-         * Convert the weighted position to [StoreMap.Point2D].
+         * Convert the weighted position to [Point2D].
          */
-        fun toPoint(): StoreMap.Point2D {
-            return StoreMap.Point2D(x / weight, y / weight)
+        fun toPoint(): Point2D {
+            return Point2D(x / weight, y / weight)
         }
+    }
+
+    interface NavigationHandler {
+        fun onSectionChange(section: MapObjects.Section, prevSection: MapObjects.Section)
     }
 
 
