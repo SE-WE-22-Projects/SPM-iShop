@@ -113,7 +113,7 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
                 // display all detected tags as a overlay
                 tags.forEach {
                     bridge.overlay.add(
-                        TagDrawable(it, bridge.correctionMatrix)
+                        TagDrawable(it)
                     )
                 }
             }

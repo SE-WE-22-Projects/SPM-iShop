@@ -1,5 +1,6 @@
 package io.github.yehan2002.visionguide
 
+import io.github.yehan2002.visionguide.navigation.MapObjects
 import io.github.yehan2002.visionguide.navigation.ShopMap
 import io.github.yehan2002.visionguide.navigation.aruco.Tag
 import io.github.yehan2002.visionguide.util.Point2D
@@ -11,7 +12,7 @@ class ShopMapTest {
     fun estimatePos() {
         val map = ShopMap(200, 200)
         val markerPos = Point2D(100.0, 100.0)
-        map.markers[1] = markerPos
+        map.markers[1] = MapObjects.FloorTag(1, MapObjects.UnknownSection, markerPos)
 
         assertEquals(
             markerPos,
