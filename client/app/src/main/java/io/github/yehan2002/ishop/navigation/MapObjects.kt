@@ -1,5 +1,7 @@
 package io.github.yehan2002.ishop.navigation
 
+import io.github.yehan2002.ishop.util.Point2D
+
 sealed class MapObjects {
     data object Invalid : MapObjects()
 
@@ -8,7 +10,12 @@ sealed class MapObjects {
         fun position(): Section
     }
 
-    data class Section(val sectionId: Int, val name: String) : MapObjects(), Valid {
+    data class Section(
+        val sectionId: Int,
+        val name: String,
+        val top: Point2D,
+        val bottom: Point2D
+    ) : MapObjects(), Valid {
         override fun position(): Section {
             return this
         }
@@ -18,7 +25,12 @@ sealed class MapObjects {
         }
     }
 
-    data class Shelf(val shelfId: Int, val section: Section) : MapObjects(), Valid {
+    data class Shelf(
+        val shelfId: Int,
+        val section: Section,
+        val top: Point2D,
+        val bottom: Point2D
+    ) : MapObjects(), Valid {
         override fun position(): Section {
             return section
         }
@@ -28,7 +40,8 @@ sealed class MapObjects {
         }
     }
 
-    data class FloorTag(val tagId: Int, val section: Section) : MapObjects(), Valid {
+    data class FloorTag(val tagId: Int, val section: Section, val pos: Point2D) : MapObjects(),
+        Valid {
         override fun position(): Section {
             return section
         }
@@ -39,7 +52,7 @@ sealed class MapObjects {
     }
 
     companion object {
-        val UnknownSection = Section(-1, "Unknown")
+        val UnknownSection = Section(-1, "Unknown", Point2D(0, 0), Point2D(0, 0))
     }
 
 }

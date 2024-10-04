@@ -121,7 +121,8 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
                 MapDrawable(
                     navigator.shopMap,
                     navigator.position,
-                    navigator.route
+                    navigator.route,
+                    navigator.target
                 )
             )
         }
@@ -178,7 +179,12 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
                 return@launch
             }
 
-            Log.i(TAG, "Item $item")
+            val target = navigator.shopMap.getRackPosition(item.rackId)
+            if (target == null) {
+                tts.say(getString(R.string.tts_nav_no_route))
+            }
+            navigator.target = target
+
         }
     }
 

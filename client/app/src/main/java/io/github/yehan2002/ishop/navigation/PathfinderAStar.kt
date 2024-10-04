@@ -77,7 +77,7 @@ class PathfinderAStar(private val map: ShopMap) {
     private fun isValidTile(x: Int, y: Int): Boolean {
         if (x < 0 || y < 0 || x >= map.width || y >= map.height) return false
 
-        return map.getTileAt(x, y) !is MapObjects.Shelf
+        return map.getScaledTileAt(x, y) !is MapObjects.Shelf
     }
 
 

@@ -26,6 +26,8 @@ class StoreNavigator(private val handler: NavigationHandler) {
         markerSize = 0.06,
     )
 
+    var target: Point2D? = null
+
     // TODO: alert on entering new section, tag detection
 
     /**
@@ -148,8 +150,12 @@ class StoreNavigator(private val handler: NavigationHandler) {
 
         tick++
 
-        if (tick % 10 == 0) {
-            route = shopMap.findRoute(userPosition, Point2D(10, 10))
+        val currentTarget = target
+        if (currentTarget != null) {
+            if (tick % 10 == 0)
+                route = shopMap.findRoute(userPosition, currentTarget)
+        } else {
+            route = null
         }
 
     }

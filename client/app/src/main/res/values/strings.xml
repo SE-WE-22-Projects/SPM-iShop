@@ -21,4 +21,5 @@
     <string name="tts_map_load_error">Failed to load shop map due to network issue</string>
     <string name="tts_search_error">Item search failed due to network issue</string>
     <string name="tts_search_not_found">No items found in the shop</string>
+    <string name="tts_nav_no_route">Unable to find a route to the item</string>
 </resources>

@@ -9,6 +9,8 @@ import android.graphics.Path
 import android.graphics.PixelFormat
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
+import android.util.Log
+import io.github.yehan2002.ishop.MainActivity.Companion.TAG
 import io.github.yehan2002.ishop.navigation.MapObjects
 import io.github.yehan2002.ishop.navigation.ShopMap
 import io.github.yehan2002.ishop.util.Point2D
@@ -16,13 +18,14 @@ import io.github.yehan2002.ishop.util.Point2D
 class MapDrawable(
     private val shopMap: ShopMap,
     private val userPos: Point2D?,
-    private val userRoute: Array<Point2D>?
+    private val userRoute: Array<Point2D>?,
+    private val navigationTarget: Point2D?
 ) :
     Drawable() {
     private val empty = Paint().apply {
         style = Paint.Style.FILL
         color = Color.WHITE
-        alpha = 100
+        alpha = 200
     }
     private val rack = Paint().apply {
         style = Paint.Style.FILL
@@ -43,6 +46,13 @@ class MapDrawable(
     private val userPath = Paint().apply {
         style = Paint.Style.STROKE
         color = Color.parseColor("#0084CA")
+        strokeWidth = 2.0F
+    }
+
+    private val target = Paint().apply {
+        style = Paint.Style.FILL
+        color = Color.parseColor("#C4A000")
+        strokeWidth = 2.0F
     }
 
     @SuppressLint("CanvasSize")
@@ -52,7 +62,7 @@ class MapDrawable(
         // display the shop map
         for (x in 0..<shopMap.width) {
             for (y in 0..<shopMap.height) {
-                val tile = shopMap.getTileAt(x, y)
+                val tile = shopMap.getScaledTileAt(x, y)
 
                 val rect = RectF(
                     widthOffset + (x * TILE_SIZE).toFloat(),
@@ -96,25 +106,42 @@ class MapDrawable(
 
         }
 
-        if (userRoute != null) {
+        if (userRoute != null && userPos != null) {
             val path = Path()
 
-            var first = true
+            val ux = userPos.x * ShopMap.SCALE * TILE_SIZE
+            val uy = userPos.y * ShopMap.SCALE * TILE_SIZE
 
-            for (i in userRoute.indices) {
+            path.moveTo(
+                widthOffset + ux.toFloat(), uy.toFloat()
+            )
+            Log.i(TAG, "Start $ux $uy")
+
+            for (i in userRoute.indices.reversed()) {
                 val pos = userRoute[i].mul(ShopMap.SCALE)
 
-                val px = widthOffset + (pos.x + 0.5) * TILE_SIZE
-                val py = (pos.y + 0.5) * TILE_SIZE
+                val px = widthOffset + (pos.x + 0.25) * TILE_SIZE
+                val py = (pos.y + 0.25) * TILE_SIZE
 
-                if (first) path.moveTo(px.toFloat(), py.toFloat())
-                else path.lineTo(px.toFloat(), py.toFloat())
-
-                first = false
+                Log.i(TAG, "$px $py")
+                path.lineTo(px.toFloat(), py.toFloat())
             }
 
             canvas.drawPath(path, userPath)
         }
+
+        if (navigationTarget != null) {
+            val ux = navigationTarget.x * ShopMap.SCALE
+            val uy = navigationTarget.y * ShopMap.SCALE
+
+            canvas.drawCircle(
+                widthOffset + ((ux + 0.5) * TILE_SIZE).toFloat(),
+                ((uy + 0.5) * TILE_SIZE).toFloat(),
+                (USER_SIZE / 2).toFloat(),
+                target
+            )
+        }
+
     }
 
     override fun setAlpha(alpha: Int) {

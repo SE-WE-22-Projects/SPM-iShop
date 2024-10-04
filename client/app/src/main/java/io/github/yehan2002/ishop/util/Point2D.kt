@@ -14,6 +14,8 @@ data class Point2D(val x: Double, val y: Double) {
         return Point2D(dx + x, dy + y)
     }
 
+    fun add(dx: Int, dy: Int) = add(dx.toDouble(), dy.toDouble())
+
     fun add(p: Point2D): Point2D {
         return add(p.x, p.y)
     }
@@ -25,6 +27,10 @@ data class Point2D(val x: Double, val y: Double) {
     fun mul(v: Double): Point2D {
         return Point2D(x * v, y * v)
     }
+
+    fun mul(v: Int): Point2D = mul(v.toDouble())
+
+    fun div(v: Int): Point2D = div(v.toDouble())
 
     override fun equals(other: Any?): Boolean {
         if (other == null || other !is Point2D) return false

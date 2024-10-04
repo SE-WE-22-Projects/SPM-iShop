@@ -14,13 +14,15 @@ class ShopMap(val width: Int, val height: Int) {
         Array(height) { MapObjects.Invalid }
     }
 
-    val markers = mutableMapOf<Int, Point2D>()
+    val markers = mutableMapOf<Int, MapObjects.FloorTag>()
+    val shelves = mutableMapOf<Int, MapObjects.Shelf>()
+    val sections = mutableMapOf<Int, MapObjects.Section>()
 
     private val pathfinder = PathfinderAStar(this)
 
     fun estimatePos(markerId: Int, distance: Double, angle: Tag.Rotation): Point2D? {
-        val pos = markers[markerId]
-        if (pos == null) {
+        val tag = markers[markerId]
+        if (tag == null) {
             Log.d(TAG, "Invalid marker id")
             return null
         }
@@ -28,18 +30,18 @@ class ShopMap(val width: Int, val height: Int) {
         // calculate the position.
         // https://stackoverflow.com/a/13895314/6587830
         val position = Point2D(
-            pos.x + distance * SCALE * cos(angle.yaw),
-            pos.y + distance * SCALE * sin(angle.yaw)
+            tag.pos.x + distance * cos(angle.yaw),
+            tag.pos.y + distance * sin(angle.yaw)
         )
 
         // check if the position is within the map.
         // a buffer of 10 meters is added around the map.
-        if (pos.x < -10 || pos.y < -10 || pos.x > height + 10 || pos.y > width + 10) {
+        if (position.x < -10 || position.y < -10 || position.x > height + 10 || position.y > width + 10) {
             Log.d(TAG, "Position outsize map")
             return null
         }
 
-        return position.div(SCALE)
+        return position
     }
 
     /**
@@ -57,11 +59,29 @@ class ShopMap(val width: Int, val height: Int) {
         return map[x][x]
     }
 
+    fun getRackPosition(rackId: Int): Point2D? {
+        val rack = shelves[rackId] ?: return null
+
+        val midY = rack.top.y + (rack.bottom.y - rack.top.y - 1) / 2
+
+        var pos = Point2D(rack.top.x - 1, midY)
+        if (getTileAt(pos) is MapObjects.Section) {
+            return pos.add(1, 0)
+        }
+
+        pos = Point2D(rack.bottom.x + 1, midY)
+        if (getTileAt(pos) is MapObjects.Section) {
+            return pos.add(-1, 0)
+        }
+
+        return null
+    }
+
     /**
-     * Gets the tile at the given position.
+     * Gets the tile at the given position. The tile coordinates are multiplied by the [SCALE].
      * If the position is null or outside the mapped area, [MapObjects.Invalid] is returned.
      */
-    fun getTileAt(x: Int, y: Int): MapObjects {
+    fun getScaledTileAt(x: Int, y: Int): MapObjects {
         if (x < 0 || x > height || y < 0 || y > width) return MapObjects.Invalid
 
         return map[x][y]
@@ -96,67 +116,93 @@ class ShopMap(val width: Int, val height: Int) {
     }
 
 
+    private fun addObject(obj: MapObjects) {
+        when (obj) {
+            is MapObjects.FloorTag -> {
+                val mapPosX = (obj.pos.x * SCALE).toInt()
+                val mapPosY = (obj.pos.y * SCALE).toInt()
+
+                if (map[mapPosX][mapPosY] !== MapObjects.Invalid) {
+                    throw RuntimeException("Tiles overlap ${map[mapPosX][mapPosY]}")
+                }
+
+                map[mapPosX][mapPosY] = obj
+                markers[obj.tagId] = obj
+            }
+
+            is MapObjects.Section -> {
+                val topX = (obj.top.x * SCALE).toInt()
+                val topY = (obj.top.y * SCALE).toInt()
+                val bottomX = (obj.bottom.x * SCALE).toInt()
+                val bottomY = (obj.bottom.y * SCALE).toInt()
+
+                for (x in topX..<bottomX) {
+                    for (y in topY..<bottomY) {
+                        if (map[x][y] == MapObjects.Invalid) {
+                            map[x][y] = obj
+                        }
+
+                    }
+                }
+
+                sections[obj.sectionId] = obj
+            }
+
+            is MapObjects.Shelf -> {
+                val topX = (obj.top.x * SCALE).toInt()
+                val topY = (obj.top.y * SCALE).toInt()
+                val bottomX = (obj.bottom.x * SCALE).toInt()
+                val bottomY = (obj.bottom.y * SCALE).toInt()
+
+                for (x in topX..<bottomX) {
+                    for (y in topY..<bottomY) {
+                        if (map[x][y] !== MapObjects.Invalid) {
+                            throw RuntimeException("Tiles overlap ${map[x][y]}")
+                        }
+
+                        map[x][y] = obj
+                        shelves[obj.shelfId] = obj
+                    }
+                }
+            }
+
+            MapObjects.Invalid -> throw IllegalArgumentException("Cannot add Invalid object to map")
+        }
+    }
+
     companion object {
-        const val SCALE = 2.0
+        const val SCALE = 2
 
         fun loadMapJSON(data: MapData): ShopMap {
             val map = ShopMap((data.size.width * SCALE).toInt(), (data.size.height * SCALE).toInt())
 
             val sections = mutableMapOf<Int, MapObjects.Section>()
             data.sections.forEach {
-                sections[it.id] = MapObjects.Section(it.id, it.name)
+                sections[it.id] = MapObjects.Section(
+                    it.id,
+                    it.name,
+                    Point2D(it.topX, it.topY),
+                    Point2D(it.bottomX, it.bottomY)
+                )
             }
 
             data.racks.forEach {
-                val rack = MapObjects.Shelf(it.id, sections[it.section]!!)
+                val rack = MapObjects.Shelf(
+                    it.id, sections[it.section]!!,
+                    Point2D(it.topX, it.topY),
+                    Point2D(it.bottomX, it.bottomY)
+                )
 
-                val topX = (it.topX * SCALE).toInt()
-                val topY = (it.topY * SCALE).toInt()
-                val bottomX = (it.bottomX * SCALE).toInt()
-                val bottomY = (it.bottomY * SCALE).toInt()
-
-                for (x in topX..<bottomX) {
-                    for (y in topY..<bottomY) {
-                        if (map.map[x][y] !== MapObjects.Invalid) {
-                            throw RuntimeException("Tiles overlap ${map.map[x][y]}")
-                        }
-
-                        map.map[x][y] = rack
-                    }
-                }
+                map.addObject(rack)
             }
 
             data.tags.forEach {
-                val section = sections[it.section]!!
-                val tag = MapObjects.FloorTag(it.code, section)
-
-                val posX = (it.x * SCALE).toInt()
-                val posY = (it.y * SCALE).toInt()
-
-                if (map.map[posX][posY] !== MapObjects.Invalid) {
-                    throw RuntimeException("Tiles overlap ${map.map[posX][posY]}")
-                }
-
-                map.map[posX][posY] = tag
-                map.markers[tag.tagId] = Point2D(posX, posY)
+                val tag = MapObjects.FloorTag(it.code, sections[it.section]!!, Point2D(it.x, it.y))
+                map.addObject(tag)
             }
 
-            data.sections.forEach {
-                val section = sections[it.id]!!
-
-                val topX = (it.topX * SCALE).toInt()
-                val topY = (it.topY * SCALE).toInt()
-                val bottomX = (it.bottomX * SCALE).toInt()
-                val bottomY = (it.bottomY * SCALE).toInt()
-
-                for (x in topX..<bottomX) {
-                    for (y in topY..<bottomY) {
-                        if (map.map[x][y] == MapObjects.Invalid) {
-                            map.map[x][y] = section
-                        }
-
-                    }
-                }
+            sections.forEach {
+                map.addObject(it.value)
             }
 
             return map
