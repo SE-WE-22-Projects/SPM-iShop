@@ -39,6 +39,7 @@ router.delete('/tag/:tid', tagService.deleteTagById);
 
 const storeMapService = require("../services/mappingService/storeMapService");
 // get the complete map of the store
-router.get("/map", storeMapService.getStoreMap);
+router.get("/map", storeMapService.getStoreMap);``
+router.get("/ip", storeMapService.getAvailableIpAddress);
 
 module.exports = router;
