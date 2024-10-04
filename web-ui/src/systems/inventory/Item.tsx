@@ -9,6 +9,8 @@ import axios from "axios";
 import { updateItemType } from "./itemComponents/UpdateItemModal";
 import { useConfirm } from 'material-ui-confirm';
 import PageLoader from "../../common/PageLoader";
+import ReportGenerator from "../../components/ReportGenerator";
+import ItemAnalytics from "./itemComponents/ItemAnalytics";
 
 const Item = () => { 
     // real time search
@@ -170,6 +172,11 @@ const Item = () => {
                     </Box>
                     <ItemTable data={itemList} query={searchQuery} updateOpen={updateOpen} itemUpdateModalOpen={itemUpdateModalOpen} itemUpdateModalClose={itemUpdateModalClose} updateItem={updateItem} deleteItem={deleteItem} />
                     <AddItemModal itemAddModalClose={itemAddModalClose} open={addOpen} addItem={addItem} />
+                    <ReportGenerator children={<ItemAnalytics data={itemList} />}
+                        title={"Item Report"}
+                        filename={"itemreprt"}
+
+                    />
                 </div>
             }
         </div>     
