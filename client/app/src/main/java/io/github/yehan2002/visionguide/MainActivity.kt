@@ -18,6 +18,7 @@ import io.github.yehan2002.visionguide.drawable.TagDrawable
 import io.github.yehan2002.visionguide.navigation.MapObjects
 import io.github.yehan2002.visionguide.navigation.ShopMap
 import io.github.yehan2002.visionguide.navigation.StoreNavigator
+import io.github.yehan2002.visionguide.net.OfflineData
 import io.github.yehan2002.visionguide.net.ShopService
 import io.github.yehan2002.visionguide.net.dto.Item
 import io.github.yehan2002.visionguide.net.dto.MapData
@@ -59,61 +60,64 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
 
         navigator = StoreNavigator(this)
 
-        val serverUrls = intent.getStringArrayExtra("servers")
-        val markerSize = intent.getDoubleExtra("marker_size", -1.0)
+        var serverUrls = intent.getStringArrayExtra("servers")
+        var markerSize = intent.getDoubleExtra("marker_size", -1.0)
 
-        if (serverUrls !== null && markerSize < 0) {
-            navigator.setMarkerSize(markerSize)
+        val isDev = serverUrls == null
+        if (serverUrls == null) {
+            markerSize = 0.17
+            serverUrls = arrayOf("http://192.168.8.156:5000")
+        }
 
-            CoroutineScope(Dispatchers.IO).launch {
-                val client = OkHttpClient()
-                for (url in serverUrls) {
+        navigator.setMarkerSize(markerSize)
 
-                    try {
-                        val serverURL = "http://$url:5000"
-                        Log.i(TAG, "Checking URL $serverURL")
+        CoroutineScope(Dispatchers.IO).launch {
+            val client = OkHttpClient()
+            for (url in serverUrls) {
 
-                        val request: Request = Request.Builder()
-                            .url("$serverURL/api/test/204").get()
+                try {
+                    val serverURL = "http://$url:5000"
+                    Log.i(TAG, "Checking URL $serverURL")
+
+                    val request: Request = Request.Builder()
+                        .url("$serverURL/api/test/204").get()
+                        .build()
+
+                    val call = client.newCall(request)
+                    val response: Response = call.execute()
+
+                    if (response.code() == 204) {
+                        Log.i(TAG, "Found URL $serverURL")
+
+                        val retrofit = Retrofit.Builder()
+                            .baseUrl(serverURL)
+                            .addConverterFactory(ScalarsConverterFactory.create())
+                            .addConverterFactory(JacksonConverterFactory.create())
                             .build()
 
-                        val call = client.newCall(request)
-                        val response: Response = call.execute()
-
-                        if (response.code() == 204) {
-                            Log.i(TAG, "Found URL $serverURL")
-
-                            val retrofit = Retrofit.Builder()
-                                .baseUrl(serverURL)
-                                .addConverterFactory(ScalarsConverterFactory.create())
-                                .addConverterFactory(JacksonConverterFactory.create())
-                                .build()
-
-                            shopService = retrofit.create(ShopService::class.java)
-                            loadShopMap()
-                            return@launch
-                        }
-                    } catch (e: Exception) {
-                        Log.e(TAG, "Failed to connect", e)
+                        shopService = retrofit.create(ShopService::class.java)
+                        loadShopMap()
+                        return@launch
                     }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Failed to connect", e)
+                }
+            }
+
+            if (isDev) {
+                runOnUiThread {
+                    Toast.makeText(this@MainActivity, "Running in offline mode", Toast.LENGTH_SHORT)
+                        .show()
                 }
 
+
+                shopService = OfflineData(this@MainActivity)
+                loadShopMap()
+                navigator.setMarkerSize(0.17)
+            } else {
                 tts.say(getString(R.string.tts_server_error))
                 finish()
             }
-
-
-        } else {
-            Toast.makeText(this, "Running in dev mode", Toast.LENGTH_SHORT).show()
-
-            val retrofit = Retrofit.Builder()
-                .baseUrl("http://192.168.8.156:5000")
-                .addConverterFactory(ScalarsConverterFactory.create())
-                .addConverterFactory(JacksonConverterFactory.create())
-                .build()
-            shopService = retrofit.create(ShopService::class.java)
-            loadShopMap()
-            navigator.setMarkerSize(0.17)
         }
 
         startCamera()
