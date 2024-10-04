@@ -138,7 +138,7 @@ const getPromotionsBySectionID = async (req, res) => {
             where: { id: sectionID },
           },
         },
-      },
+      } ,
       attributes: ["desc"],
     });
 
