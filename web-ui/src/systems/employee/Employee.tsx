@@ -8,6 +8,8 @@ import axios from "axios";
 import { enqueueSnackbar } from "notistack";
 import { useConfirm } from 'material-ui-confirm';
 import PageLoader from "../../common/PageLoader";
+import EmployeeAnalytics from "./employeeComponents/EmployeeAnalytics";
+import ReportGenerator from "../../components/ReportGenerator";
 
 const Employee = () => {
     // real time search
@@ -204,6 +206,7 @@ const Employee = () => {
                         </Button>
                     </Box>
                     <EmployeeTabel data={empList} query={searchQuery} updateOpen={updateOpen} employeeUpdateModalOpen={employeeUpdateModalOpen} employeeUpdateModalClose={employeeUpdateModalClose} updateEmployee={updateEmployee} deleteEmployee={deleteEmployee} />
+                    <ReportGenerator children={<EmployeeAnalytics data={empList} />} filename="employee-report" title="Employee Details Report" />
                     <AddEmployeeeModel employeeAddModalClose={employeeAddModalClose} open={addOpen} addEmployee={addEmployee} />
                 </div>
             }
