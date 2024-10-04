@@ -40,6 +40,7 @@ class StoreNavigator(private val handler: NavigationHandler) {
 
     var section: MapObjects.Section = MapObjects.UnknownSection
 
+    var userFacing: ShopMap.Direction = ShopMap.Direction.UNKNOWN
 
     var route: Array<Point2D>? = null
 
@@ -93,6 +94,13 @@ class StoreNavigator(private val handler: NavigationHandler) {
 
                 if (est != null)
                     markerPos[marker.id] = est
+            }
+
+            if (markers.isNotEmpty()) {
+                val marker = markers[0]
+                if (marker.rotation != null) {
+                    userFacing = shopMap.getFacingDirection(marker.id, marker.rotation)
+                }
             }
 
             markerBuffer.add(markerPos)

@@ -45,7 +45,23 @@ class ShopMap(val width: Int, val height: Int) {
     }
 
     fun getFacingDirection(markerId: Int, angle: Tag.Rotation): Direction {
-        return Direction.NORTH
+        val tag = markers[markerId]
+        if (tag == null) {
+            Log.d(TAG, "Invalid marker id")
+            return Direction.UNKNOWN
+        }
+
+        val yaw = Math.toDegrees(angle.yaw)
+        val angleDeg = ((if (yaw < 0) 360 + yaw else yaw) + 90) % 360
+
+        return if (angleDeg < 45 || angleDeg >= 315) {
+            Direction.SOUTH
+        } else if (angleDeg >= 45 && angleDeg < 135) {
+            Direction.WEST
+        } else if (angleDeg >= 135 && angleDeg < 225) {
+            Direction.NORTH
+        } else
+            Direction.EAST
     }
 
     /**
@@ -186,14 +202,15 @@ class ShopMap(val width: Int, val height: Int) {
         SOUTH,
 
         /**
-         * Facing Positive Y
+         * Facing Negative Y
          */
         EAST,
 
         /**
-         * Facing Negative Y
+         * Facing Positive Y
          */
-        WEST
+        WEST,
+        UNKNOWN
     }
 
     companion object {

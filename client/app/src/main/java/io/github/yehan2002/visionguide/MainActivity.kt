@@ -67,7 +67,7 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
             shopService = retrofit.create(ShopService::class.java)
             navigator.setMarkerSize(markerSize)
         } else {
-            Toast.makeText(this, "Running in offline mode", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Running in dev mode", Toast.LENGTH_SHORT).show()
 
             val retrofit = Retrofit.Builder()
                 .baseUrl("http://192.168.8.156:5000")
@@ -127,7 +127,8 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
                     tags?.size ?: 0,
                     navigator.position,
                     "Tile: ${navigator.currentTile}",
-                    "Section: ${navigator.section.name}(${navigator.section.sectionId})"
+                    "Section: ${navigator.section.name}(${navigator.section.sectionId})",
+                    "Facing: ${navigator.userFacing}"
                 )
             )
 
