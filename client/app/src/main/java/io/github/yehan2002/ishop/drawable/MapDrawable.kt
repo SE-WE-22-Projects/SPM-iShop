@@ -84,13 +84,13 @@ class MapDrawable(
         if (userPos != null && userTile != empty) {
             // user is inside the store
 
-            val ux = userPos.x
-            val uy = userPos.y
+            val ux = userPos.x * ShopMap.SCALE
+            val uy = userPos.y * ShopMap.SCALE
 
             canvas.drawCircle(
                 widthOffset + ((ux + 0.5) * TILE_SIZE).toFloat(),
                 ((uy + 0.5) * TILE_SIZE).toFloat(),
-                (TILE_SIZE / 2.5).toFloat(),
+                (USER_SIZE).toFloat(),
                 user
             )
 
@@ -101,7 +101,9 @@ class MapDrawable(
 
             var first = true
 
-            for (pos in userRoute) {
+            for (i in userRoute.indices) {
+                val pos = userRoute[i].mul(ShopMap.SCALE)
+
                 val px = widthOffset + (pos.x + 0.5) * TILE_SIZE
                 val py = (pos.y + 0.5) * TILE_SIZE
 
@@ -128,6 +130,7 @@ class MapDrawable(
     override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 
     companion object {
-        const val TILE_SIZE = 32
+        const val TILE_SIZE = (32 / ShopMap.SCALE).toInt()
+        const val USER_SIZE = 32 / 2.5
     }
 }

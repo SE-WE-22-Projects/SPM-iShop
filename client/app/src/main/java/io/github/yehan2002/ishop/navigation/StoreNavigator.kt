@@ -41,6 +41,8 @@ class StoreNavigator(private val handler: NavigationHandler) {
 
     var route: Array<Point2D>? = null
 
+    private var tick = 0
+
 
     fun findMarkers(bridge: CameraBridge, proxy: ImageProxy) {
         val tags: Array<Tag>
@@ -144,7 +146,12 @@ class StoreNavigator(private val handler: NavigationHandler) {
         currentTile = tile
         section = newSection
 
-        route = shopMap.pathfinder.findRoute(userPosition, Point2D(10, 10))
+        tick++
+
+        if (tick % 10 == 0) {
+            route = shopMap.findRoute(userPosition, Point2D(10, 10))
+        }
+
     }
 
 

@@ -16,7 +16,7 @@ class ShopMap(val width: Int, val height: Int) {
 
     val markers = mutableMapOf<Int, Point2D>()
 
-    val pathfinder = PathfinderAStar(this)
+    private val pathfinder = PathfinderAStar(this)
 
     fun estimatePos(markerId: Int, distance: Double, angle: Tag.Rotation): Point2D? {
         val pos = markers[markerId]
@@ -28,8 +28,8 @@ class ShopMap(val width: Int, val height: Int) {
         // calculate the position.
         // https://stackoverflow.com/a/13895314/6587830
         val position = Point2D(
-            pos.x + distance * cos(angle.yaw),
-            pos.y + distance * sin(angle.yaw)
+            pos.x + distance * SCALE * cos(angle.yaw),
+            pos.y + distance * SCALE * sin(angle.yaw)
         )
 
         // check if the position is within the map.
@@ -39,7 +39,7 @@ class ShopMap(val width: Int, val height: Int) {
             return null
         }
 
-        return position
+        return position.div(SCALE)
     }
 
     /**
@@ -49,12 +49,12 @@ class ShopMap(val width: Int, val height: Int) {
     fun getTileAt(pos: Point2D?): MapObjects {
         if (pos == null) return MapObjects.Invalid
 
-        val x = pos.x.roundToInt()
-        val y = pos.y.roundToInt()
+        val x = (pos.x * SCALE).roundToInt()
+        val y = (pos.y * SCALE).roundToInt()
 
         if (x < 0 || x > height || y < 0 || y > width) return MapObjects.Invalid
 
-        return map[pos.x.roundToInt()][pos.y.roundToInt()]
+        return map[x][x]
     }
 
     /**
@@ -65,6 +65,12 @@ class ShopMap(val width: Int, val height: Int) {
         if (x < 0 || x > height || y < 0 || y > width) return MapObjects.Invalid
 
         return map[x][y]
+    }
+
+    fun findRoute(start: Point2D, end: Point2D): Array<Point2D> {
+        val route = pathfinder.findRoute(start.mul(SCALE), end.mul(SCALE))
+
+        return route.map { it.div(SCALE) }.toTypedArray()
     }
 
     override fun toString(): String {
@@ -91,8 +97,10 @@ class ShopMap(val width: Int, val height: Int) {
 
 
     companion object {
+        const val SCALE = 2.0
+
         fun loadMapJSON(data: MapData): ShopMap {
-            val map = ShopMap(data.size.width.toInt(), data.size.height.toInt())
+            val map = ShopMap((data.size.width * SCALE).toInt(), (data.size.height * SCALE).toInt())
 
             val sections = mutableMapOf<Int, MapObjects.Section>()
             data.sections.forEach {
@@ -102,10 +110,10 @@ class ShopMap(val width: Int, val height: Int) {
             data.racks.forEach {
                 val rack = MapObjects.Shelf(it.id, sections[it.section]!!)
 
-                val topX = (it.topX).toInt()
-                val topY = (it.topY).toInt()
-                val bottomX = (it.bottomX).toInt()
-                val bottomY = (it.bottomY).toInt()
+                val topX = (it.topX * SCALE).toInt()
+                val topY = (it.topY * SCALE).toInt()
+                val bottomX = (it.bottomX * SCALE).toInt()
+                val bottomY = (it.bottomY * SCALE).toInt()
 
                 for (x in topX..<bottomX) {
                     for (y in topY..<bottomY) {
@@ -122,8 +130,8 @@ class ShopMap(val width: Int, val height: Int) {
                 val section = sections[it.section]!!
                 val tag = MapObjects.FloorTag(it.code, section)
 
-                val posX = it.x.toInt()
-                val posY = it.y.toInt()
+                val posX = (it.x * SCALE).toInt()
+                val posY = (it.y * SCALE).toInt()
 
                 if (map.map[posX][posY] !== MapObjects.Invalid) {
                     throw RuntimeException("Tiles overlap ${map.map[posX][posY]}")
@@ -136,10 +144,10 @@ class ShopMap(val width: Int, val height: Int) {
             data.sections.forEach {
                 val section = sections[it.id]!!
 
-                val topX = (it.topX).toInt()
-                val topY = (it.topY).toInt()
-                val bottomX = (it.bottomX).toInt()
-                val bottomY = (it.bottomY).toInt()
+                val topX = (it.topX * SCALE).toInt()
+                val topY = (it.topY * SCALE).toInt()
+                val bottomX = (it.bottomX * SCALE).toInt()
+                val bottomY = (it.bottomY * SCALE).toInt()
 
                 for (x in topX..<bottomX) {
                     for (y in topY..<bottomY) {

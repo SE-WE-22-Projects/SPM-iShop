@@ -60,25 +60,7 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
             .build()
         shopService = retrofit.create(ShopService::class.java)
 
-        CoroutineScope(Dispatchers.IO).launch {
-            val map: MapData
-            try {
-                map = shopService.getMap()
-            } catch (e: Exception) {
-                tts.say(getString(R.string.tts_map_load_error))
-                Log.e(TAG, "Failed to load shop map", e)
-                return@launch
-            }
-
-            navigator.loadMap(map)
-
-            runOnUiThread {
-                viewBinding.mapLoader.visibility = View.GONE
-                tts.say(getString(R.string.tts_map_load_ok))
-            }
-        }
-
-
+        loadShopMap()
         startCamera()
 
         viewBinding.viewFinder.setOnClickListener {
@@ -145,6 +127,26 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
         bridge.start()
     }
 
+    private fun loadShopMap() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val map: MapData
+            try {
+                map = shopService.getMap()
+            } catch (e: Exception) {
+                tts.say(getString(R.string.tts_map_load_error))
+                Log.e(TAG, "Failed to load shop map", e)
+                return@launch
+            }
+
+            navigator.loadMap(map)
+
+            runOnUiThread {
+                viewBinding.mapLoader.visibility = View.GONE
+                tts.say(getString(R.string.tts_map_load_ok))
+            }
+        }
+    }
+
     /**
      * Handles the user clicking anywhere on the screen to get the current location.
      * This method plays a TTS message that contains the current location.
@@ -162,7 +164,7 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
     private fun onSearchClick() {
         Toast.makeText(this, "Search items", Toast.LENGTH_SHORT)
             .show()
-
+        loadShopMap()
     }
 
     /**
