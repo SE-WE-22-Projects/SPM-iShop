@@ -54,12 +54,28 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
         tts = TTS(this)
 
         navigator = StoreNavigator(this)
-        val retrofit = Retrofit.Builder()
-            .baseUrl(intent.getStringExtra("server") ?: "http://192.168.8.156:5000")
-            .addConverterFactory(ScalarsConverterFactory.create())
-            .addConverterFactory(JacksonConverterFactory.create())
-            .build()
-        shopService = retrofit.create(ShopService::class.java)
+
+        val serverUrl = intent.getStringExtra("server")
+        val markerSize = intent.getDoubleExtra("marker_size", -1.0)
+
+        if (serverUrl !== null && markerSize > 0) {
+            val retrofit = Retrofit.Builder()
+                .baseUrl(serverUrl)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(JacksonConverterFactory.create())
+                .build()
+            shopService = retrofit.create(ShopService::class.java)
+            navigator.setMarkerSize(markerSize)
+        } else {
+            Toast.makeText(this, "Running in offline mode", Toast.LENGTH_SHORT).show()
+            
+            val retrofit = Retrofit.Builder()
+                .baseUrl("http://192.168.8.156:5000")
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(JacksonConverterFactory.create())
+                .build()
+            shopService = retrofit.create(ShopService::class.java)
+        }
 
         loadShopMap()
         startCamera()
@@ -128,6 +144,7 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
         }
         bridge.start()
     }
+
 
     private fun loadShopMap() {
         CoroutineScope(Dispatchers.IO).launch {

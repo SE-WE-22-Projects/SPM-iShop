@@ -68,6 +68,10 @@ class StoreNavigator(private val handler: NavigationHandler) {
         route = null
     }
 
+    fun setMarkerSize(size: Double) {
+        detector.setMarkerLength(size)
+    }
+
     /**
      * This method adds the given markers to the marker buffer.
      * The position of the user is determined using the average position of the user relative to all

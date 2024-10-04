@@ -44,6 +44,10 @@ class ShopMap(val width: Int, val height: Int) {
         return position
     }
 
+    fun getFacingDirection(markerId: Int, angle: Tag.Rotation): Direction {
+        return Direction.NORTH
+    }
+
     /**
      * Gets the tile at the given position.
      * If the position is null or outside the mapped area, [MapObjects.Invalid] is returned.
@@ -168,6 +172,28 @@ class ShopMap(val width: Int, val height: Int) {
 
             MapObjects.Invalid -> throw IllegalArgumentException("Cannot add Invalid object to map")
         }
+    }
+
+    enum class Direction {
+        /**
+         * Facing Positive X
+         * */
+        NORTH,
+
+        /**
+         * Facing Negative X
+         * */
+        SOUTH,
+
+        /**
+         * Facing Positive Y
+         */
+        EAST,
+
+        /**
+         * Facing Negative Y
+         */
+        WEST
     }
 
     companion object {
