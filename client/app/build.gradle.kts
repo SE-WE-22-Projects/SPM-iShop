@@ -52,6 +52,7 @@ android {
         }
     }
 
+    @Suppress("UnstableApiUsage")
     testOptions {
         unitTests.isReturnDefaultValues = true
     }
@@ -71,6 +72,13 @@ dependencies {
     implementation(libs.opencv)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.activity)
+    implementation(libs.retrofit)
+    implementation(libs.converter.jackson)
+    implementation(libs.converter.scalars)
+    implementation(libs.jackson.module.kotlin)
+    implementation(libs.barcode.scanning)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

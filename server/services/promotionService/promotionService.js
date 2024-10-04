@@ -133,19 +133,19 @@ const getPromotionsBySectionID = async (req, res) => {
         model: Item,
         include: {
           model: Rack,
-          include: {
-            model: Section,
-            where: { id: sectionID },
-          },
+          where: { sectionId: sectionID },
+          required: true
         },
-      } ,
+        required: true,
+      },
+
       attributes: ["desc"],
     });
 
     const promotionDescriptions = promotions.map((promo) => promo.desc);
 
     res.status(200).json({
-      promotionDescriptions,
+      promotionDescriptions
     });
   } catch (error) {
     console.error("Error fetching promotions for the section: ", error);

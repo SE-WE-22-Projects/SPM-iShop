@@ -1,8 +1,9 @@
-package io.github.yehan2002.ishop.aruco
+package io.github.yehan2002.ishop.navigation.aruco
 
 import android.graphics.Bitmap
 import android.util.Log
 import io.github.yehan2002.ishop.MainActivity.Companion.TAG
+import io.github.yehan2002.ishop.camera.CameraBridge
 import org.opencv.android.Utils
 import org.opencv.calib3d.Calib3d
 import org.opencv.core.CvType
@@ -14,42 +15,43 @@ import org.opencv.core.Point3
 import org.opencv.core.Scalar
 import org.opencv.objdetect.ArucoDetector
 import org.opencv.objdetect.Dictionary
-import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.atan2
-import kotlin.math.roundToInt
 import kotlin.math.sin
 
 class ArucoDetector(
-    private val markerLength: Double,
     dictionary: Dictionary,
+    markerSize: Double
+) {
+    private var detector: ArucoDetector = ArucoDetector(dictionary)
+    private lateinit var objPointsMat: MatOfPoint3f
 
-    ) {
-    private val detector: ArucoDetector = ArucoDetector(dictionary)
-    private val objPointsMat: MatOfPoint3f
-
-    private var calibration = CameraCalibration()
+    private var markerLength: Double = -1.0
 
     init {
-
-        // create the object point matrix
-        val halfSize = this.markerLength / 2
-        val objPointsArray: MutableList<Point3> = ArrayList()
-        objPointsArray.add(Point3(-halfSize, halfSize, 0.0))
-        objPointsArray.add(Point3(halfSize, halfSize, 0.0))
-        objPointsArray.add(Point3(halfSize, -halfSize, 0.0))
-        objPointsArray.add(Point3(-halfSize, -halfSize, 0.0))
-
-        this.objPointsMat = MatOfPoint3f()
-        this.objPointsMat.fromList(objPointsArray)
+        setMarkerLength(markerSize)
     }
 
+
     /**
-     * Sets the camera calibration values for pose estimation.
-     * Distances and angles of the tags will be unavailable until this method is called.
+     * Sets the length of the side of the aruco tag.
+     * Setting this to a negative value will disable distance and angle estimations.
      */
-    fun setCalibration(calibration: CameraCalibration) {
-        this.calibration = calibration
+    fun setMarkerLength(length: Double) {
+        this.objPointsMat = MatOfPoint3f()
+        this.markerLength = length
+
+        // create the object point matrix if length is valid
+        if (length > 0) {
+            val halfSize = length / 2
+            val objPointsArray: MutableList<Point3> = ArrayList()
+            objPointsArray.add(Point3(-halfSize, halfSize, 0.0))
+            objPointsArray.add(Point3(halfSize, halfSize, 0.0))
+            objPointsArray.add(Point3(halfSize, -halfSize, 0.0))
+            objPointsArray.add(Point3(-halfSize, -halfSize, 0.0))
+
+            this.objPointsMat.fromList(objPointsArray)
+        }
     }
 
 
@@ -58,7 +60,7 @@ class ArucoDetector(
      * @param bitmap the bitmap to process
      * @return an array containing all found tags
      */
-    fun detectMarkers(bitmap: Bitmap): Array<Tag> {
+    fun detectMarkers(camera: CameraBridge, bitmap: Bitmap): Array<Tag> {
         val detectedTags = mutableListOf<Tag>()
 
 
@@ -82,7 +84,7 @@ class ArucoDetector(
                 var rotation: Tag.Rotation? = null
                 var postion: Tag.Position? = null
 
-                if (calibration.isValid) {
+                if (camera.calibration.isValid && markerLength > 0) {
                     val rvec = Mat(3, 1, CvType.CV_64F)
                     val tvec = Mat(3, 1, CvType.CV_64F)
 
@@ -102,8 +104,9 @@ class ArucoDetector(
                         // calculate the position and pose of the tag
                         Calib3d.solvePnP(
                             objPointsMat,
-                            cornerPoints, calibration.cameraMatrix,
-                            calibration.distortionCoefficients,
+                            cornerPoints,
+                            camera.calibration.cameraMatrix,
+                            camera.calibration.distortionCoefficients,
                             rvec, tvec,
                             false,
                             Calib3d.SOLVEPNP_IPPE_SQUARE
@@ -121,31 +124,28 @@ class ArucoDetector(
                         val rotationMat = Mat(3, 3, CvType.CV_32FC1)
                         Calib3d.Rodrigues(rvec, rotationMat)
 
-                        val roll =
-                            180 * atan2(-rotationMat.get(2, 1)[0], rotationMat.get(2, 2)[0]) / PI
-                        val pitch = 180 * sin(rotationMat.get(2, 0)[0]) / PI
-                        val yaw =
-                            180 * atan2(-rotationMat.get(1, 0)[0], rotationMat.get(0, 0)[0]) / PI
-
                         rotation = Tag.Rotation(
-                            roll = round2(roll),
-                            pitch = round2(pitch),
-                            yaw = round2(yaw)
+                            roll = atan2(-rotationMat.get(2, 1)[0], rotationMat.get(2, 2)[0]),
+                            pitch = sin(rotationMat.get(2, 0)[0]),
+                            yaw = atan2(-rotationMat.get(1, 0)[0], rotationMat.get(0, 0)[0])
                         )
+
 
                         // calculate the distance
+                        val scale = camera.calibration.distanceScale
                         postion = Tag.Position(
-                            tvec.get(0, 0)[0] * calibration.distanceScale,
-                            tvec.get(1, 0)[0] * calibration.distanceScale,
-                            tvec.get(2, 0)[0] * calibration.distanceScale
+                            tvec.get(0, 0)[0] * scale,
+                            tvec.get(1, 0)[0] * scale,
+                            tvec.get(2, 0)[0] * scale
                         )
+
                     }
                 }
-
+                
                 detectedTags.add(
                     Tag(
                         tagId,
-                        corners[i],
+                        corners = getCornerPoints(camera, corners[i]),
                         rotation = rotation,
                         position = postion
                     )
@@ -155,17 +155,19 @@ class ArucoDetector(
         }
 
         image.release()
-
         return detectedTags.toTypedArray()
     }
 
-    /**
-     * Rounds the given double to 2 decimal points.
-     */
-    private fun round2(value: Double): Double {
-        if (value.isNaN()) return Double.NaN
 
-        return (value * 100.0).roundToInt() / 100.0
+    private fun getCornerPoints(camera: CameraBridge, corner: Mat): FloatArray {
+        val cornerPoints = floatArrayOf(
+            corner.get(0, 0)[0].toFloat(), corner.get(0, 0)[1].toFloat(),
+            corner.get(0, 1)[0].toFloat(), corner.get(0, 1)[1].toFloat(),
+            corner.get(0, 2)[0].toFloat(), corner.get(0, 2)[1].toFloat(),
+            corner.get(0, 3)[0].toFloat(), corner.get(0, 3)[1].toFloat(),
+        )
+        camera.correctionMatrix.mapPoints(cornerPoints)
+        return cornerPoints
     }
 
     /**

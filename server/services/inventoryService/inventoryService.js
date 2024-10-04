@@ -136,6 +136,30 @@ const deleteItemById = async (req,res)=> {
     }
 }
 
+
+/**
+ * 
+ * @param {express.Request} req 
+ * @param {express.Response} res  
+ */
+const getItemsByName = async (req,res) => {
+    try{
+        var itemList = await Item.find({
+            where: {
+              name: {
+                [Op.like]: `%${req.query.q}%`
+              }
+            }
+          });
+        res.status(200).json(itemList);
+    }
+    catch(e){
+        console.error("Error in database operation",e);
+        res.status(500).send("Error in database operation");
+        return;
+    }
+}
+
 /**
  * 
  * @param {express.Request} req 
@@ -227,5 +251,6 @@ module.exports = {
     deleteItemById,
     getUnallocatedItems,
     getAllocatedItems,
-    allocateRackToItem
+    allocateRackToItem,
+    getItemsByName
 };

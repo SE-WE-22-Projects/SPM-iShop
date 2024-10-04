@@ -7,12 +7,12 @@ import android.graphics.ColorFilter
 import android.graphics.Paint
 import android.graphics.PixelFormat
 import android.graphics.drawable.Drawable
-import io.github.yehan2002.ishop.navigation.StoreMap
+import io.github.yehan2002.ishop.util.Point2D
 
 class DebugInfoDrawable(
     private val processTime: Int,
     private val tags: Int,
-    private val estPos: StoreMap.Point2D?,
+    private val estPos: Point2D?,
     private vararg val extra: String,
 ) : Drawable() {
     private val contentTextPaint = Paint().apply {
