@@ -19,6 +19,7 @@ activity = "1.9.2"
 retrofit = "2.11.0"
 converterJackson = "2.11.0"
 converterScalars = "2.11.0"
+jacksonModuleKotlin = "2.18.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -50,6 +51,7 @@ androidx-activity = { group = "androidx.activity", name = "activity", version.re
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 converter-jackson = { group = "com.squareup.retrofit2", name = "converter-jackson", version.ref = "converterJackson" }
 converter-scalars = { group = "com.squareup.retrofit2", name = "converter-scalars", version.ref = "converterScalars" }
+jackson-module-kotlin = { group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version.ref = "jacksonModuleKotlin" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

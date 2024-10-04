@@ -52,7 +52,7 @@ class MapDrawable(
         // display the shop map
         for (x in 0..<shopMap.width) {
             for (y in 0..<shopMap.height) {
-                val tile = shopMap.map[x][y]
+                val tile = shopMap.getTileAt(x, y)
 
                 val rect = RectF(
                     widthOffset + (x * TILE_SIZE).toFloat(),

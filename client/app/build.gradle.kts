@@ -76,6 +76,7 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.jackson)
     implementation(libs.converter.scalars)
+    implementation(libs.jackson.module.kotlin)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

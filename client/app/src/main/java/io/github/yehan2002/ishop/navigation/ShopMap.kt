@@ -3,17 +3,18 @@ package io.github.yehan2002.ishop.navigation
 import android.util.Log
 import io.github.yehan2002.ishop.MainActivity.Companion.TAG
 import io.github.yehan2002.ishop.navigation.aruco.Tag
+import io.github.yehan2002.ishop.net.dto.MapData
 import io.github.yehan2002.ishop.util.Point2D
-import org.json.JSONObject
 import kotlin.math.cos
 import kotlin.math.roundToInt
 import kotlin.math.sin
 
 class ShopMap(val width: Int, val height: Int) {
-    var map: Array<Array<MapObjects>> = Array(width) {
+    private val map: Array<Array<MapObjects>> = Array(width) {
         Array(height) { MapObjects.Invalid }
     }
-    var markers = mutableMapOf<Int, Point2D>()
+
+    val markers = mutableMapOf<Int, Point2D>()
 
     val pathfinder = PathfinderAStar(this)
 
@@ -56,6 +57,15 @@ class ShopMap(val width: Int, val height: Int) {
         return map[pos.x.roundToInt()][pos.y.roundToInt()]
     }
 
+    /**
+     * Gets the tile at the given position.
+     * If the position is null or outside the mapped area, [MapObjects.Invalid] is returned.
+     */
+    fun getTileAt(x: Int, y: Int): MapObjects {
+        if (x < 0 || x > height || y < 0 || y > width) return MapObjects.Invalid
+
+        return map[x][y]
+    }
 
     override fun toString(): String {
         val sb = StringBuilder()
@@ -81,38 +91,21 @@ class ShopMap(val width: Int, val height: Int) {
 
 
     companion object {
-        fun loadMapJSON(jsonData: String): ShopMap {
-            val json = JSONObject(jsonData)
-
-            val height = json.getJSONObject("size").getDouble("height")
-            val width = json.getJSONObject("size").getDouble("width")
-
-            val map = ShopMap((width).toInt(), (height).toInt())
+        fun loadMapJSON(data: MapData): ShopMap {
+            val map = ShopMap(data.size.width.toInt(), data.size.height.toInt())
 
             val sections = mutableMapOf<Int, MapObjects.Section>()
-
-            val sectionsArray = json.getJSONArray("sections")
-            for (i in 0..<sectionsArray.length()) {
-                val data = sectionsArray.getJSONObject(i)
-                val section =
-                    MapObjects.Section(
-                        data.getInt("id"),
-                        data.getString("name")
-                    )
-                sections[section.sectionId] = section
+            data.sections.forEach {
+                sections[it.id] = MapObjects.Section(it.id, it.name)
             }
 
-            val rackArray = json.getJSONArray("racks")
-            for (i in 0..<rackArray.length()) {
-                val data = rackArray.getJSONObject(i)
-                val section = sections[data.getInt("section")]!!
+            data.racks.forEach {
+                val rack = MapObjects.Shelf(it.id, sections[it.section]!!)
 
-                val rack = MapObjects.Shelf(data.getInt("id"), section)
-
-                val topX = (data.getDouble("top_x")).toInt()
-                val topY = (data.getDouble("top_y")).toInt()
-                val bottomX = (data.getDouble("bottom_x")).toInt()
-                val bottomY = (data.getDouble("bottom_y")).toInt()
+                val topX = (it.topX).toInt()
+                val topY = (it.topY).toInt()
+                val bottomX = (it.bottomX).toInt()
+                val bottomY = (it.bottomY).toInt()
 
                 for (x in topX..<bottomX) {
                     for (y in topY..<bottomY) {
@@ -125,15 +118,12 @@ class ShopMap(val width: Int, val height: Int) {
                 }
             }
 
-            val tagArray = json.getJSONArray("tags")
-            for (i in 0..<tagArray.length()) {
-                val data = tagArray.getJSONObject(i)
-                val section = sections[data.getInt("section")]!!
+            data.tags.forEach {
+                val section = sections[it.section]!!
+                val tag = MapObjects.FloorTag(it.code, section)
 
-                val tag = MapObjects.FloorTag(data.getInt("code"), section)
-
-                val posX = (data.getDouble("pos_x")).toInt()
-                val posY = (data.getDouble("pos_y")).toInt()
+                val posX = it.x.toInt()
+                val posY = it.y.toInt()
 
                 if (map.map[posX][posY] !== MapObjects.Invalid) {
                     throw RuntimeException("Tiles overlap ${map.map[posX][posY]}")
@@ -143,14 +133,13 @@ class ShopMap(val width: Int, val height: Int) {
                 map.markers[tag.tagId] = Point2D(posX, posY)
             }
 
-            for (i in 0..<sectionsArray.length()) {
-                val data = sectionsArray.getJSONObject(i)
-                val section = sections[data.getInt("id")]!!
+            data.sections.forEach {
+                val section = sections[it.id]!!
 
-                val topX = (data.getDouble("top_x")).toInt()
-                val topY = (data.getDouble("top_y")).toInt()
-                val bottomX = (data.getDouble("bottom_x")).toInt()
-                val bottomY = (data.getDouble("bottom_y")).toInt()
+                val topX = (it.topX).toInt()
+                val topY = (it.topY).toInt()
+                val bottomX = (it.bottomX).toInt()
+                val bottomY = (it.bottomY).toInt()
 
                 for (x in topX..<bottomX) {
                     for (y in topY..<bottomY) {
@@ -160,8 +149,6 @@ class ShopMap(val width: Int, val height: Int) {
 
                     }
                 }
-
-
             }
 
             return map

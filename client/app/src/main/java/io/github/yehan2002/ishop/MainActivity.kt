@@ -155,7 +155,8 @@ class MainActivity : AppCompatActivity(), StoreNavigator.NavigationHandler {
         Toast.makeText(this, "Search items", Toast.LENGTH_SHORT)
             .show()
         CoroutineScope(Dispatchers.IO).launch {
-            Log.i(TAG, shopService.getMap())
+            val map = shopService.getMap()
+            navigator.loadMap(map)
         }
     }
 
@@ -176,12 +177,12 @@ class MainActivity : AppCompatActivity(), StoreNavigator.NavigationHandler {
                 // get the promotions from the server
                 val promos = shopService.getPromotions(navigator.section.sectionId)
 
-                if (promos.promos.isEmpty()) {
+                if (promos.descriptions.isEmpty()) {
                     // no promotions in the section
                     tts(getString(R.string.tts_promo_none))
                 } else {
-                    tts(getString(R.string.tts_promo_number, promos.promos.size))
-                    for (promo in promos.promos) {
+                    tts(getString(R.string.tts_promo_number, promos.descriptions.size))
+                    for (promo in promos.descriptions) {
                         tts(promo, flush = false)
                     }
                 }
@@ -231,6 +232,7 @@ class MainActivity : AppCompatActivity(), StoreNavigator.NavigationHandler {
         IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (allPermissionsGranted()) {
                 startCamera()

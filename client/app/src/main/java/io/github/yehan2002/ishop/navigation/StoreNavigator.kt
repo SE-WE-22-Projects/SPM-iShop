@@ -7,6 +7,7 @@ import io.github.yehan2002.ishop.camera.CameraBridge
 import io.github.yehan2002.ishop.navigation.StoreNavigator.Companion.BUFFER_SIZE
 import io.github.yehan2002.ishop.navigation.aruco.ArucoDetector
 import io.github.yehan2002.ishop.navigation.aruco.Tag
+import io.github.yehan2002.ishop.net.dto.MapData
 import io.github.yehan2002.ishop.util.Point2D
 import io.github.yehan2002.ishop.util.RingBuffer
 import org.opencv.objdetect.Objdetect
@@ -17,8 +18,10 @@ class StoreNavigator(private val handler: NavigationHandler) {
     var lastTags: Array<Tag>? = null
         private set
 
-    val shopMap: ShopMap = ShopMap.loadMapJSON(MapData)
-    val detector = ArucoDetector(
+    var shopMap: ShopMap = ShopMap(0, 0)
+        private set
+
+    private val detector = ArucoDetector(
         dictionary = Objdetect.getPredefinedDictionary(Objdetect.DICT_4X4_50),
         markerSize = 0.06,
     )
@@ -38,6 +41,7 @@ class StoreNavigator(private val handler: NavigationHandler) {
 
     var route: Array<Point2D>? = null
 
+
     fun findMarkers(bridge: CameraBridge, proxy: ImageProxy) {
         val tags: Array<Tag>
 
@@ -49,7 +53,15 @@ class StoreNavigator(private val handler: NavigationHandler) {
         }
 
         addMarkers(tags)
+    }
 
+    fun loadMap(data: MapData) {
+        shopMap = ShopMap.loadMapJSON(data)
+
+        position = null
+        currentTile = MapObjects.Invalid
+        section = MapObjects.UnknownSection
+        route = null
     }
 
     /**

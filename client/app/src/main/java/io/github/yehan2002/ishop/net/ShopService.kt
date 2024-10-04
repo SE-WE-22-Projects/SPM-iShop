@@ -1,6 +1,7 @@
 package io.github.yehan2002.ishop.net
 
-import com.fasterxml.jackson.annotation.JsonProperty
+import io.github.yehan2002.ishop.net.dto.MapData
+import io.github.yehan2002.ishop.net.dto.Promotions
 import retrofit2.http.GET
 import retrofit2.http.Path
 
@@ -9,7 +10,6 @@ interface ShopService {
     suspend fun getPromotions(@Path("section") section: Int): Promotions
 
     @GET("/api/mapping/map")
-    suspend fun getMap(): String
+    suspend fun getMap(): MapData
 }
 
-data class Promotions(@JsonProperty("promotionDescriptions") val promos: List<String>)
