@@ -8,10 +8,15 @@
     <string name="search_btn_desc">Search for item in store</string>
     <string name="promo_btn_desc">List the current ongoing promotions.</string>
 
+    <string name="scan_qr_text">Scan Shop QR Code to Start Navigation</string>
+
     <string name="tts_loc_error">Unable to find current location</string>
     <string name="tts_loc">Currently in the %1$s section</string>
     <string name="tts_promo_none">No promotions found</string>
     <string name="tts_promo_number">Found %1$d promotions</string>
     <string name="tts_promo_error">Failed to get promotions due to network issue</string>
-    <string name="scan_qr_text">Scan Shop QR Code to Start Navigation</string>
+    <string name="tts_scan_qr">Scan the store QR code to start navigation</string>
+    <string name="tts_map_loading">Loading the shop map</string>
+    <string name="tts_map_load_ok">Loaded shop map successfully</string>
+    <string name="tts_map_load_error">Failed to load shop map due to network issue</string>
 </resources>

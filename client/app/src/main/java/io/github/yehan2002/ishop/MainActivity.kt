@@ -2,7 +2,6 @@ package io.github.yehan2002.ishop
 
 import android.os.Build
 import android.os.Bundle
-import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -20,6 +19,7 @@ import io.github.yehan2002.ishop.navigation.MapObjects
 import io.github.yehan2002.ishop.navigation.StoreNavigator
 import io.github.yehan2002.ishop.net.ShopService
 import io.github.yehan2002.ishop.net.dto.MapData
+import io.github.yehan2002.ishop.util.TTS
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -27,7 +27,6 @@ import org.opencv.android.OpenCVLoader
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
-import java.util.Locale
 import kotlin.math.roundToInt
 
 
@@ -36,7 +35,7 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
     private lateinit var navigator: StoreNavigator
     private lateinit var shopService: ShopService
 
-    private lateinit var textToSpeechEngine: TextToSpeech;
+    private lateinit var tts: TTS
 
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,13 +50,7 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
             finish()
         }
 
-        textToSpeechEngine = TextToSpeech(
-            this
-        ) { status ->
-            if (status == TextToSpeech.SUCCESS) {
-                textToSpeechEngine.language = Locale.US
-            }
-        }
+        tts = TTS(this)
 
         navigator = StoreNavigator(this)
         val retrofit = Retrofit.Builder()
@@ -72,7 +65,7 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
             try {
                 map = shopService.getMap()
             } catch (e: Exception) {
-                tts("Failed to load shop map due to network issue")
+                tts.say(getString(R.string.tts_map_load_error))
                 Log.e(TAG, "Failed to load shop map", e)
                 return@launch
             }
@@ -81,7 +74,7 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
 
             runOnUiThread {
                 viewBinding.mapLoader.visibility = View.GONE
-                tts("Loaded shop map successfully")
+                tts.say(getString(R.string.tts_map_load_ok))
             }
         }
 
@@ -93,7 +86,7 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
         }
 
         viewBinding.mapLoader.setOnClickListener {
-            tts("Loading the shop map")
+            tts.say(getString(R.string.tts_map_loading))
         }
 
         viewBinding.appBar.setOnItemSelectedListener {
@@ -159,11 +152,11 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
     private fun onLocationClick() {
         // check if the user is in a valid section
         if (navigator.section == MapObjects.UnknownSection) {
-            tts(getString(R.string.tts_loc_error))
+            tts.say(getString(R.string.tts_loc_error))
             return
         }
 
-        tts(getString(R.string.tts_loc, navigator.section.name))
+        tts.say(getString(R.string.tts_loc, navigator.section.name))
     }
 
     private fun onSearchClick() {
@@ -182,7 +175,7 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
 
                 // check if the user is in a valid section
                 if (navigator.section == MapObjects.UnknownSection) {
-                    tts(getString(R.string.tts_loc_error))
+                    tts.say(getString(R.string.tts_loc_error))
                     return@launch
                 }
 
@@ -191,16 +184,16 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
 
                 if (promos.descriptions.isEmpty()) {
                     // no promotions in the section
-                    tts(getString(R.string.tts_promo_none))
+                    tts.say(getString(R.string.tts_promo_none))
                 } else {
-                    tts(getString(R.string.tts_promo_number, promos.descriptions.size))
+                    tts.say(getString(R.string.tts_promo_number, promos.descriptions.size))
                     for (promo in promos.descriptions) {
-                        tts(promo, flush = false)
+                        tts.say(promo, flush = false)
                     }
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to get promotions", e)
-                tts(getString(R.string.tts_promo_error))
+                tts.say(getString(R.string.tts_promo_error))
             }
         }
     }
@@ -209,35 +202,13 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
         Toast.makeText(this, "Section changed to ${section.name}", Toast.LENGTH_SHORT).show()
     }
 
-    /**
-     * Plays the given text as a TTS message.
-     * If flush is true, any pending messages are canceled before playing the current message.
-     */
-    private fun tts(text: String, flush: Boolean = true) {
-        runOnUiThread {
-            textToSpeechEngine.speak(
-                text,
-                if (flush) TextToSpeech.QUEUE_FLUSH else TextToSpeech.QUEUE_ADD,
-                null,
-                TAG
-            )
-
-            Toast.makeText(
-                this,
-                text,
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-    }
-
-
     override fun onPause() {
-        textToSpeechEngine.stop()
+        tts.stop()
         super.onPause()
     }
 
     override fun onDestroy() {
-        textToSpeechEngine.shutdown()
+        tts.shutdown()
         super.onDestroy()
     }
 

@@ -3,7 +3,6 @@ package io.github.yehan2002.ishop
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.speech.tts.TextToSpeech
 import android.util.Log
 import androidx.annotation.OptIn
 import androidx.annotation.RequiresApi
@@ -23,11 +22,11 @@ import com.google.mlkit.vision.common.InputImage
 import io.github.yehan2002.ishop.MainActivity.Companion.TAG
 import io.github.yehan2002.ishop.camera.CameraActivity
 import io.github.yehan2002.ishop.databinding.ActivityQrscanBinding
-import java.util.Locale
+import io.github.yehan2002.ishop.util.TTS
 
 
 class QRScanActivity : CameraActivity() {
-    private lateinit var textToSpeechEngine: TextToSpeech
+    private lateinit var tts: TTS
     private lateinit var viewBinding: ActivityQrscanBinding
     private val mapper = jacksonObjectMapper()
 
@@ -37,14 +36,11 @@ class QRScanActivity : CameraActivity() {
         viewBinding = ActivityQrscanBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
-        textToSpeechEngine = TextToSpeech(
-            this
-        ) { status ->
-            if (status == TextToSpeech.SUCCESS) {
-                textToSpeechEngine.language = Locale.US
-            }
+        viewBinding.main.setOnClickListener {
+            tts.say(getString(R.string.tts_scan_qr))
         }
 
+        tts = TTS(this)
         startCamera()
     }
 
@@ -109,6 +105,17 @@ class QRScanActivity : CameraActivity() {
         finish()
         return true
     }
+
+    override fun onPause() {
+        tts.stop()
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        tts.shutdown()
+        super.onDestroy()
+    }
+
 
     data class ShopQR(
         @JsonProperty("type") val type: String,
