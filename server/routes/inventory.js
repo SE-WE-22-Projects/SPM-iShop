@@ -19,6 +19,7 @@ router.get('/items/unallocated',inventoryService.getUnallocatedItems);
 router.get('/items/allocated',inventoryService.getAllocatedItems);
 // allocate rack to item
 router.put('/items/allocate/:itemId',inventoryService.allocateRackToItem);
-
+// get item by name route
+router.get('/search',inventoryService.getItemsByName);
 
 module.exports = router;

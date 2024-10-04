@@ -8,6 +8,8 @@ import AddPromotionModal, { PromoData } from "./promotionComponents/AddPromotion
 import { enqueueSnackbar } from "notistack";
 import { useConfirm } from 'material-ui-confirm';
 import PageLoader from "../../common/PageLoader";
+import PromotionAnalytics from "./promotionComponents/PromotionAnalytics";
+import ReportGenerator from "../../components/ReportGenerator";
 
 const Promotion = () => {
     // real time search
@@ -166,6 +168,7 @@ const Promotion = () => {
                             </Button>
                         </Box>
                         <PromotionTable data={promoList} updateOpen={updateOpen} updatePromotion={updatePromotion} deletePromotion={deletePromotion} query={searchQuery} promoUpdateModalOpen={promoUpdateModalOpen} promoUpdateModalClose={promoUpdateModalClose} />
+                        <ReportGenerator children={<PromotionAnalytics data={promoList} />} filename="promotion-report" title="Promotion details Report" />
                         <AddPromotionModal promoAddModalClose={promoAddModalClose} open={addOpen} addPromotion={addPromotion} />
                     </div>
             }
