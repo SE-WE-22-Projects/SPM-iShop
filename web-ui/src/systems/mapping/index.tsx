@@ -1,10 +1,11 @@
-import { Map, People, ViewQuilt } from "@mui/icons-material";
+import { Map, People, QrCode, ViewQuilt } from "@mui/icons-material";
 import { SystemRoutes } from "../../components/DashboardLayout";
 import Dashboard from "./Dashboard";
 import Page1 from "./Page1";
 import MapEditor from "./MapEditor";
 import Section from "./Section";
 import Rack from "./Rack";
+import StoreQR from "./StoreQR";
 
 
 export const routes: SystemRoutes = {
@@ -43,6 +44,14 @@ export const routes: SystemRoutes = {
             display: {
                 title: "Rack Management",
                 icon: <ViewQuilt />
+            }
+        },
+        {
+            element: <StoreQR />,
+            path: "qr",
+            display: {
+                title: "Store QR",
+                icon: <QrCode />
             }
         }
     ]
