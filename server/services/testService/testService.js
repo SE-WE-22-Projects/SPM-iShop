@@ -12,6 +12,16 @@ const testService = async (req, res) => {
     res.sendStatus(200);
 }
 
+/**
+ * 
+ * @param {express.Request} req 
+ * @param {express.Response} res  
+ */
+const send204 = async (req, res) => {
+    res.sendStatus(204);
+}
+
+
 module.exports = {
-    testService
+    testService, send204
 };
