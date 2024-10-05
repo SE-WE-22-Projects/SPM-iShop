@@ -61,6 +61,7 @@ abstract class CameraActivity : AppCompatActivity() {
                 android.Manifest.permission.CAMERA,
                 android.Manifest.permission.INTERNET,
                 android.Manifest.permission.VIBRATE,
+                android.Manifest.permission.RECORD_AUDIO,
             ).toTypedArray()
     }
 }

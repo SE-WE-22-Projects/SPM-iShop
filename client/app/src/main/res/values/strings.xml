@@ -27,4 +27,6 @@
     <string name="tts_nav_complete">You have reached your destination</string>
     <string name="tts_nav_no_dest">No destination selected</string>
     <string name="map_loader_desc">Loading Shop Map</string>
+    <string name="tts_speech_error">Unable to recognize speech</string>
+    <string name="tts_search_start">Searching for %1$s</string>
 </resources>

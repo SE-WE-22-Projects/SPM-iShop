@@ -22,6 +22,7 @@ import io.github.yehan2002.visionguide.net.ShopService
 import io.github.yehan2002.visionguide.net.dto.Item
 import io.github.yehan2002.visionguide.net.dto.MapData
 import io.github.yehan2002.visionguide.util.Direction
+import io.github.yehan2002.visionguide.util.SpeechToText
 import io.github.yehan2002.visionguide.util.TTS
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -40,6 +41,7 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
     private lateinit var viewBinding: ActivityMainBinding
     private lateinit var navigator: StoreNavigator
     private lateinit var shopService: ShopService
+    private lateinit var speechToText: SpeechToText
 
     private lateinit var tts: TTS
 
@@ -61,7 +63,7 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
         navigator = StoreNavigator(this)
 
         var serverUrls = intent.getStringArrayExtra("servers")
-        var markerSize = intent.getDoubleExtra("size", 0.17)
+        val markerSize = intent.getDoubleExtra("size", 0.17)
 
         val isDev = serverUrls == null
         if (serverUrls == null) {
@@ -119,6 +121,9 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
         }
 
         startCamera()
+
+        speechToText = SpeechToText(this, this::onSearchReceived)
+
 
         viewBinding.viewFinder.setOnClickListener {
             this.onLocationClick()
@@ -225,11 +230,21 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
     }
 
     private fun onSearchClick() {
-        CoroutineScope(Dispatchers.IO).launch {
+        speechToText.startListening()
+    }
 
+    private fun onSearchReceived(data: ArrayList<String>?) {
+        if (data.isNullOrEmpty()) {
+            tts.say(getString(R.string.tts_speech_error))
+            return
+        }
+
+        tts.say(getString(R.string.tts_search_start, data[0]))
+
+        CoroutineScope(Dispatchers.IO).launch {
             val item: Item?
             try {
-                item = shopService.searchItem("Laptop")
+                item = shopService.searchItem(data[0])
                 if (item == null) {
                     tts.say(getString(R.string.tts_search_not_found))
                     return@launch
@@ -247,6 +262,8 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
             navigator.target = target
 
         }
+
+
     }
 
     private fun onNavigateClick() {
