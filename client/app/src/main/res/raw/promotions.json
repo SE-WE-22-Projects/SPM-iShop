@@ -1,0 +1,72 @@
+[
+  {
+    "id": 2,
+    "name": "Rs 30 off of Chocomo",
+    "desc": "buy a chocolate today and enjoy thirty rupees off",
+    "status": true,
+    "dis_percentage": null,
+    "dis_amount": 30,
+    "start_date": "2024-10-08T18:30:00.000Z",
+    "end_date": "2024-10-15T18:30:00.000Z",
+    "createdAt": "2024-10-04T17:53:22.000Z",
+    "updatedAt": "2024-10-05T07:00:58.585Z",
+    "itemId": 11,
+    "item": {
+      "id": 11,
+      "name": "Ritzbury Chocomo",
+      "desc": "Ritzbury ChocoMo 200g",
+      "category": "Grocery",
+      "unit": "pieces",
+      "price": 300,
+      "qty": 20,
+      "createdAt": "2024-10-04T17:53:22.000Z",
+      "updatedAt": "2024-10-04T17:53:22.000Z",
+      "rackId": 3,
+      "rack": {
+        "id": 3,
+        "top_x": 4,
+        "top_y": 2.5,
+        "bottom_x": 5,
+        "bottom_y": 4.5,
+        "createdAt": "2024-10-04T17:53:22.000Z",
+        "updatedAt": "2024-10-04T17:53:22.000Z",
+        "sectionId": 1
+      }
+    }
+  },
+  {
+    "id": 5,
+    "name": "Choco Bisc Promo",
+    "desc": "twenty percent off for chocolate biscuits",
+    "status": true,
+    "dis_percentage": 20,
+    "dis_amount": null,
+    "start_date": "2024-10-04T18:30:00.000Z",
+    "end_date": "2024-10-14T18:30:00.000Z",
+    "createdAt": "2024-10-05T07:06:37.662Z",
+    "updatedAt": "2024-10-05T07:06:37.662Z",
+    "itemId": 1,
+    "item": {
+      "id": 1,
+      "name": "Chocolate Biscuits",
+      "desc": "Munchee Chocolate Biscuits 500g",
+      "category": "Grocery",
+      "unit": "pieces",
+      "price": 500,
+      "qty": 10,
+      "createdAt": "2024-10-04T17:53:22.000Z",
+      "updatedAt": "2024-10-04T17:53:22.000Z",
+      "rackId": 1,
+      "rack": {
+        "id": 1,
+        "top_x": 0,
+        "top_y": 2.5,
+        "bottom_x": 1,
+        "bottom_y": 4.5,
+        "createdAt": "2024-10-04T17:53:22.000Z",
+        "updatedAt": "2024-10-04T17:53:22.000Z",
+        "sectionId": 1
+      }
+    }
+  }
+]

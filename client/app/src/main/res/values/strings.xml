@@ -1,22 +1,33 @@
 <resources>
-    <string name="app_name">iShop</string>
-    <string name="app_name_dev">iShop (DEV)</string>
+    <string name="app_name">VisionGuide</string>
+    <string name="app_name_dev">VisionGuide (Dev)</string>
 
     <string name="error_camera_support">Camera is not supported</string>
     <string name="promo_btn">Promotions</string>
     <string name="search_btn">Search</string>
     <string name="search_btn_desc">Search for item in store</string>
     <string name="promo_btn_desc">List the current ongoing promotions.</string>
+    <string name="navigation_btn">Navigation</string>
 
     <string name="scan_qr_text">Scan Shop QR Code to Start Navigation</string>
 
     <string name="tts_loc_error">Unable to find current location</string>
-    <string name="tts_loc">Currently in the %1$s section</string>
-    <string name="tts_promo_none">No promotions found</string>
+    <string name="tts_loc">You are currently in the %1$s section</string>
+    <string name="tts_promo_none">No promotions found in this section</string>
     <string name="tts_promo_number">Found %1$d promotions</string>
     <string name="tts_promo_error">Failed to get promotions due to network issue</string>
     <string name="tts_scan_qr">Scan the store QR code to start navigation</string>
     <string name="tts_map_loading">Loading the shop map</string>
     <string name="tts_map_load_ok">Loaded shop map successfully</string>
     <string name="tts_map_load_error">Failed to load shop map due to network issue</string>
+    <string name="tts_search_error">Item search failed due to network issue</string>
+    <string name="tts_search_not_found">No items found in the shop</string>
+    <string name="tts_nav_no_route">Unable to find a route to the item</string>
+    <string name="tts_server_error">Failed to connect to server</string>
+    <string name="tts_nav_complete">You have reached your destination</string>
+    <string name="tts_nav_no_dest">No destination selected</string>
+    <string name="map_loader_desc">Loading Shop Map</string>
+    <string name="tts_speech_error">Unable to recognize speech</string>
+    <string name="tts_search_start">Searching for %1$s</string>
+    <string name="tts_search_found">Found %1$s in the shop</string>
 </resources>

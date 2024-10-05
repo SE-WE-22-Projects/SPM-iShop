@@ -16,6 +16,8 @@
         android:title="@string/search_btn"
         app:showAsAction="ifRoom|withText" />
     <item
-        android:id="@+id/btn_hidden"
-        android:enabled="false" />
+        android:id="@+id/navigate_btn"
+        android:icon="@drawable/navigate"
+        android:title="@string/navigation_btn"
+        app:showAsAction="ifRoom|withText" />
 </menu>

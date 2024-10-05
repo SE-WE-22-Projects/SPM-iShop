@@ -7,6 +7,19 @@ const { QueryTypes } = require("sequelize");
 const { sequelize } = require("../../models");
 // import { object, string, number, date } from 'yup';
 
+const yup = require("yup");
+
+const promoSchema = yup.object({
+  name: yup.string(),
+  description: yup.string(),
+  status: yup.bool(),
+  dis_percentage: yup.number().nullable(),
+  dis_amount: yup.number().nullable(),
+  start_date: yup.date(),
+  end_date: yup.date(),
+  itemId: yup.number(),
+});
+
 /**
  *
  * @param {express.Request} req
@@ -23,7 +36,7 @@ const testPromotion = async (req, res) => {
  */
 const createPromotion = async (req, res) => {
   try {
-    const reqData = req.body;
+    const reqData = promoSchema.cast(req.body);
 
     const newPromo = await Promo.create(reqData);
     res.status(201).json({ data: newPromo });
@@ -40,7 +53,12 @@ const createPromotion = async (req, res) => {
  */
 const getPromotions = async (req, res) => {
   try {
-    const promos = await Promo.findAll();
+    const promos = await Promo.findAll({
+      include: {
+        model: Item,
+        include: Rack,
+      },
+    });
     res.status(200).json(promos);
   } catch (error) {
     res.status(500).send("Failed to fetch promotions");
@@ -77,7 +95,7 @@ const getPromotionByID = async (req, res) => {
 const updatePromotion = async (req, res) => {
   try {
     const promoID = Number.parseInt(req.params.id);
-    const updates = req.body;
+    const updates = promoSchema.cast(req.body);
     // check existance of promotion
     var promotion = await Promo.findByPk(promoID);
     if (!promotion) {
@@ -133,19 +151,19 @@ const getPromotionsBySectionID = async (req, res) => {
         model: Item,
         include: {
           model: Rack,
-          where: { sectionId: sectionID,  },
-          required: true
+          where: { sectionId: sectionID },
+          required: true,
         },
         required: true,
       },
-      where: {status: true},
+      where: { status: true },
       attributes: ["desc"],
     });
 
     const promotionDescriptions = promotions.map((promo) => promo.desc);
 
     res.status(200).json({
-      promotionDescriptions
+      promotionDescriptions,
     });
   } catch (error) {
     console.error("Error fetching promotions for the section: ", error);

@@ -156,7 +156,7 @@ const deleteItemById = async (req,res)=> {
  */
 const getItemsByName = async (req,res) => {
     try{
-        var itemList = await Item.find({
+        var itemList = await Item.findOne({
             where: {
               name: {
                 [Op.like]: `%${req.query.q}%`
