@@ -61,11 +61,10 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
         navigator = StoreNavigator(this)
 
         var serverUrls = intent.getStringArrayExtra("servers")
-        var markerSize = intent.getDoubleExtra("marker_size", -1.0)
+        var markerSize = intent.getDoubleExtra("size", 0.17)
 
         val isDev = serverUrls == null
         if (serverUrls == null) {
-            markerSize = 0.17
             serverUrls = arrayOf("http://192.168.8.156:5000")
         }
 
@@ -113,7 +112,6 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
 
                 shopService = OfflineData(this@MainActivity)
                 loadShopMap()
-                navigator.setMarkerSize(0.17)
             } else {
                 tts.say(getString(R.string.tts_server_error))
                 finish()

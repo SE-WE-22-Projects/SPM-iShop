@@ -99,6 +99,8 @@ class QRScanActivity : CameraActivity() {
         val shopQR: ShopQR = mapper.readValue(content)
         if (shopQR.type != "SV") return false
 
+        Log.d(TAG, "Found QR $shopQR")
+
         val intent = Intent(this, MainActivity::class.java)
         intent.putExtra("servers", shopQR.server.toTypedArray())
         intent.putExtra("size", shopQR.size)
