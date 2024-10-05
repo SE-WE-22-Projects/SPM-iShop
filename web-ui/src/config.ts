@@ -2,22 +2,22 @@ import { createTheme } from "@mui/material";
 
 // MUI theme for the site
 export const siteTheme = createTheme({
-    palette: {
-        mode: 'light',
-        primary: {
-            main: '#1B508B',
-        },
-        secondary: {
-            main: '#f50057',
-        },
+  palette: {
+    mode: "light",
+    primary: {
+      main: "#1B508B",
     },
-    typography: {
-        fontSize: 18,
-    }
+    secondary: {
+      main: "#f50057",
+    },
+  },
+  typography: {
+    fontSize: 18,
+  },
 });
 
 // The width of the sidebar drawer
 export const drawerWidth = 275;
 
 // Base url to use for all requests
-export const baseURL = "http://192.168.13.83:5000/";
+export const baseURL = "http://localhost:5000/";
