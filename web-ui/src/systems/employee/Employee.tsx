@@ -107,7 +107,7 @@ const Employee = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   useEffect(() => {
     getEmployees();
-    setTimeout(() => setIsLoading(false), 1000);
+    setTimeout(() => setIsLoading(false), 800);
   }, []);
 
   // confirm box handle

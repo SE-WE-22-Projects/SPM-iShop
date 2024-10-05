@@ -76,7 +76,7 @@ const Rack = () => {
     useEffect(()=>{
         getAllRacks();
         getAllSections();
-        setTimeout(()=>setIsLoading(false),1000);
+        setTimeout(()=>setIsLoading(false),800);
     },[]);
 
     // confirm box handle
