@@ -46,6 +46,8 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
 
     private lateinit var tts: TTS
 
+    private var showDirectionsAfterFrames: Int = -1
+
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -191,6 +193,12 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
                     navigator.userFacing
                 )
             )
+
+            if (showDirectionsAfterFrames > 0) {
+                if (showDirectionsAfterFrames == 1)
+                    onNavigateClick()
+                showDirectionsAfterFrames -= 1
+            }
         }
         bridge.start()
     }
@@ -264,6 +272,7 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
             }
 
             tts.say(getString(R.string.tts_search_found, query))
+            showDirectionsAfterFrames = 40
 
             val target = navigator.shopMap.getRackPosition(item.rackId)
             if (target == null) {
