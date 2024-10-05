@@ -23,7 +23,7 @@ const register = (systemName, path) => {
   }
 };
 
-register('testService', './testServiceRoute');
+register('test', './testServiceRoute');
 register('inventory', './inventory');
 register('mapping', './mapping');
 register('promotions', './promotions');

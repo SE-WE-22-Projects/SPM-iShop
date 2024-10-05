@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "io.github.yehan2002.ishop"
+    namespace = "io.github.yehan2002.visionguide"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "io.github.yehan2002.ishop"
+        applicationId = "io.github.yehan2002.visionguide"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
