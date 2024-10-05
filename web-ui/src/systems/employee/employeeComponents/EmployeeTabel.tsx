@@ -1,41 +1,75 @@
-import { Paper, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TablePagination, IconButton } from "@mui/material";
-import {MoreVert} from '@mui/icons-material';
+import {
+  Paper,
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  TablePagination,
+  IconButton,
+} from "@mui/material";
+import { MoreVert } from "@mui/icons-material";
 import { useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import UpdateEmployeeModal from "./UpdateEmployeeModal";
 
-export interface EmployeeData{
-    id?: number|null;
-    name?: string|null;
-    role?: string;
-    dateOfBirth?: Dayjs|null;
-    gender?: string;
-    contactNumber?: number|null;
-    email?: string|null;
-    address?: string|null;
-    hireDate?: Dayjs|null;
-    basicSalary?: number|null;
-    employmentStatus?: string;
+export interface EmployeeData {
+  id?: number | null;
+  name?: string | null;
+  role?: string;
+  dateOfBirth?: Dayjs | null;
+  gender?: string;
+  contactNumber?: string | null;
+  email?: string | null;
+  address?: string | null;
+  hireDate?: Dayjs | null;
+  basicSalary?: number | null;
+  employmentStatus?: string;
 }
 
-const EmployeeTabel  = ({data, query, updateOpen, employeeUpdateModalOpen, employeeUpdateModalClose, updateEmployee, deleteEmployee}:{data: EmployeeData[], query: string, updateOpen: boolean, employeeUpdateModalOpen: ()=>void, employeeUpdateModalClose: ()=>void, updateEmployee: (empData:EmployeeData)=>void, deleteEmployee: (id:number|null)=>void})=>{
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] =useState(10);
-  
-    const handleChangePage = (event: unknown, newPage: number) => {
-      setPage(newPage);
-    };
-  
-    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setRowsPerPage(+event.target.value);
-      setPage(0);
-    };
+const EmployeeTabel = ({
+  data,
+  query,
+  updateOpen,
+  employeeUpdateModalOpen,
+  employeeUpdateModalClose,
+  updateEmployee,
+  deleteEmployee,
+}: {
+  data: EmployeeData[];
+  query: string;
+  updateOpen: boolean;
+  employeeUpdateModalOpen: () => void;
+  employeeUpdateModalClose: () => void;
+  updateEmployee: (empData: EmployeeData) => void;
+  deleteEmployee: (id: number | null) => void;
+}) => {
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
-    // item update modal data
-    const [updateModalData,setUpdateModalData] = useState<EmployeeData>({});
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+
+  // item update modal data
+  const [updateModalData, setUpdateModalData] = useState<EmployeeData>({});
 
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden', backgroundColor: "rgba(255, 255, 255, 0.5)" }}>
+    <Paper
+      sx={{
+        width: "100%",
+        overflow: "hidden",
+        backgroundColor: "rgba(255, 255, 255, 0.5)",
+      }}
+    >
       <TableContainer sx={{ maxHeight: 440 }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
@@ -59,9 +93,8 @@ const EmployeeTabel  = ({data, query, updateOpen, employeeUpdateModalOpen, emplo
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .filter((row: EmployeeData) => {
                 if (query) {
-                  return (row.name?.toLowerCase()?.startsWith(query));
-                }
-                else {
+                  return row.name?.toLowerCase()?.startsWith(query);
+                } else {
                   return row;
                 }
               })
@@ -71,18 +104,28 @@ const EmployeeTabel  = ({data, query, updateOpen, employeeUpdateModalOpen, emplo
                     <TableCell key={row.id}>{row.id}</TableCell>
                     <TableCell key={row.name}>{row.name}</TableCell>
                     <TableCell key={row.role}>{row.role}</TableCell>
-                    <TableCell >{dayjs(row.dateOfBirth).format('YYYY-MM-DD')}</TableCell>
+                    <TableCell>
+                      {dayjs(row.dateOfBirth).format("YYYY-MM-DD")}
+                    </TableCell>
                     <TableCell key={row.gender}>{row.gender}</TableCell>
-                    <TableCell key={row.contactNumber}>{row.contactNumber}</TableCell>
+                    <TableCell key={row.contactNumber}>
+                      {row.contactNumber}
+                    </TableCell>
                     <TableCell key={row.email}>{row.email}</TableCell>
                     <TableCell key={row.address}>{row.address}</TableCell>
-                    <TableCell >{dayjs(row.hireDate).format('YYYY-MM-DD')}</TableCell>
-                    <TableCell key={row.basicSalary}>{row.basicSalary}</TableCell>
-                    <TableCell key={row.employmentStatus}>{row.employmentStatus}</TableCell>
+                    <TableCell>
+                      {dayjs(row.hireDate).format("YYYY-MM-DD")}
+                    </TableCell>
+                    <TableCell key={row.basicSalary}>
+                      {row.basicSalary}
+                    </TableCell>
+                    <TableCell key={row.employmentStatus}>
+                      {row.employmentStatus}
+                    </TableCell>
                     <TableCell size="medium">
                       <IconButton
-                        color='success'
-                        size='small'
+                        color="success"
+                        size="small"
                         onClick={() => {
                           setUpdateModalData(row);
                           employeeUpdateModalOpen();
@@ -106,9 +149,15 @@ const EmployeeTabel  = ({data, query, updateOpen, employeeUpdateModalOpen, emplo
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-      <UpdateEmployeeModal open={updateOpen} handleClose={employeeUpdateModalClose} data={updateModalData} updateEmployee={updateEmployee} deleteEmployee={deleteEmployee} />
+      <UpdateEmployeeModal
+        open={updateOpen}
+        handleClose={employeeUpdateModalClose}
+        data={updateModalData}
+        updateEmployee={updateEmployee}
+        deleteEmployee={deleteEmployee}
+      />
     </Paper>
-  )
-}
+  );
+};
 
-export default EmployeeTabel
+export default EmployeeTabel;

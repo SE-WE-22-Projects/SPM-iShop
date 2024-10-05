@@ -1,22 +1,34 @@
-const Employee = require('../../models/Employee'); // Import the Employee model
+const Employee = require("../../models/Employee"); // Import the Employee model
 const express = require("express");
+const yup = require("yup");
+/*name, role, dateOfBirth, gender, contactNumber, email, address, hireDate, basicSalary, employmentStatus */
+const empSchema = yup.object({
+  name: yup.string(),
+  role: yup.string(),
+  dateOfBirth: yup.date(),
+  gender: yup.string().oneOf(["male", "female", "other"]),
+  contactNumber: yup.string().min(100000000).max(999999999999),
+  email: yup.string().email(),
+  address: yup.string(),
+  hireDate: yup.date(),
+  basicSalary: yup.number(),
+  employmentStatus: yup.string().oneOf(["full-time", "part-time", "contract"]),
+});
 
 /**
- * 
- * @param {express.Request} req 
- * @param {express.Response} res  
+ *
+ * @param {express.Request} req
+ * @param {express.Response} res
  */
-const testEmployee = async (req, res)=>{
-
+const testEmployee = async (req, res) => {
   res.status(200).send("Testing route for employees");
-
-}
+};
 
 // Create an employee
 const createEmployee = async (req, res) => {
   try {
-    const { name, role, dateOfBirth, gender, contactNumber, email, address, hireDate, basicSalary, employmentStatus } = req.body;
-    const newEmployee = await Employee.create({ name, role, dateOfBirth, gender, contactNumber, email, address, hireDate, basicSalary, employmentStatus });
+    const data = empSchema.cast(req.body);
+    const newEmployee = await Employee.create(data);
     res.status(201).json(newEmployee);
   } catch (error) {
     console.error(error); // Log the error for debugging
@@ -61,7 +73,7 @@ const updateEmployee = async (req, res) => {
     if (!employee) {
       res.status(404).send("Employee not found");
     } else {
-      await employee.update(req.body);
+      await employee.update(empSchema.cast(req.body));
       res.status(200).send("Employee updated successfully");
     }
   } catch (error) {
