@@ -5,7 +5,7 @@ import ItemTable from './ItemTable';
 import { itemDataTable } from '../../inventory/itemComponents/ItemTable';
 import { Box, Modal } from '@mui/material';
 import SearchBar from '../../../common/SearchBar';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const style = {
     position: 'absolute' as 'absolute',
@@ -24,6 +24,10 @@ const ItemTableModal = ({open, handleClose, data, setSelectedRow}:{open: boolean
     const search = (query: string)=> {
         setSearchQuery(query);
     }
+
+    useEffect(()=>{
+        setSearchQuery("");
+    },[open]);
     return (
         <Modal
             open={open}
