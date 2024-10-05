@@ -24,6 +24,7 @@ import io.github.yehan2002.visionguide.net.dto.MapData
 import io.github.yehan2002.visionguide.util.Direction
 import io.github.yehan2002.visionguide.util.SpeechToText
 import io.github.yehan2002.visionguide.util.TTS
+import io.github.yehan2002.visionguide.util.TextDialog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -236,6 +237,11 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
     private fun onSearchReceived(data: ArrayList<String>?) {
         if (data.isNullOrEmpty()) {
             tts.say(getString(R.string.tts_speech_error))
+
+            // fallback to text input if speech recognition fails
+            TextDialog(this, "Search") {
+                if (it != null) onSearchReceived(arrayListOf(it))
+            }
             return
         }
 
@@ -257,12 +263,13 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
                 return@launch
             }
 
+            tts.say(getString(R.string.tts_search_found, query))
+
             val target = navigator.shopMap.getRackPosition(item.rackId)
             if (target == null) {
                 tts.say(getString(R.string.tts_nav_no_route))
             }
             navigator.target = target
-
         }
 
 

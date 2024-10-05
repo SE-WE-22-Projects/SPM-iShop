@@ -29,4 +29,5 @@
     <string name="map_loader_desc">Loading Shop Map</string>
     <string name="tts_speech_error">Unable to recognize speech</string>
     <string name="tts_search_start">Searching for %1$s</string>
+    <string name="tts_search_found">Found %1$s in the shop</string>
 </resources>
