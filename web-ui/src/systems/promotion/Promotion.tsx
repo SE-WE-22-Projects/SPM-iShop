@@ -38,7 +38,7 @@ const Promotion = () => {
     const [isLoading,setIsLoading] = useState<boolean>(true);
     useEffect(()=>{
         getPromotions();
-        setTimeout(()=>setIsLoading(false),1000);
+        setTimeout(()=>setIsLoading(false),800);
     },[]);
 
     // add promotion
@@ -56,16 +56,32 @@ const Promotion = () => {
             enqueueSnackbar("Promotion percentage or amount required...", {variant: "error"});
             return false;
         }
+        else if(!promoData.dis_percentage && !promoData.dis_amount){
+            enqueueSnackbar("Promotion percentage or amount required...", {variant: "error"});
+            return false;
+        }
+        else if(promoData.dis_percentage && promoData.dis_percentage<0){
+            enqueueSnackbar("Promotion percentage should be opssitive...", {variant: "error"});
+            return false;
+        }
+        else if(promoData.dis_amount && promoData.dis_amount<0 ){
+            enqueueSnackbar("Promotion amount should be opssitive...", {variant: "error"});
+            return false;
+        }
         else if(!promoData.start_date){
-            enqueueSnackbar("Please  select start date", {variant: "error"});
+            enqueueSnackbar("Please  select start date ...", {variant: "error"});
             return false;
         }
         else if(!promoData.end_date){
-            enqueueSnackbar("Please select end date", {variant: "error"});
+            enqueueSnackbar("Please select end date ...", {variant: "error"});
             return false;
         }
         else if(!promoData.itemId){
             enqueueSnackbar("Please select an item ...", {variant: "error"});
+            return false;
+        }
+        else if(promoData.end_date.isBefore(promoData.start_date)){
+            enqueueSnackbar("End date should be after start date ...", {variant: "error"});
             return false;
         }
         // api call

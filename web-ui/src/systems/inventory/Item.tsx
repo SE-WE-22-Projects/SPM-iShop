@@ -43,7 +43,7 @@ const Item = () => {
     const [isLoading,setIsLoading] = useState<boolean>(true);
     useEffect(()=>{
         getItems(); 
-        setTimeout(()=>setIsLoading(false),1000);
+        setTimeout(()=>setIsLoading(false),800);
     },[]);
 
     // add item

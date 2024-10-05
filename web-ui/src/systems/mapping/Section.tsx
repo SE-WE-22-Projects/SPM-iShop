@@ -74,7 +74,7 @@ const Section = () => {
     const [isLoading,setIsLoading] = useState<boolean>(true);
     useEffect(()=>{
         getAllSections();
-        setTimeout(()=>setIsLoading(false),1000);
+        setTimeout(()=>setIsLoading(false),800);
     },[]);
 
 
