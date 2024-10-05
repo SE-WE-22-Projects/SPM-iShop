@@ -8,11 +8,11 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import axios from "axios";
-//import { getUser } from './util/user';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { enqueueSnackbar } from 'notistack';
 import WalkingMan from './components/WalkingMan';
+import { getUser } from './common/getUser';
 
 
 
@@ -21,33 +21,32 @@ export default function Login() {
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        navigate(`/sys`);
-        // const data = new FormData(event.currentTarget);
+        const data = new FormData(event.currentTarget);
 
-        // axios.post("/api/auth/login", { email: data.get('email'), password: data.get("password") }).then((res) => {
-        //     localStorage.setItem("jwt", res.data.jwt);
+        axios.post("/api/auth/login", { email: data.get('email'), password: data.get("password") }).then((res) => {
+            
+            localStorage.setItem("jwt", res.data.token);
+            const user = getUser();
+            if (user !== null) {
+                navigate(`/sys`);
+            }
 
-        //     const user = getUser();
-        //     if (user !== null) {
-        //         navigate(`/${encodeURI(user.system)}`)
-        //     }
-
-        // }).catch(e => {
-        //     if (e?.response?.status === 400) {
-        //         enqueueSnackbar("Invalid username or password", { variant: "error" })
-        //     } else {
-        //         enqueueSnackbar("Failed to login", { variant: "error" })
-        //     }
-        //     console.error(e);
-        // })
+        }).catch(e => {
+            if (e?.response?.status === 400) {
+                enqueueSnackbar("Invalid username or password", { variant: "error" })
+            } else {
+                enqueueSnackbar("Failed to login", { variant: "error" })
+            }
+            console.error(e);
+        })
     };
 
 
     useEffect(() => {
-        //const user = getUser();
-        // if (user !== null) {
-        //     navigate(`/${encodeURI(user.system)}`)
-        // }
+        const user = getUser();
+        if (user !== null) {
+            navigate(`/sys`);
+        }
     }, [])
 
     return (

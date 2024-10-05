@@ -74,11 +74,7 @@ const RackUpdateModel = ({open, handleClose, data, sectionId, sectionData, updat
     setBottom_y(data.bottom_y ?? null);
     setBottom_x(data.bottom_x ?? null);
     getAllocatedSection(sectionId);
-    console.log("data");
-    
-    console.log(data);
-    
-  },[data]);
+    },[data]);
 
     return (
         <React.Fragment>
