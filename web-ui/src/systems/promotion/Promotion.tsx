@@ -67,7 +67,7 @@ const Promotion = () => {
             return false;
         }
         else if(!promoData.itemId){
-            enqueueSnackbar("Please select item ...", {variant: "error"});
+            enqueueSnackbar("Please select an item ...", {variant: "error"});
             return false;
         }
         // api call
@@ -159,7 +159,7 @@ const Promotion = () => {
             {
                 isLoading ? <PageLoader /> :
                     <div>
-                        <Typography variant="h3" align="center"> Promotion Management</Typography>
+                        <Typography variant="h3" align="center"> Promotions Management</Typography>
                         <Box sx={{ display: "flex" }} my={2} mx={15} >
                             <SearchBar onSearch={search} />
                             <Box flexGrow={1}></Box>
