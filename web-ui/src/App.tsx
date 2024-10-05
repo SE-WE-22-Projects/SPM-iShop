@@ -5,6 +5,7 @@ import employee from "./systems/employee";
 import promotions from "./systems/promotion";
 import { DashboardPage, Route } from "./components/DashboardLayout";
 import Login from "./Login";
+import Home from "./systems/Home";
 
 let dashBoardTabs: Route[] = [];
 
@@ -26,8 +27,8 @@ const domRouter = createBrowserRouter([
   },
   {
     path: "/sys",
-    element: <DashboardPage routes={{ title: "ShopVision", basePath: "sys", routes: dashBoardTabs, dashboard: <></> }} />,
-    children: [...dashBoardTabs],
+    element: <DashboardPage routes={{ title: "VisionGuide", basePath: "sys", routes: dashBoardTabs, dashboard: <Home/>}} />,
+    children: [...dashBoardTabs, {element: <Home/>, index: true}],
   }
 ]);
 

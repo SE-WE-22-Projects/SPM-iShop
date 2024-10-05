@@ -13,7 +13,6 @@ const Allocation = ({data, allocation, handleClickOpen, handleClose, open, rackL
   
   return (
     <div>
-      Allocation
       <Box sx={{ display: "flex" }} my={2} mx={15} >
           <SearchBar onSearch={search} />
       </Box>

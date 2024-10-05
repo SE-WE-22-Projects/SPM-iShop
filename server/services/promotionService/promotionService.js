@@ -138,12 +138,12 @@ const getPromotionsBySectionID = async (req, res) => {
         model: Item,
         include: {
           model: Rack,
-          where: { sectionId: sectionID },
+          where: { sectionId: sectionID,  },
           required: true
         },
         required: true,
       },
-
+      where: {status: true},
       attributes: ["desc"],
     });
 

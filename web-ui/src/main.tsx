@@ -14,7 +14,7 @@ axios.defaults.baseURL = baseURL;
 
 // setup axios interceptor to handle injecting the auth token into requests.
 axios.interceptors.request.use(async (cfg) => {
-  const jwt = localStorage.getItem("auth");
+  const jwt = localStorage.getItem("jwt");
   if (jwt) {
     cfg.headers.Authorization = `Bearer: ${jwt}`;
   }

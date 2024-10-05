@@ -39,7 +39,6 @@ const Rack = () => {
 
     //add section
     const addRack = async (data: any)=>{
-        console.log(data.sectionId);
         // data validation
         if(!data.sectionId){
             enqueueSnackbar("Section is required...", {variant:  "error"});
@@ -91,7 +90,6 @@ const Rack = () => {
             return;
         }
         else if(isNaN(data.top_y)){
-            console.log(isNaN(data.top_y));
             enqueueSnackbar("Rack Top Y cordinate is required...", {variant:  "error"});
             return;
         }
