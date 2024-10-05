@@ -9,7 +9,7 @@ const { secretKey } = require("../util/jwtConfig");
  */
 const auth = async (req, res, next) => {
   let token;
-  console.log(req.path);
+
   if (
     req.path === "/auth/login" ||
     req.path.startsWith("/mapping") ||
