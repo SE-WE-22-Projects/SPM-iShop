@@ -3,6 +3,10 @@ const Tag = require("../../models/Tag");
 const Section = require("../../models/Section");
 const Rack = require("../../models/Rack");
 
+const {networkInterfaces} = require('os');
+const { json } = require("sequelize");
+const QRCode = require('qrcode')
+
 /**
  * 
  * @param {express.Request} req 
@@ -69,8 +73,6 @@ const getStoreMap = async (req, res) => {
         return { id: r.id, top_x: r.top_x, top_y: r.top_y, bottom_x: r.bottom_x, bottom_y: r.bottom_y, section: r.sectionId }
     })
 
-
-
     res.status(200).json({
         size: storeSize,
         tags: tags,
@@ -79,4 +81,48 @@ const getStoreMap = async (req, res) => {
     });
 }
 
-module.exports = { getStoreMap }
+/**
+ * 
+ * @param {express.Request} req 
+ * @param {express.Response} res  
+ */
+const getAvailableIpAddress = async(req,res)=>{
+    const interfaces = networkInterfaces();
+    var ipArray = [];
+
+    for (const nets of Object.values(interfaces)){
+        for(const net of nets){
+            const familyV4Value = typeof net.family === 'string' ? 'IPv4' : 4
+            if (net.family === familyV4Value && !net.internal) {
+                ipArray.push(net.address);
+            }
+        }   
+    }
+
+    const qr = await QRCode.toDataURL(JSON.stringify({t: "SV", i: ipArray , ms:0.17}), {width: 750});
+
+
+    
+    res.status(200).json({qr});
+
+    // const nets = networkInterfaces();
+    // const results = Object.create(null); // Or just '{}', an empty object
+
+    // for (const name of Object.keys(nets)) {
+    //     for (const net of nets[name]) {
+    //         // Skip over non-IPv4 and internal (i.e. 127.0.0.1) addresses
+    //         // 'IPv4' is in Node <= 17, from 18 it's a number 4 or 6
+    //         const familyV4Value = typeof net.family === 'string' ? 'IPv4' : 4
+    //         if (net.family === familyV4Value && !net.internal) {
+    //             if (!results[name]) {
+    //                 results[name] = [];
+    //             }
+    //             results[name].push(net.address);
+    //     }
+    // }
+}
+
+module.exports = { 
+    getAvailableIpAddress,
+    getStoreMap 
+}
