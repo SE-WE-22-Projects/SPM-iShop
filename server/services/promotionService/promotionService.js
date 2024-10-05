@@ -40,7 +40,12 @@ const createPromotion = async (req, res) => {
  */
 const getPromotions = async (req, res) => {
   try {
-    const promos = await Promo.findAll();
+    const promos = await Promo.findAll({
+        include: {
+            model: Item,
+            include: Rack,
+         }    
+    });
     res.status(200).json(promos);
   } catch (error) {
     res.status(500).send("Failed to fetch promotions");

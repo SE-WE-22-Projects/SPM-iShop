@@ -239,12 +239,14 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
             return
         }
 
-        tts.say(getString(R.string.tts_search_start, data[0]))
+        val query = data[0]
+
+        tts.say(getString(R.string.tts_search_start, query))
 
         CoroutineScope(Dispatchers.IO).launch {
             val item: Item?
             try {
-                item = shopService.searchItem(data[0])
+                item = shopService.searchItem(query)
                 if (item == null) {
                     tts.say(getString(R.string.tts_search_not_found))
                     return@launch
