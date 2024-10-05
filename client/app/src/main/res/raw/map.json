@@ -5,6 +5,18 @@
   },
   "tags": [
     {
+      "code": 3,
+      "pos_x": 2.5,
+      "pos_y": 6,
+      "section": 2
+    },
+    {
+      "code": 4,
+      "pos_x": 2.5,
+      "pos_y": 9,
+      "section": 2
+    },
+    {
       "code": 1,
       "pos_x": 2.5,
       "pos_y": 1,
@@ -15,6 +27,18 @@
       "pos_x": 2.5,
       "pos_y": 3,
       "section": 1
+    },
+    {
+      "code": 5,
+      "pos_x": 7.5,
+      "pos_y": 1,
+      "section": 3
+    },
+    {
+      "code": 6,
+      "pos_x": 7.5,
+      "pos_y": 3,
+      "section": 3
     }
   ],
   "racks": [
@@ -84,110 +108,174 @@
     },
     {
       "id": 9,
-      "top_x": 0,
-      "top_y": 12.5,
-      "bottom_x": 1,
-      "bottom_y": 14.5,
-      "section": 7
+      "top_x": 5,
+      "top_y": 2.5,
+      "bottom_x": 6,
+      "bottom_y": 4.5,
+      "section": 3
     },
     {
       "id": 10,
-      "top_x": 0,
-      "top_y": 10.5,
-      "bottom_x": 1,
-      "bottom_y": 12.5,
-      "section": 7
+      "top_x": 5,
+      "top_y": 0.5,
+      "bottom_x": 6,
+      "bottom_y": 2.5,
+      "section": 3
     },
     {
       "id": 11,
-      "top_x": 4,
-      "top_y": 12.5,
-      "bottom_x": 5,
-      "bottom_y": 14.5,
-      "section": 7
+      "top_x": 9,
+      "top_y": 2.5,
+      "bottom_x": 10,
+      "bottom_y": 4.5,
+      "section": 3
     },
     {
       "id": 12,
-      "top_x": 4,
-      "top_y": 10.5,
-      "bottom_x": 5,
-      "bottom_y": 12.5,
-      "section": 7
+      "top_x": 9,
+      "top_y": 0.5,
+      "bottom_x": 10,
+      "bottom_y": 2.5,
+      "section": 3
     },
     {
       "id": 13,
       "top_x": 5,
-      "top_y": 2.5,
+      "top_y": 7.5,
       "bottom_x": 6,
-      "bottom_y": 4.5,
-      "section": 3
+      "bottom_y": 9.5,
+      "section": 4
     },
     {
       "id": 14,
       "top_x": 5,
-      "top_y": 0.5,
+      "top_y": 5.5,
       "bottom_x": 6,
-      "bottom_y": 2.5,
-      "section": 3
+      "bottom_y": 7.5,
+      "section": 4
     },
     {
       "id": 15,
       "top_x": 9,
-      "top_y": 2.5,
+      "top_y": 7.5,
       "bottom_x": 10,
-      "bottom_y": 4.5,
-      "section": 3
+      "bottom_y": 9.5,
+      "section": 4
     },
     {
       "id": 16,
       "top_x": 9,
-      "top_y": 0.5,
+      "top_y": 5.5,
       "bottom_x": 10,
-      "bottom_y": 2.5,
-      "section": 3
+      "bottom_y": 7.5,
+      "section": 4
     },
     {
       "id": 17,
-      "top_x": 5,
-      "top_y": 7.5,
-      "bottom_x": 6,
-      "bottom_y": 9.5,
-      "section": 4
+      "top_x": 10,
+      "top_y": 2.5,
+      "bottom_x": 11,
+      "bottom_y": 4.5,
+      "section": 5
     },
     {
       "id": 18,
-      "top_x": 5,
-      "top_y": 5.5,
-      "bottom_x": 6,
-      "bottom_y": 7.5,
-      "section": 4
+      "top_x": 10,
+      "top_y": 0.5,
+      "bottom_x": 11,
+      "bottom_y": 2.5,
+      "section": 5
     },
     {
       "id": 19,
-      "top_x": 9,
-      "top_y": 7.5,
-      "bottom_x": 10,
-      "bottom_y": 9.5,
-      "section": 4
+      "top_x": 14,
+      "top_y": 2.5,
+      "bottom_x": 15,
+      "bottom_y": 4.5,
+      "section": 5
     },
     {
       "id": 20,
-      "top_x": 9,
-      "top_y": 5.5,
-      "bottom_x": 10,
-      "bottom_y": 7.5,
-      "section": 4
+      "top_x": 14,
+      "top_y": 0.5,
+      "bottom_x": 15,
+      "bottom_y": 2.5,
+      "section": 5
     },
     {
       "id": 21,
-      "top_x": 5,
-      "top_y": 12.5,
-      "bottom_x": 6,
-      "bottom_y": 14.5,
-      "section": 8
+      "top_x": 10,
+      "top_y": 7.5,
+      "bottom_x": 11,
+      "bottom_y": 9.5,
+      "section": 6
     },
     {
       "id": 22,
+      "top_x": 10,
+      "top_y": 5.5,
+      "bottom_x": 11,
+      "bottom_y": 7.5,
+      "section": 6
+    },
+    {
+      "id": 23,
+      "top_x": 14,
+      "top_y": 7.5,
+      "bottom_x": 15,
+      "bottom_y": 9.5,
+      "section": 6
+    },
+    {
+      "id": 24,
+      "top_x": 14,
+      "top_y": 5.5,
+      "bottom_x": 15,
+      "bottom_y": 7.5,
+      "section": 6
+    },
+    {
+      "id": 25,
+      "top_x": 0,
+      "top_y": 12.5,
+      "bottom_x": 1,
+      "bottom_y": 14.5,
+      "section": 7
+    },
+    {
+      "id": 26,
+      "top_x": 0,
+      "top_y": 10.5,
+      "bottom_x": 1,
+      "bottom_y": 12.5,
+      "section": 7
+    },
+    {
+      "id": 27,
+      "top_x": 4,
+      "top_y": 12.5,
+      "bottom_x": 5,
+      "bottom_y": 14.5,
+      "section": 7
+    },
+    {
+      "id": 28,
+      "top_x": 4,
+      "top_y": 10.5,
+      "bottom_x": 5,
+      "bottom_y": 12.5,
+      "section": 7
+    },
+    {
+      "id": 29,
+      "top_x": 5,
+      "top_y": 12.5,
+      "bottom_x": 6,
+      "bottom_y": 14.5,
+      "section": 8
+    },
+    {
+      "id": 30,
       "top_x": 5,
       "top_y": 10.5,
       "bottom_x": 6,
@@ -195,7 +283,7 @@
       "section": 8
     },
     {
-      "id": 23,
+      "id": 31,
       "top_x": 9,
       "top_y": 12.5,
       "bottom_x": 10,
@@ -203,82 +291,18 @@
       "section": 8
     },
     {
-      "id": 24,
+      "id": 32,
       "top_x": 9,
       "top_y": 10.5,
       "bottom_x": 10,
       "bottom_y": 12.5,
       "section": 8
-    },
-    {
-      "id": 25,
-      "top_x": 10,
-      "top_y": 2.5,
-      "bottom_x": 11,
-      "bottom_y": 4.5,
-      "section": 5
-    },
-    {
-      "id": 26,
-      "top_x": 10,
-      "top_y": 0.5,
-      "bottom_x": 11,
-      "bottom_y": 2.5,
-      "section": 5
-    },
-    {
-      "id": 27,
-      "top_x": 14,
-      "top_y": 2.5,
-      "bottom_x": 15,
-      "bottom_y": 4.5,
-      "section": 5
-    },
-    {
-      "id": 28,
-      "top_x": 14,
-      "top_y": 0.5,
-      "bottom_x": 15,
-      "bottom_y": 2.5,
-      "section": 5
-    },
-    {
-      "id": 29,
-      "top_x": 10,
-      "top_y": 7.5,
-      "bottom_x": 11,
-      "bottom_y": 9.5,
-      "section": 6
-    },
-    {
-      "id": 30,
-      "top_x": 10,
-      "top_y": 5.5,
-      "bottom_x": 11,
-      "bottom_y": 7.5,
-      "section": 6
-    },
-    {
-      "id": 31,
-      "top_x": 14,
-      "top_y": 7.5,
-      "bottom_x": 15,
-      "bottom_y": 9.5,
-      "section": 6
-    },
-    {
-      "id": 32,
-      "top_x": 14,
-      "top_y": 5.5,
-      "bottom_x": 15,
-      "bottom_y": 7.5,
-      "section": 6
     }
   ],
   "sections": [
     {
       "id": 1,
-      "name": "Electronics",
+      "name": "Biscuits",
       "top_x": 0,
       "top_y": 0,
       "bottom_x": 5,
@@ -286,7 +310,7 @@
     },
     {
       "id": 2,
-      "name": "Groceries",
+      "name": "Vegetables",
       "top_x": 0,
       "top_y": 5,
       "bottom_x": 5,
@@ -294,7 +318,7 @@
     },
     {
       "id": 3,
-      "name": "Clothing",
+      "name": "Meats",
       "top_x": 5,
       "top_y": 0,
       "bottom_x": 10,
@@ -302,7 +326,7 @@
     },
     {
       "id": 4,
-      "name": "Furniture",
+      "name": "Dairy",
       "top_x": 5,
       "top_y": 5,
       "bottom_x": 10,
@@ -310,7 +334,7 @@
     },
     {
       "id": 5,
-      "name": "Books",
+      "name": "Stationaries",
       "top_x": 10,
       "top_y": 0,
       "bottom_x": 15,
@@ -318,7 +342,7 @@
     },
     {
       "id": 6,
-      "name": "Beauty",
+      "name": "Soaps and Detergents",
       "top_x": 10,
       "top_y": 5,
       "bottom_x": 15,
@@ -326,7 +350,7 @@
     },
     {
       "id": 7,
-      "name": "Toys",
+      "name": "Grains",
       "top_x": 0,
       "top_y": 10,
       "bottom_x": 5,
@@ -334,7 +358,7 @@
     },
     {
       "id": 8,
-      "name": "Sports",
+      "name": "Medicines",
       "top_x": 5,
       "top_y": 10,
       "bottom_x": 10,

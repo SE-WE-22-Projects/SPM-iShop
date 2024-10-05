@@ -35,6 +35,7 @@ import org.opencv.android.OpenCVLoader
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.time.Duration
 import kotlin.math.roundToInt
 
 
@@ -70,13 +71,16 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
 
         val isDev = serverUrls == null
         if (serverUrls == null) {
-            serverUrls = arrayOf("http://192.168.8.156:5000")
+            serverUrls = arrayOf()
         }
 
         navigator.setMarkerSize(markerSize)
 
         CoroutineScope(Dispatchers.IO).launch {
-            val client = OkHttpClient()
+            val client = OkHttpClient.Builder()
+                .readTimeout(Duration.ofSeconds(5))
+                .callTimeout(Duration.ofSeconds(5)).build()
+
             for (url in serverUrls) {
 
                 try {
@@ -260,7 +264,12 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
         CoroutineScope(Dispatchers.IO).launch {
             val item: Item?
             try {
-                item = shopService.searchItem(query)
+                item = try{
+                    shopService.searchItem(query)
+                } catch (e: KotlinNullPointerException){
+                    null
+                }
+
                 if (item == null) {
                     tts.say(getString(R.string.tts_search_not_found))
                     return@launch
