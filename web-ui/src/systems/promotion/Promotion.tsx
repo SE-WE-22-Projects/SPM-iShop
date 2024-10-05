@@ -30,9 +30,7 @@ const Promotion = () => {
 
     // get all promotions
     const [promoList,setPromoList]  = useState<PromotionType[]>([]);
-    const getPromotions = async ()=>{
-        console.log("get promo data");
-        
+    const getPromotions = async ()=>{        
         const res = await axios.get("api/promotions/promotion");
         setPromoList(res.data);
     }
