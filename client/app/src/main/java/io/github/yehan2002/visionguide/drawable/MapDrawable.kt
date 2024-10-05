@@ -11,6 +11,7 @@ import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import io.github.yehan2002.visionguide.navigation.MapObjects
 import io.github.yehan2002.visionguide.navigation.ShopMap
+import io.github.yehan2002.visionguide.util.Direction
 import io.github.yehan2002.visionguide.util.Point2D
 
 class MapDrawable(
@@ -18,7 +19,7 @@ class MapDrawable(
     private val userPos: Point2D?,
     private val userRoute: Array<Point2D>?,
     private val navigationTarget: Point2D?,
-    private val userFacing: ShopMap.Direction
+    private val userFacing: Direction
 ) :
     Drawable() {
     private val empty = Paint().apply {
@@ -103,15 +104,15 @@ class MapDrawable(
                 (USER_SIZE).toFloat(),
                 user
             )
-            if (userFacing != ShopMap.Direction.UNKNOWN) {
+            if (userFacing != Direction.UNKNOWN) {
 
                 @Suppress("KotlinConstantConditions")
                 val angle = when (userFacing) {
-                    ShopMap.Direction.NORTH -> 240F
-                    ShopMap.Direction.SOUTH -> 60F
-                    ShopMap.Direction.EAST -> -30F
-                    ShopMap.Direction.WEST -> 150F
-                    ShopMap.Direction.UNKNOWN -> throw RuntimeException("unreachable")
+                    Direction.NORTH -> 240F
+                    Direction.SOUTH -> 60F
+                    Direction.EAST -> -30F
+                    Direction.WEST -> 150F
+                    Direction.UNKNOWN -> throw RuntimeException("unreachable")
                 }
 
                 canvas.drawArc(
@@ -136,7 +137,7 @@ class MapDrawable(
                 widthOffset + ux.toFloat(), heightOffset + uy.toFloat()
             )
 
-            for (i in userRoute.indices.reversed()) {
+            for (i in userRoute.indices) {
                 val pos = userRoute[i].mul(ShopMap.SCALE)
 
                 val px = widthOffset + (pos.x + 0.25) * TILE_SIZE

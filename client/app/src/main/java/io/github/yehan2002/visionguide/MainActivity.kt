@@ -16,12 +16,12 @@ import io.github.yehan2002.visionguide.drawable.DebugInfoDrawable
 import io.github.yehan2002.visionguide.drawable.MapDrawable
 import io.github.yehan2002.visionguide.drawable.TagDrawable
 import io.github.yehan2002.visionguide.navigation.MapObjects
-import io.github.yehan2002.visionguide.navigation.ShopMap
 import io.github.yehan2002.visionguide.navigation.StoreNavigator
 import io.github.yehan2002.visionguide.net.OfflineData
 import io.github.yehan2002.visionguide.net.ShopService
 import io.github.yehan2002.visionguide.net.dto.Item
 import io.github.yehan2002.visionguide.net.dto.MapData
+import io.github.yehan2002.visionguide.util.Direction
 import io.github.yehan2002.visionguide.util.TTS
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -259,7 +259,7 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
         val route = navigator.route
         val facing = navigator.userFacing
 
-        if (facing == ShopMap.Direction.UNKNOWN) {
+        if (facing == Direction.UNKNOWN) {
             tts.say(getString(R.string.tts_loc_error))
             return
         }
@@ -269,7 +269,34 @@ class MainActivity : CameraActivity(), StoreNavigator.NavigationHandler {
             return
         }
 
+        if (route.size < 2) {
+            return
+        }
 
+        val travelDirection = route[0].direction(route[1])
+        val start = route[0]
+        var end = route[1]
+
+        for (idx in route.indices) {
+            if (idx == 0) continue
+
+            if (start.direction(route[idx]) != travelDirection)
+                break
+
+            end = route[idx]
+        }
+
+        val distance = start.distance(end)
+
+        val turn = facing.turnDirection(travelDirection)
+        Log.i(TAG, "turn $turn $travelDirection $facing")
+
+        when (turn) {
+            Direction.Turn.NONE -> tts.say("Continue Straight for $distance meters")
+            Direction.Turn.RIGHT -> tts.say("Turn Right and walk $distance meters")
+            Direction.Turn.LEFT -> tts.say("Turn Left and walk $distance meters")
+            Direction.Turn.AROUND -> tts.say("Turn Around and walk $distance meters")
+        }
     }
 
     /**

@@ -41,6 +41,26 @@ data class Point2D(val x: Double, val y: Double) {
         return sqrt(dx * dx + dy * dy)
     }
 
+    fun direction(o: Point2D): Direction {
+        val dx = x - o.x
+        val dy = y - o.y
+        if (dx != 0.0 && dy != 0.0) {
+            return Direction.UNKNOWN
+        }
+
+        if (dx > 0) {
+            return Direction.EAST
+        } else if (dx < 0) {
+            return Direction.WEST
+        } else if (dy > 0) {
+            return Direction.NORTH
+        } else if (dy < 0) {
+            return Direction.SOUTH
+        }
+
+        return Direction.UNKNOWN
+    }
+
     override fun equals(other: Any?): Boolean {
         if (other == null || other !is Point2D) return false
 

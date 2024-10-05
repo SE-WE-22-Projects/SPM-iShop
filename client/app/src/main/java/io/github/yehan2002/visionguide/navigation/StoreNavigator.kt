@@ -8,6 +8,7 @@ import io.github.yehan2002.visionguide.navigation.StoreNavigator.Companion.BUFFE
 import io.github.yehan2002.visionguide.navigation.aruco.ArucoDetector
 import io.github.yehan2002.visionguide.navigation.aruco.Tag
 import io.github.yehan2002.visionguide.net.dto.MapData
+import io.github.yehan2002.visionguide.util.Direction
 import io.github.yehan2002.visionguide.util.Point2D
 import io.github.yehan2002.visionguide.util.RingBuffer
 import org.opencv.objdetect.Objdetect
@@ -40,7 +41,7 @@ class StoreNavigator(private val handler: NavigationHandler) {
 
     var section: MapObjects.Section = MapObjects.UnknownSection
 
-    var userFacing: ShopMap.Direction = ShopMap.Direction.UNKNOWN
+    var userFacing: Direction = Direction.UNKNOWN
 
     var route: Array<Point2D>? = null
 
@@ -170,8 +171,22 @@ class StoreNavigator(private val handler: NavigationHandler) {
                 target = null
                 route = null
                 handler.onDestinationReached()
-            } else if (tick % 10 == 0)
-                route = shopMap.findRoute(userPosition, currentTarget)
+            } else if (tick % 10 == 0) {
+                val currentRoute = route
+                var sameRoute = false
+                if (currentRoute != null) {
+                    for (idx in currentRoute.indices) {
+                        if (userPosition.distance(currentRoute[idx]) < 1.0) {
+                            route = currentRoute.copyOfRange(idx, currentRoute.size)
+                            sameRoute = true
+                        }
+                    }
+
+                }
+
+                if (!sameRoute)
+                    route = shopMap.findRoute(userPosition, currentTarget).reversedArray()
+            }
         } else {
             route = null
         }

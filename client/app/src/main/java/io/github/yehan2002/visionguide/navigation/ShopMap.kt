@@ -4,6 +4,7 @@ import android.util.Log
 import io.github.yehan2002.visionguide.MainActivity.Companion.TAG
 import io.github.yehan2002.visionguide.navigation.aruco.Tag
 import io.github.yehan2002.visionguide.net.dto.MapData
+import io.github.yehan2002.visionguide.util.Direction
 import io.github.yehan2002.visionguide.util.Point2D
 import kotlin.math.cos
 import kotlin.math.roundToInt
@@ -188,29 +189,6 @@ class ShopMap(val width: Int, val height: Int) {
 
             MapObjects.Invalid -> throw IllegalArgumentException("Cannot add Invalid object to map")
         }
-    }
-
-    enum class Direction {
-        /**
-         * Facing Positive X
-         * */
-        NORTH,
-
-        /**
-         * Facing Negative X
-         * */
-        SOUTH,
-
-        /**
-         * Facing Negative Y
-         */
-        EAST,
-
-        /**
-         * Facing Positive Y
-         */
-        WEST,
-        UNKNOWN
     }
 
     companion object {
