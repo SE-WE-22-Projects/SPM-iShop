@@ -168,7 +168,7 @@ const Promotion = () => {
                             </Button>
                         </Box>
                         <PromotionTable data={promoList} updateOpen={updateOpen} updatePromotion={updatePromotion} deletePromotion={deletePromotion} query={searchQuery} promoUpdateModalOpen={promoUpdateModalOpen} promoUpdateModalClose={promoUpdateModalClose} />
-                        <ReportGenerator children={<PromotionAnalytics data={promoList} />} filename="VisionGuide-Promotions-Summary" title="" />
+                        <ReportGenerator children={<PromotionAnalytics data={promoList} />} filename="promotion-report" title="Promotion details Report" /> 
                         <AddPromotionModal promoAddModalClose={promoAddModalClose} open={addOpen} addPromotion={addPromotion} />
                     </div>
             }

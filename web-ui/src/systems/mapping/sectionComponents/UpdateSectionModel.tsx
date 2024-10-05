@@ -69,7 +69,7 @@ const UpdateSectionModel = ({ open, handleClose, data, updateSection, deleteSect
                     <Box justifyContent="center" display="flex">
                         <img src={sectionImg} width={240} />
                     </Box>
-                    <Typography margin={5} align='center' fontWeight='fontWeightBold'>Item ID : {id}</Typography>
+                    <Typography margin={5} align='center' fontWeight='fontWeightBold'>Section ID : {id}</Typography>
                     <Box
                         component="form"
                         sx={{
