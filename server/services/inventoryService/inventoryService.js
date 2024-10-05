@@ -1,9 +1,18 @@
 const express = require("express");
 const Item = require("../../models/Item");
-
+const yup = require('yup');
 const sq = require("sequelize");
 const Rack = require("../../models/Rack");
 const Op = sq.Op;
+
+const itemSchema = yup.object({
+    name: yup.string(),
+    desc: yup.string(),
+    category: yup.string(),
+    unit: yup.string(),
+    price: yup.number(),
+    qty: yup.number()
+}).unknown();
 
 /**
  * 
@@ -11,8 +20,9 @@ const Op = sq.Op;
  * @param {express.Response} res  
  */
 const createItem = async (req, res) => {
-    const reqData = req.body;
     try{
+         // validation
+        const reqData = await itemSchema.validate(req.body);
         var item = await Item.create(reqData);
         res.status(200).json({data: item});
     }
@@ -84,6 +94,8 @@ const updateItemById = async (req,res) => {
     }
 
     try{
+        // validation
+        await itemSchema.validate(req.body);
         // check existance of item
         var item = await Item.findByPk(itemId);
         if (!item) {
