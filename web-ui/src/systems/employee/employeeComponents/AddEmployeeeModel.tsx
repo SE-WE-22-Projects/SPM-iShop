@@ -119,7 +119,7 @@ const AddEmployeeeModel = ({employeeAddModalClose,open,addEmployee}:{employeeAdd
                 <Box>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DemoContainer components={['DatePicker']}>
-                      <DatePicker label="Birth Date" onChange={(val) => setDateOfBirth(val)} maxDate={dayjs()} />
+                      <DatePicker label="Birth Date" onChange={(val) => setDateOfBirth(val)} maxDate={dayjs().subtract(18,'years')} />
                     </DemoContainer>
                   </LocalizationProvider>
                 </Box>
