@@ -61,10 +61,10 @@ export const DateCard = () => {
   return (
     <Paper
       elevation={3}
-      sx={{ ...cardStyle, minHeight: "100px", backgroundColor: "#d9d9d9" }}
+      sx={{ ...cardStyle, minHeight: "100px", backgroundColor: "#1B508B" }}
     >
-      <Box sx={{ my: "auto" }}>
-        <Typography sx={{ fontWeight: 400 }}>Today is</Typography>
+      <Box color={'#ffffff'} sx={{ my: "auto" }}>
+        <Typography align="center" sx={{ fontWeight: 400 }}>Today is</Typography>
         <Typography sx={{ fontSize: "1.75rem", fontWeight: 500 }}>
           {dayjs(time).format("Do MMMM YYYY HH:mm:ss")}
         </Typography>

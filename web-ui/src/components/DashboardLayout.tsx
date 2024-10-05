@@ -128,7 +128,6 @@ export const DashboardPage = ({ routes }: { routes: SystemRoutes }) => {
                     minHeight: "100%",
                     backgroundColor: "rgba(255, 255, 255, 0.5)"
                 }}>
-
                     <Box >
                         <Outlet />
                         <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', zIndex: -2 }}>

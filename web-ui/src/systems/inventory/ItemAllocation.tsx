@@ -96,19 +96,19 @@ export default function ItemAllocation() {
       <Typography variant="h3" align="center">Manage Allocations</Typography>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-          <Tab label="Overview" {...a11yProps(0)} />
-          <Tab label="Allocate Item" {...a11yProps(1)} />
-          <Tab label="Modify Allocation" {...a11yProps(2)} />
+          {/* <Tab label="Overview" {...a11yProps(0)} /> */}
+          <Tab label="Allocate Item" {...a11yProps(0)} />
+          <Tab label="Modify Allocation" {...a11yProps(1)} />
         </Tabs>
       </Box>
-      <CustomTabPanel value={value} index={0}>
+      {/* <CustomTabPanel value={value} index={0}>
         Need to add overview content
         <AllocationOverView />
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={1}>
+      </CustomTabPanel> */}
+      <CustomTabPanel value={value} index={0}>
         <Allocation data={unallocatedItemList} allocation={allocateItemToRack} handleClickOpen={handleClickOpen} handleClose={handleClose} open={open} rackList={rackList} />
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={2}>
+      <CustomTabPanel value={value} index={1}>
         <ModifyAllocation data={allocatedItemList} allocation={allocateItemToRack} handleClickOpen={handleClickOpen} handleClose={handleClose} open={open} rackList={rackList}/>
       </CustomTabPanel>
     </Box>
